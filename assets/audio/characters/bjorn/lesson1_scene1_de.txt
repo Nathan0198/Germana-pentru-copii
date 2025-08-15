@@ -1,0 +1,5 @@
+# Audio pentru Björn - Lecția 1, Scena 1
+# Text: "Hallo! Ich bin Björn der Bär! Ich wohne hier im Schloss mit meiner Familie."
+# Voce: Björn (caldă, paternală, prietenească)
+# Durată: ~4 secunde
+# Nota: Acest fișier va fi înlocuit cu audio real

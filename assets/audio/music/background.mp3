@@ -1,0 +1,7 @@
+{
+  "type": "placeholder_audio",
+  "description": "Background music for lessons",
+  "duration": 120.0,
+  "volume": 0.3,
+  "loop": true
+}

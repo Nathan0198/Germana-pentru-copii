@@ -1,0 +1,4 @@
+# Placeholder pentru imagini
+
+Acest fișier va fi înlocuit cu o imagine placeholder PNG.
+Pentru moment, acest fișier previne erorile de require în React Native.

@@ -1,0 +1,12 @@
+{
+  "type": "placeholder_audio", 
+  "character": "emma",
+  "language": "de",
+  "description": "Emma's voice placeholder - melodious, friendly tone",
+  "sample_phrases": [
+    "Hallo, ich bin Emma die Ente!",
+    "Sehr schön ausgesprochen!",
+    "Wiederhole nach mir!",
+    "Das machst du toll!"
+  ]
+}

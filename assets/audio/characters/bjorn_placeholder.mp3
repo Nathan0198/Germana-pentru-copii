@@ -1,0 +1,12 @@
+{
+  "type": "placeholder_audio",
+  "character": "bjorn",
+  "language": "de",
+  "description": "Björn's voice placeholder - warm, paternal tone",
+  "sample_phrases": [
+    "Hallo, ich bin Björn der Bär!",
+    "Guten Morgen!",
+    "Sehr gut gemacht!",
+    "Lass uns lernen!"
+  ]
+}

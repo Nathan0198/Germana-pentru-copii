@@ -1,0 +1,12 @@
+{
+  "type": "placeholder_audio",
+  "character": "max", 
+  "language": "de",
+  "description": "Max's voice placeholder - energetic, playful tone",
+  "sample_phrases": [
+    "Hi, ich bin Max der Hase!",
+    "Lass uns spielen!",
+    "Super gemacht!",
+    "Das war fantastisch!"
+  ]
+}

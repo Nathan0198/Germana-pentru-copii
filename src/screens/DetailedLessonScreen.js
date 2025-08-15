@@ -1,0 +1,649 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  Alert,
+  Image
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { LevelButton, CharacterCard, RewardDisplay } from '../components';
+import { getLessonById, getCharacterById } from '../data/AppData';
+import ImageService from '../services/ImageService';
+import { 
+  DragDropGame, 
+  MemoryGame, 
+  SpeakingChallenge, 
+  QuickChoice, 
+  WordBuilder, 
+  StorySequence 
+} from '../games/GameTypes';
+import AudioService from '../services/AudioService';
+
+export default function DetailedLessonScreen({ route, navigation }) {
+  const { lessonId } = route.params;
+  const [lesson, setLesson] = useState(null);
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
+  const [currentGameIndex, setCurrentGameIndex] = useState(0);
+  const [isPlayingStory, setIsPlayingStory] = useState(true);
+  const [gameResults, setGameResults] = useState({});
+  const [currentGameScore, setCurrentGameScore] = useState(0);
+  // AudioService este deja o instanță singleton, nu trebuie recreat
+
+  useEffect(() => {
+    const lessonData = getLessonById(lessonId);
+    setLesson(lessonData);
+    
+    // Initialize audio service
+    AudioService.initialize();
+  }, [lessonId]);
+
+  if (!lesson) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Se încarcă lecția...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const handleStartLesson = () => {
+    setIsPlayingStory(true);
+    setCurrentStoryIndex(0);
+  };
+
+  const handleStoryNext = () => {
+    if (currentStoryIndex < lesson.story.scenes.length - 1) {
+      setCurrentStoryIndex(currentStoryIndex + 1);
+    } else {
+      // Povestea s-a terminat, trecem la jocuri
+      setIsPlayingStory(false);
+      setCurrentGameIndex(0);
+    }
+  };
+
+  const playSceneAudio = async (scene) => {
+    try {
+      const character = getCharacterById(scene.character);
+      
+      console.log(`🎬 Playing scene audio for character: ${character.id}`);
+      console.log(`German: "${scene.german}"`);
+      console.log(`Romanian: "${scene.romanian}"`);
+      
+      // Special handling for Lesson 1 with numbered story files
+      if (lessonId === 1) {
+        // Find which scene this is in the story array
+        const sceneIndex = lesson.story.scenes.findIndex(s => 
+          s.character === scene.character && 
+          s.german === scene.german && 
+          s.romanian === scene.romanian
+        );
+        const storyPartNumber = sceneIndex + 1;
+        
+        console.log(`🎬 Found scene at index ${sceneIndex}, playing story part ${storyPartNumber}`);
+        
+        // Play German story part first (with correct character and audio file)
+        await AudioService.playLesson1Story(storyPartNumber, 'de');
+        
+        // Small pause between languages
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Then play Romanian story part (with correct character and audio file)
+        await AudioService.playLesson1Story(storyPartNumber, 'ro');
+        
+        return;
+      }
+      
+      // Original logic for other lessons
+      // Play German text first
+      switch (character.id) {
+        case 'bjorn':
+          await AudioService.playBjornVoice(scene.german, 'de');
+          break;
+        case 'emma':
+          await AudioService.playEmmaVoice(scene.german, 'de');
+          break;
+        case 'max':
+          await AudioService.playMaxVoice(scene.german, 'de');
+          break;
+        default:
+          console.log('Unknown character:', character.id);
+          // Fallback cu Emma dacă personajul nu e recunoscut
+          await AudioService.playEmmaVoice(scene.german, 'de');
+      }
+      
+      // Small pause between languages
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Then play Romanian translation
+      switch (character.id) {
+        case 'bjorn':
+          await AudioService.playBjornVoice(scene.romanian, 'ro');
+          break;
+        case 'emma':
+          await AudioService.playEmmaVoice(scene.romanian, 'ro');
+          break;
+        case 'max':
+          await AudioService.playMaxVoice(scene.romanian, 'ro');
+          break;
+        default:
+          // Fallback cu Emma dacă personajul nu e recunoscut
+          await AudioService.playEmmaVoice(scene.romanian, 'ro');
+      }
+      
+    } catch (error) {
+      console.error('Error playing scene audio:', error);
+    }
+  };
+
+  const handleGameComplete = (score = 0) => {
+    // Salvăm rezultatul jocului
+    const gameKey = `game_${currentGameIndex}`;
+    setGameResults(prev => ({
+      ...prev,
+      [gameKey]: {
+        score: score,
+        completed: true,
+        timestamp: new Date().getTime()
+      }
+    }));
+    
+    setCurrentGameScore(score);
+    
+    if (currentGameIndex < lesson.games.length - 1) {
+      setCurrentGameIndex(currentGameIndex + 1);
+    } else {
+      // Toate jocurile completate
+      const totalScore = Object.values(gameResults).reduce((sum, result) => sum + result.score, 0) + score;
+      const averageScore = totalScore / lesson.games.length;
+      
+      let message = 'Ai completat lecția cu succes!';
+      if (averageScore >= 80) {
+        message = 'Excelent! Ai obținut un scor fantastic! 🌟';
+      } else if (averageScore >= 60) {
+        message = 'Foarte bine! Continuă tot așa! 👏';
+      } else {
+        message = 'Bun început! Poți să mai exersezi! 💪';
+      }
+      
+      Alert.alert(
+        'Felicitări! 🎉',
+        message,
+        [
+          { text: 'Continuă', onPress: () => navigation.goBack() }
+        ]
+      );
+    }
+  };
+
+  const renderStoryScene = () => {
+    const scene = lesson.story.scenes[currentStoryIndex];
+
+    return (
+      <View style={styles.storyContainer}>
+        {/* Story Image - Mărită pentru mai mult impact vizual */}
+        {scene.image && ImageService.hasImage(scene.image) && (
+          <View style={styles.storyImageContainer}>
+            <Image 
+              source={ImageService.getStoryImage(lessonId, scene.image)}
+              style={styles.storyImageLarge}
+              resizeMode="contain"
+            />
+          </View>
+        )}
+        
+        <View style={styles.dialogueContainer}>
+          <View style={styles.germanBox}>
+            <Text style={styles.germanText}>{scene.german}</Text>
+            <TouchableOpacity 
+              style={styles.audioButton}
+              onPress={() => playSceneAudio(scene)}
+            >
+              <Text style={styles.audioButtonText}>🔊 Ascultă</Text>
+            </TouchableOpacity>
+          </View>
+          
+          <View style={styles.romanianBox}>
+            <Text style={styles.romanianText}>{scene.romanian}</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity 
+          style={styles.nextButton}
+          onPress={handleStoryNext}
+        >
+          <Text style={styles.nextButtonText}>
+            {currentStoryIndex < lesson.story.scenes.length - 1 ? 'Următorul →' : 'Hai să ne jucăm! 🎮'}
+          </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.progressText}>
+          {currentStoryIndex + 1} / {lesson.story.scenes.length}
+        </Text>
+      </View>
+    );
+  };
+
+  const renderGame = () => {
+    const game = lesson.games[currentGameIndex];
+    const instructor = getCharacterById(game.instructor);
+
+    const renderGameComponent = () => {
+      const gameProps = {
+        gameData: game,
+        onComplete: handleGameComplete,
+        style: styles.gameComponent
+      };
+
+      switch (game.type) {
+        case 'drag_drop':
+          return <DragDropGame {...gameProps} />;
+        case 'memory_game':
+          return <MemoryGame {...gameProps} />;
+        case 'speaking_challenge':
+          return <SpeakingChallenge {...gameProps} />;
+        case 'quick_choice':
+          return <QuickChoice {...gameProps} />;
+        case 'word_builder':
+          return <WordBuilder {...gameProps} />;
+        case 'story_sequence':
+          return <StorySequence {...gameProps} />;
+        default:
+          return (
+            <View style={styles.gamePlaceholder}>
+              <Text style={styles.placeholderText}>
+                ⚠️ Tip de joc necunoscut: {game.type}
+              </Text>
+            </View>
+          );
+      }
+    };
+
+    return (
+      <View style={styles.gameContainer}>
+        <View style={styles.gameHeader}>
+          <CharacterCard 
+            character={instructor}
+            style={styles.instructorCard}
+          />
+          <Text style={styles.gameTitle}>{game.title}</Text>
+          <Text style={styles.gameInstructions}>{game.instructions}</Text>
+        </View>
+
+        <View style={styles.gameContent}>
+          {renderGameComponent()}
+        </View>
+
+        <Text style={styles.progressText}>
+          Jocul {currentGameIndex + 1} / {lesson.games.length}
+        </Text>
+      </View>
+    );
+  };
+
+  const playVocabularyAudio = async (word) => {
+    try {
+      console.log(`📚 Playing vocabulary word: ${word.german} / ${word.romanian}`);
+      
+      // Special handling for Lesson 1 vocabulary
+      if (lessonId === 1) {
+        // Convert German word to filename format (replace spaces with underscores)
+        const wordKey = word.german.toLowerCase().replace(/\s+/g, '_');
+        await AudioService.playLesson1VocabularyBilingual(wordKey);
+        return;
+      }
+      
+      // Original logic for other lessons
+      // Emma vorbește vocabularul (specialista pronunție)
+      await AudioService.playEmmaVoice(word.german, 'de');
+      
+      // Pauză între limbi
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Apoi pronunția în română
+      await AudioService.playEmmaVoice(word.romanian, 'ro');
+      
+    } catch (error) {
+      console.error('Error playing vocabulary audio:', error);
+    }
+  };
+
+  const renderVocabulary = () => {
+    return (
+      <View style={styles.vocabularyContainer}>
+        <Text style={styles.vocabularyTitle}>📚 Cuvinte noi ({lesson.vocabulary.length})</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {lesson.vocabulary.map((word, index) => (
+            <TouchableOpacity 
+              key={index} 
+              style={styles.wordCard}
+              onPress={() => playVocabularyAudio(word)}
+            >
+              <Text style={styles.germanWord}>{word.german}</Text>
+              <Text style={styles.romanianWord}>{word.romanian}</Text>
+              <Text style={styles.wordCategory}>{word.category}</Text>
+              <View style={styles.wordAudioHint}>
+                <Text style={styles.audioHintText}>🔊 Apasă pentru a asculta</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <LinearGradient
+        colors={['#FF6B6B', '#FFE66D']}
+        style={styles.background}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.backButtonText}>← Înapoi</Text>
+          </TouchableOpacity>
+          
+          <View style={styles.lessonInfo}>
+            <Text style={styles.lessonTitle}>{lesson.title}</Text>
+            <Text style={styles.lessonSubtitle}>{lesson.subtitle}</Text>
+            <Text style={styles.lessonDuration}>⏱️ {lesson.duration} minute</Text>
+          </View>
+        </View>
+
+        {/* Vocabulary Preview */}
+        {renderVocabulary()}
+
+        {/* Main Content */}
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {!isPlayingStory && (
+            <TouchableOpacity 
+              style={styles.startButton}
+              onPress={handleStartLesson}
+            >
+              <Text style={styles.startButtonText}>🎬 Începe povestea</Text>
+            </TouchableOpacity>
+          )}
+
+          {isPlayingStory ? renderStoryScene() : renderGame()}
+        </ScrollView>
+
+        {/* Rewards Preview */}
+        <View style={styles.rewardsPreview}>
+          <Text style={styles.rewardsText}>
+            🎯 Recompense: {lesson.rewards.stars} stele • {lesson.rewards.points} puncte
+          </Text>
+        </View>
+      </LinearGradient>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F0F0F0',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#666',
+  },
+  background: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  backButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    padding: 10,
+    borderRadius: 10,
+    marginRight: 15,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '600',
+  },
+  lessonInfo: {
+    flex: 1,
+  },
+  lessonTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 5,
+  },
+  lessonSubtitle: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    marginBottom: 3,
+  },
+  lessonDuration: {
+    fontSize: 12,
+    color: '#95A5A6',
+  },
+  vocabularyContainer: {
+    padding: 15,
+  },
+  vocabularyTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 10,
+  },
+  wordCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: 12,
+    borderRadius: 10,
+    marginRight: 10,
+    minWidth: 100,
+    alignItems: 'center',
+  },
+  germanWord: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 3,
+  },
+  romanianWord: {
+    fontSize: 12,
+    color: '#7F8C8D',
+    marginBottom: 3,
+  },
+  wordCategory: {
+    fontSize: 10,
+    color: '#95A5A6',
+    fontStyle: 'italic',
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+  },
+  startButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: 20,
+    borderRadius: 15,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  startButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+  },
+  storyContainer: {
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  dialogueContainer: {
+    width: '100%',
+    marginTop: 10,
+  },
+  germanBox: {
+    backgroundColor: 'rgba(232, 245, 232, 0.9)',
+    padding: 18,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  germanText: {
+    fontSize: 16,
+    color: '#2C3E50',
+    textAlign: 'center',
+    fontWeight: '500',
+    marginBottom: 12,
+    lineHeight: 22,
+  },
+  audioButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    alignSelf: 'center',
+  },
+  audioButtonText: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  romanianBox: {
+    backgroundColor: 'rgba(240, 248, 255, 0.9)',
+    padding: 18,
+    borderRadius: 12,
+    marginBottom: 15,
+  },
+  romanianText: {
+    fontSize: 15,
+    color: '#34495E',
+    textAlign: 'center',
+    fontStyle: 'italic',
+    lineHeight: 20,
+  },
+  nextButton: {
+    backgroundColor: '#4CAF50',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  nextButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  gameContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+  },
+  gameHeader: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  instructorCard: {
+    width: 100,
+    marginBottom: 10,
+  },
+  gameTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
+  gameContent: {
+    marginBottom: 20,
+  },
+  gameComponent: {
+    minHeight: 300,
+  },
+  gameInstructions: {
+    fontSize: 14,
+    color: '#7F8C8D',
+    textAlign: 'center',
+    marginTop: 10,
+    paddingHorizontal: 20,
+  },
+  gamePlaceholder: {
+    backgroundColor: '#F8F9FA',
+    padding: 40,
+    borderRadius: 15,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#E9ECEF',
+    borderStyle: 'dashed',
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: '#6C757D',
+    fontWeight: '600',
+    marginBottom: 5,
+  },
+  placeholderSubtext: {
+    fontSize: 12,
+    color: '#ADB5BD',
+  },
+  gameCompleteButton: {
+    backgroundColor: '#FF6B6B',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  gameCompleteText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  progressText: {
+    fontSize: 12,
+    color: '#95A5A6',
+    textAlign: 'center',
+  },
+  rewardsPreview: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    padding: 15,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  rewardsText: {
+    fontSize: 14,
+    color: '#2C3E50',
+    textAlign: 'center',
+    fontWeight: '600',
+  },
+  
+  // ================================
+  // IMAGE STYLES
+  // ================================
+  storyImageContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+    width: '100%',
+  },
+  storyImage: {
+    width: 200,
+    height: 150,
+    borderRadius: 15,
+  },
+  storyImageLarge: {
+    width: 300,
+    height: 220,
+    borderRadius: 20,
+  },
+});

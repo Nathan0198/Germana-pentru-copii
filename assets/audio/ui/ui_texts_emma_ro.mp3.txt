@@ -1,0 +1,56 @@
+# Instrucțiuni pentru înregistrarea audio UI - Română
+
+## Emma die Ente 🦆 - Voce melodioasă, prietenească
+
+### Texte de navigare:
+- **"Acasă"** - Home (ton prietenos)
+- **"Lecții de germană"** - Deutsche Lektionen (entuziast)
+- **"Exerciții de matematică"** - Mathe-Übungen (energic)
+- **"Setări"** - Einstellungen (calm)
+- **"Profil"** - Profil (prietenos)
+
+### Texte pentru aplicație:
+- **"Lumea lui Björn"** - Björns Welt (entuziast, magic)
+- **"Învață și joacă-te cu Björn și prietenii"** - Lerne und spiele mit Björn und Freunden (încurajator)
+- **"Ghizii tăi"** - Deine Guides (warm)
+
+### Acțiuni:
+- **"Redă"** - Abspielen (clar)
+- **"Pauză"** - Pause (calm)
+- **"Oprește"** - Stopp (ferm dar prietenos)
+- **"Repetă"** - Wiederholen (încurajator)
+- **"Următorul"** - Weiter (pozitiv)
+- **"Înapoi"** - Zurück (calm)
+- **"Ajutor"** - Hilfe (util)
+
+### Recompense:
+- **"Bravo!"** - Gut gemacht! (foarte entuziast)
+- **"Excelent!"** - Ausgezeichnet! (triumfător)
+- **"Încearcă din nou"** - Noch einmal versuchen (încurajator)
+- **"Aproape ai reușit!"** - Fast geschafft! (motivant)
+
+### Vocabular Familie:
+- **"Familie"** - Familie (warm)
+- **"Mamă"** - Mutter (drag)
+- **"Tată"** - Vater (respectuos)
+- **"Copil"** - Kind (blând)
+- **"Frate"** - Bruder (prietenos)
+- **"Soră"** - Schwester (drag)
+- **"Bunica"** - Oma (afectuos)
+- **"Bunicul"** - Opa (căldură)
+
+### Salutări de bază:
+- **"Salut!"** - Hallo! (vesel)
+- **"La revedere!"** - Auf Wiedersehen! (prietenos)
+- **"Te rog"** - Bitte (politicos)
+- **"Mulțumesc"** - Danke (recunoscător)
+- **"Da"** - Ja (confirmare)
+- **"Nu"** - Nein (blând)
+
+## Setări pentru înregistrare:
+- Format: MP3, 44.1kHz
+- Voce clară, fără background noise
+- Timp între cuvinte: 0.5 secunde
+- Ton prietenos, potrivit pentru copii 3-8 ani
+- Viteză moderată, ușor de înțeles
+- Pronunție clară în limba română

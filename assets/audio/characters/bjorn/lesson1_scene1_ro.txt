@@ -1,0 +1,4 @@
+# Audio pentru Björn - Lecția 1, Scena 1 (Română)
+# Text: "Salut! Eu sunt Björn ursulețul! Locuiesc aici în castel cu familia mea."
+# Voce: Björn (caldă, paternală, în română)
+# Durată: ~4 secunde
