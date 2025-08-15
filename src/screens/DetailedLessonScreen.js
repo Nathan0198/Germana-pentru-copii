@@ -10,7 +10,7 @@ import {
   Image
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { LevelButton, CharacterCard, RewardDisplay } from '../components';
+import { LevelButton, RewardDisplay } from '../components';
 import { getLessonById, getCharacterById } from '../data/AppData';
 import ImageService from '../services/ImageService';
 import { 
@@ -263,15 +263,6 @@ export default function DetailedLessonScreen({ route, navigation }) {
 
     return (
       <View style={styles.gameContainer}>
-        <View style={styles.gameHeader}>
-          <CharacterCard 
-            character={instructor}
-            style={styles.instructorCard}
-          />
-          <Text style={styles.gameTitle}>{game.title}</Text>
-          <Text style={styles.gameInstructions}>{game.instructions}</Text>
-        </View>
-
         <View style={styles.gameContent}>
           {renderGameComponent()}
         </View>
@@ -361,15 +352,6 @@ export default function DetailedLessonScreen({ route, navigation }) {
 
         {/* Main Content */}
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {!isPlayingStory && (
-            <TouchableOpacity 
-              style={styles.startButton}
-              onPress={handleStartLesson}
-            >
-              <Text style={styles.startButtonText}>🎬 Începe povestea</Text>
-            </TouchableOpacity>
-          )}
-
           {isPlayingStory ? renderStoryScene() : renderGame()}
         </ScrollView>
 
@@ -475,18 +457,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-  startButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    padding: 20,
-    borderRadius: 15,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  startButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-  },
   storyContainer: {
     marginBottom: 20,
     alignItems: 'center',
@@ -552,32 +522,11 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 20,
   },
-  gameHeader: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  instructorCard: {
-    width: 100,
-    marginBottom: 10,
-  },
-  gameTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    textAlign: 'center',
-  },
   gameContent: {
     marginBottom: 20,
   },
   gameComponent: {
     minHeight: 300,
-  },
-  gameInstructions: {
-    fontSize: 14,
-    color: '#7F8C8D',
-    textAlign: 'center',
-    marginTop: 10,
-    paddingHorizontal: 20,
   },
   gamePlaceholder: {
     backgroundColor: '#F8F9FA',

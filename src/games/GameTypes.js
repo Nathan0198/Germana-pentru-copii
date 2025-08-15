@@ -7,7 +7,10 @@ import {
   Dimensions,
   Alert,
   ScrollView,
+  Image,
 } from 'react-native';
+import AudioService from '../services/AudioService';
+import ImageService from '../services/ImageService';
 
 const { width } = Dimensions.get('window');
 
@@ -19,10 +22,32 @@ export const DragDropGame = ({ gameData, onComplete }) => {
   const [score, setScore] = React.useState(0);
   const [attempts, setAttempts] = React.useState(0);
   const [completed, setCompleted] = React.useState(false);
+  const [hasPlayedIntro, setHasPlayedIntro] = React.useState(false);
 
   // Folosim datele din gameData.items
   const items = gameData?.items || [];
   const totalItems = items.length;
+
+  // Play introduction audio when component mounts
+  React.useEffect(() => {
+    // Debug - test ImageService
+    console.log('🎮 DragDropGame: Testing ImageService...');
+    console.log('🎮 Available images:', ImageService.getAvailableImages());
+    
+    // Test each target image specifically
+    items.forEach(item => {
+      const hasImage = ImageService.hasImage(item.target);
+      console.log(`🎮 Target '${item.target}' has image: ${hasImage}`);
+    });
+    
+    if (!hasPlayedIntro && gameData?.instructor === 'max') {
+      // Play Max's instruction audio
+      setTimeout(() => {
+        AudioService.playLesson1Game(1, 'instruction', 'de');
+        setHasPlayedIntro(true);
+      }, 500);
+    }
+  }, [hasPlayedIntro, gameData?.instructor, items]);
 
   React.useEffect(() => {
     // Verifică dacă jocul este complet
@@ -48,8 +73,26 @@ export const DragDropGame = ({ gameData, onComplete }) => {
   const handleWordSelect = (item, index) => {
     if (matches.some(m => m.wordIndex === index)) return; // Deja potrivit
     
+    // Play vocabulary audio for the selected word
+    playVocabularyAudio(item.text);
+    
     setSelectedWord({ item, index });
     setSelectedTarget(null);
+  };
+
+  const playVocabularyAudio = (text) => {
+    // Map text to audio file names
+    const audioMap = {
+      'Hallo': 'hallo',
+      'Ich bin Björn': 'ich_bin',
+      'die Familie': 'die_familie',
+      'danke': 'danke'
+    };
+    
+    const audioKey = audioMap[text];
+    if (audioKey) {
+      AudioService.playLesson1Vocabulary(audioKey, 'de');
+    }
   };
 
   const handleTargetSelect = (targetKey) => {
@@ -89,7 +132,15 @@ export const DragDropGame = ({ gameData, onComplete }) => {
 
   return (
     <View style={styles.gameContainer}>
-      <Text style={styles.gameTitle}>{gameData.title || "Conectează cuvintele!"}</Text>
+      {/* Max's large image header - bigger version */}
+      <View style={styles.maxImageContainerLarge}>
+        <Image 
+          source={ImageService.getImage('max')} 
+          style={styles.maxHeaderImageLarge}
+          resizeMode="contain"
+        />
+        <Text style={styles.gameTitleOverlay}>{gameData.title || "Conectează cuvintele!"}</Text>
+      </View>
       
       <View style={styles.scoreContainer}>
         <Text style={styles.scoreText}>Scor: {score}</Text>
@@ -138,9 +189,20 @@ export const DragDropGame = ({ gameData, onComplete }) => {
               onPress={() => handleTargetSelect(item.target)}
               disabled={isTargetMatched(item.target)}
             >
-              <Text style={styles.targetEmoji}>🖼️</Text>
-              <Text style={styles.targetText}>{item.target}</Text>
-              {isTargetMatched(item.target) && <Text style={styles.checkMark}>✅</Text>}
+              <View style={styles.imageContainer}>
+                <Image 
+                  source={ImageService.getImage(item.target)} 
+                  style={styles.targetImageLarge}
+                  resizeMode="contain"
+                  onError={(error) => {
+                    console.log(`❌ Image load error for ${item.target}:`, error);
+                  }}
+                  onLoad={() => {
+                    console.log(`✅ Image loaded successfully for ${item.target}`);
+                  }}
+                />
+                {isTargetMatched(item.target) && <Text style={styles.checkMarkImage}>✅</Text>}
+              </View>
             </TouchableOpacity>
           ))}
         </View>
@@ -964,13 +1026,21 @@ const styles = StyleSheet.create({
     flex: 0.45,
   },
   targetItem: {
-    backgroundColor: '#ECF0F1',
-    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
     padding: 15,
-    marginVertical: 5,
+    marginVertical: 8,
+    marginHorizontal: 5,
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 120,
     borderWidth: 2,
-    borderColor: '#BDC3C7',
+    borderColor: '#ECF0F1',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   selectedTarget: {
     borderColor: '#F39C12',
@@ -1490,5 +1560,98 @@ const styles = StyleSheet.create({
   completeButtonDisabled: {
     backgroundColor: '#BDC3C7',
     opacity: 0.6,
+  },
+  
+  // New styles for DragDropGame enhancements
+  maxImageContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 20,
+    padding: 15,
+    marginHorizontal: 10,
+  },
+  maxImageContainerLarge: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 25,
+    padding: 20,
+    marginHorizontal: 10,
+    marginBottom: 15,
+    minHeight: 180,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  maxHeaderImage: {
+    width: 120,
+    height: 120,
+  },
+  maxHeaderImageLarge: {
+    width: 140,
+    height: 140,
+    marginBottom: 10,
+  },
+  gameTitleOverlay: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  gameHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  instructorImage: {
+    width: 60,
+    height: 60,
+    marginRight: 15,
+  },
+  imageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+  },
+  targetImageLarge: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+  },
+  checkMarkImage: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    fontSize: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    paddingHorizontal: 3,
+  },
+  placeholderContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 80,
+    height: 80,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#E9ECEF',
+    borderStyle: 'dashed',
+  },
+  placeholderText: {
+    fontSize: 24,
+    marginBottom: 5,
+  },
+  placeholderSubtext: {
+    fontSize: 8,
+    color: '#6C757D',
+    textAlign: 'center',
   },
 });

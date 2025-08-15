@@ -13,8 +13,8 @@ class ImageService {
       // CHARACTERS - Personajele principale
       // ================================
       'bjorn_default': require('../../assets/images/characters/bjorn_default.png'),
+      'max': require('../../assets/images/characters/max.png'),
       // 'emma_default': require('../../assets/images/characters/emma_default.png'),
-      // 'max_default': require('../../assets/images/characters/max_default.png'),
 
       // ================================
       // LESSON 1 - Salutul lui Björn - Story Images
@@ -23,6 +23,10 @@ class ImageService {
       'bjorn_und_emma': require('../../assets/images/lessons/lesson_1/story/bjorn_und_emma.png'),
       'emma_excited': require('../../assets/images/lessons/lesson_1/story/emma_excited.png'),
       'bjorn_und_emma_gruessen': require('../../assets/images/lessons/lesson_1/story/bjorn_und_emma_gruessen.png'),
+      'bjorn_thanking': require('../../assets/images/lessons/lesson_1/story/bjorn_thanking.png'),
+      'bjorn_pointing': require('../../assets/images/lessons/lesson_1/story/bjorn_pointing.png'),
+      'bjorn_waving': require('../../assets/images/lessons/lesson_1/story/bjorn_und_emma_gruessen.png'), // Folosim bjorn_und_emma_gruessen pentru waving
+      'bear_family': require('../../assets/images/lessons/lesson_1/story/bjorn_familie.png'), // Pentru familia de urși
 
       // ================================
       // BACKGROUNDS - Fundaluri (pentru viitor)
@@ -35,11 +39,14 @@ class ImageService {
 
   // Obține o imagine după numele ei
   getImage(imageName) {
+    console.log(`📸 Attempting to get image: ${imageName}`);
     const image = this.imageMap[imageName];
     if (!image) {
-      console.log(`📸 Image not yet available: ${imageName} (will show when added)`);
+      console.log(`📸 Image not found in map: ${imageName}`);
+      console.log(`📸 Available images:`, Object.keys(this.imageMap));
       return null; // Nu returnează placeholder pentru moment
     }
+    console.log(`📸 Successfully found image: ${imageName}`);
     return image;
   }
 
