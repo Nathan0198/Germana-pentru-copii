@@ -44,7 +44,7 @@ class ImageService {
     if (!image) {
       console.log(`📸 Image not found in map: ${imageName}`);
       console.log(`📸 Available images:`, Object.keys(this.imageMap));
-      return null; // Nu returnează placeholder pentru moment
+      return null;
     }
     console.log(`📸 Successfully found image: ${imageName}`);
     return image;

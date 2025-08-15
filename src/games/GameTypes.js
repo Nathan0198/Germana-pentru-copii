@@ -176,33 +176,29 @@ export const DragDropGame = ({ gameData, onComplete }) => {
           ))}
         </View>
         
-        <View style={styles.targetsSection}>
+        <View style={styles.imageColumn}>
           <Text style={styles.sectionTitle}>Imagini:</Text>
           {items.map((item, index) => (
             <TouchableOpacity 
               key={`target_${index}`}
               style={[
-                styles.targetItem,
-                selectedTarget === item.target && styles.selectedTarget,
-                isTargetMatched(item.target) && styles.matchedTarget
+                styles.imageTile,
+                selectedTarget === item.target && styles.selectedTile,
+                isTargetMatched(item.target) && styles.matchedTile
               ]}
               onPress={() => handleTargetSelect(item.target)}
               disabled={isTargetMatched(item.target)}
             >
-              <View style={styles.imageContainer}>
-                <Image 
-                  source={ImageService.getImage(item.target)} 
-                  style={styles.targetImageLarge}
-                  resizeMode="contain"
-                  onError={(error) => {
-                    console.log(`❌ Image load error for ${item.target}:`, error);
-                  }}
-                  onLoad={() => {
-                    console.log(`✅ Image loaded successfully for ${item.target}`);
-                  }}
-                />
-                {isTargetMatched(item.target) && <Text style={styles.checkMarkImage}>✅</Text>}
-              </View>
+              <Image 
+                source={ImageService.getImage(item.target)} 
+                style={styles.tileImage}
+                resizeMode="cover"
+              />
+              {isTargetMatched(item.target) && (
+                <View style={styles.checkMarkOverlay}>
+                  <Text style={styles.checkMarkText}>✅</Text>
+                </View>
+              )}
             </TouchableOpacity>
           ))}
         </View>
@@ -1022,8 +1018,44 @@ const styles = StyleSheet.create({
     right: 10,
     top: 10,
   },
-  targetsSection: {
-    flex: 0.45,
+  // Image column with fixed 4 tiles
+  imageColumn: {
+    width: 96,
+    alignItems: 'center',
+  },
+  imageTile: {
+    width: 96,
+    height: 96,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 2,
+    borderColor: '#E0E0E0',
+    overflow: 'hidden',
+    backgroundColor: '#FFFFFF',
+    position: 'relative',
+  },
+  selectedTile: {
+    borderColor: '#F39C12',
+    borderWidth: 3,
+  },
+  matchedTile: {
+    opacity: 0.7,
+  },
+  tileImage: {
+    width: '100%',
+    height: '100%',
+  },
+  checkMarkOverlay: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 12,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+  },
+  checkMarkText: {
+    fontSize: 16,
   },
   targetItem: {
     backgroundColor: '#FFFFFF',
@@ -1624,6 +1656,11 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 10,
+  },
+  targetImageGrid: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
   },
   checkMarkImage: {
     position: 'absolute',
