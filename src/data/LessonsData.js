@@ -57,76 +57,78 @@ export const CASTLE_LESSONS = [
 
     games: [
       {
-        type: "drag_drop",
-        instructor: "max",
-        title: "Conectează saluturile cu imaginile!",
+        type: "touch_and_listen",
+        instructor: "björn",
+        title: "Touch & Listen Salutări!",
         items: [
           { 
-            text: "Hallo", 
-            target: "bjorn_waving",
-            correct: true,
-            feedback: "Sehr gut! Björn salută!" 
+            id: 'bjorn', 
+            name: 'Björn', 
+            image: 'bjorn_waving', 
+            audio: 'hallo_ich_bin_bjorn',
+            feedback: "Sehr gut! Das ist Björn der Bär!"
           },
           { 
-            text: "Ich bin Björn", 
-            target: "bjorn_pointing",
-            correct: true,
-            feedback: "Perfect! Björn se prezintă!" 
+            id: 'emma', 
+            name: 'Emma', 
+            image: 'emma_smiling', 
+            audio: 'emma_greeting',
+            feedback: "Wunderbar! Das ist Emma die Ente!"
           },
           { 
-            text: "die Familie", 
-            target: "bear_family",
-            correct: true,
-            feedback: "Wunderbar! Familia de urși!" 
+            id: 'familie', 
+            name: 'Familie', 
+            image: 'bear_family', 
+            audio: 'die_familie',
+            feedback: "Toll! Das ist die Familie!"
           },
           { 
-            text: "danke", 
-            target: "bjorn_thanking",
-            correct: true,
-            feedback: "Toll! Björn mulțumește!" 
+            id: 'kinder', 
+            name: 'Kinder', 
+            image: 'happy_children', 
+            audio: 'die_kinder',
+            feedback: "Perfect! Das sind die Kinder!"
           }
         ]
       },
       {
-        type: "speaking_challenge",
+        type: "drag_match_voices",
         instructor: "emma",
-        title: "Repetă după mine și apasă când ai terminat!",
-        phrases: [
-          {
-            german: "Hallo!",
-            romanian: "Salut!",
-            audio: "emma_hallo",
-            feedback: "Sehr gut! Salutul perfect!"
-          },
-          {
-            german: "Ich bin [nume]",
-            romanian: "Eu sunt [nume]",
-            audio: "emma_ich_bin",
-            feedback: "Wunderbar! Te-ai prezentat!"
-          },
-          {
-            german: "Danke!",
-            romanian: "Mulțumesc!",
-            audio: "emma_danke",
-            feedback: "Toll! Ai fost politicos!"
-          }
+        title: "Drag & Match Voices!",
+        audioButtons: [
+          { id: 'hallo', text: 'Hallo!', audioFile: 'hallo', targetCharacter: 'bjorn' },
+          { id: 'danke', text: 'Danke!', audioFile: 'danke', targetCharacter: 'emma' },
+          { id: 'familie', text: 'Familie!', audioFile: 'familie', targetCharacter: 'family' },
+          { id: 'baer', text: 'Bär!', audioFile: 'baer', targetCharacter: 'bjorn' }
+        ],
+        characters: [
+          { id: 'bjorn', name: 'Björn', image: 'bjorn_happy' },
+          { id: 'emma', name: 'Emma', image: 'emma_happy' },
+          { id: 'family', name: 'Familie', image: 'bear_family' }
         ]
       },
       {
-        type: "quick_choice",
-        instructor: "max",
-        questions: [
-          {
-            question: "Cum spui 'Salut' în germană?",
-            options: ["Guten Tag", "Hallo", "Tschüss"],
-            correct: 1,
-            feedback: "Richtig! Hallo înseamnă salut!"
+        type: "simon_says",
+        instructor: "björn",
+        title: "Simon Says German!",
+        rounds: [
+          { 
+            command: 'Zeig mir... Hallo!', 
+            correctImage: 'hand_waving', 
+            images: ['hand_waving', 'bear_family', 'house'],
+            audio: 'show_hallo'
           },
-          {
-            question: "Cum spui 'Mulțumesc' în germană?",
-            options: ["Bitte", "Danke", "Gut"],
-            correct: 1,
-            feedback: "Perfekt! Danke înseamnă mulțumesc!"
+          { 
+            command: 'Zeig mir... Familie!', 
+            correctImage: 'bear_family', 
+            images: ['hand_waving', 'bear_family', 'children_playing'],
+            audio: 'show_familie'
+          },
+          { 
+            command: 'Zeig mir... Bär!', 
+            correctImage: 'bjorn_standing', 
+            images: ['emma_duck', 'bjorn_standing', 'children_group'],
+            audio: 'show_baer'
           }
         ]
       }
@@ -200,56 +202,55 @@ export const CASTLE_LESSONS = [
 
     games: [
       {
-        type: "drag_drop",
-        instructor: "max",
-        title: "Conectează membrii familiei:",
-        items: [
-          { 
-            text: "der Vater", 
-            target: "papa_bear",
-            correct: true,
-            feedback: "Sehr gut! Das ist Papa Bär!" 
-          },
-          { 
-            text: "die Mutter", 
-            target: "mama_bear",
-            correct: true,
-            feedback: "Perfect! Das ist Mama Bär!" 
-          },
-          { 
-            text: "die Schwester", 
-            target: "anna_bear",
-            correct: true,
-            feedback: "Wunderbar! Das ist Anna!" 
-          },
-          { 
-            text: "die Familie", 
-            target: "whole_family",
-            correct: true,
-            feedback: "Toll! Familia completă!" 
-          }
+        type: "family_tree_builder",
+        instructor: "björn",
+        title: "Construiește Arborele Familiei!",
+        familyMembers: [
+          { id: 'papa_bear', name: 'Papa Bär', image: 'papa_bear', slot: 'papa' },
+          { id: 'mama_bear', name: 'Mama Bär', image: 'mama_bear', slot: 'mama' },
+          { id: 'bjorn_bear', name: 'Björn', image: 'bjorn_happy', slot: 'bjorn' },
+          { id: 'anna_bear', name: 'Anna', image: 'anna_bear', slot: 'anna' }
         ]
       },
       {
-        type: "memory_game",
+        type: "voice_matching_pairs",
         instructor: "emma",
-        title: "Găsește perechile română-germană:",
-        pairs: [
-          { romanian: "TATA", german: "PAPA", feedback: "Perfekt! Papa înseamnă tata!" },
-          { romanian: "MAMA", german: "MAMA", feedback: "Sehr gut! Mama este la fel!" },
-          { romanian: "SORA", german: "DIE SCHWESTER", feedback: "Toll! Schwester înseamnă sora!" },
-          { romanian: "FAMILIA", german: "DIE FAMILIE", feedback: "Wunderbar! Familie înseamnă familia!" }
+        title: "Potrivește Vocile cu Personajele!",
+        voicePairs: [
+          { id: 'papa_voice', audioFile: 'papa_voice', character: 'papa_bear', feedback: 'Das ist Papa Bärs Stimme!' },
+          { id: 'mama_voice', audioFile: 'mama_voice', character: 'mama_bear', feedback: 'Das ist Mama Bärs Stimme!' },
+          { id: 'bjorn_voice', audioFile: 'bjorn_voice', character: 'bjorn_happy', feedback: 'Das ist Björns Stimme!' },
+          { id: 'anna_voice', audioFile: 'anna_voice', character: 'anna_bear', feedback: 'Das ist Annas Stimme!' }
+        ],
+        characters: [
+          { id: 'papa_bear', name: 'Papa Bär', image: 'papa_bear' },
+          { id: 'mama_bear', name: 'Mama Bär', image: 'mama_bear' },
+          { id: 'bjorn_happy', name: 'Björn', image: 'bjorn_happy' },
+          { id: 'anna_bear', name: 'Anna', image: 'anna_bear' }
         ]
       },
       {
-        type: "quick_choice",
+        type: "character_emotion_reader",
         instructor: "max",
-        questions: [
+        title: "Citește Emoțiile Personajelor!",
+        emotionScenes: [
           {
-            question: "Cum spui 'sora' în germană?",
-            options: ["der Bruder", "die Schwester", "die Mutter"],
-            correct: 1,
-            feedback: "Richtig! Die Schwester înseamnă sora!"
+            image: 'bjorn_happy',
+            text: 'Björn zâmbește larg și pare foarte fericit să-și prezinte familia.',
+            correctEmotion: 'happy',
+            options: ['happy', 'sad', 'angry', 'surprised']
+          },
+          {
+            image: 'emma_excited',
+            text: 'Emma bate din aripi de bucurie când vede familia frumoasă.',
+            correctEmotion: 'excited',
+            options: ['excited', 'tired', 'confused', 'scared']
+          },
+          {
+            image: 'anna_shy',
+            text: 'Anna se ascunde în spatele mamei când vede vizitatorii.',
+            correctEmotion: 'shy',
+            options: ['shy', 'angry', 'happy', 'sleepy']
           }
         ]
       }
@@ -281,31 +282,31 @@ export const CASTLE_LESSONS = [
           character: "björn",
           german: "Willkommen in unserem Haus! Das ist unser Wohnzimmer.",
           romanian: "Bun veniți în casa noastră! Aceasta este camera noastră de zi.",
-          image: "living_room_tour"
+          image: "bjorn_shows_house"
         },
         {
           character: "emma",
           german: "Sehr gemütlich! Und wo ist die Küche?",
           romanian: "Foarte confortabil! Și unde este bucătăria?",
-          image: "emma_impressed"
+          image: "emma_curious_house"
         },
         {
           character: "björn",
           german: "Die Küche ist hier. Mama kocht hier das Essen.",
           romanian: "Bucătăria este aici. Mama gătește aici mâncarea.",
-          image: "kitchen_with_mama"
+          image: "kitchen_scene"
         },
         {
           character: "björn",
           german: "Oben sind die Schlafzimmer. Das ist mein Zimmer!",
           romanian: "Sus sunt dormitoarele. Aceasta este camera mea!",
-          image: "bjorn_bedroom"
+          image: "bedroom_scene"
         },
         {
           character: "emma",
           german: "Dein Zimmer ist sehr ordentlich!",
           romanian: "Camera ta este foarte ordonată!",
-          image: "emma_admiring"
+          image: "living_room_scene"
         }
       ]
     },
@@ -323,70 +324,60 @@ export const CASTLE_LESSONS = [
 
     games: [
       {
-        type: "drag_drop",
-        instructor: "max",
-        title: "Conectează camerele casei:",
-        items: [
-          { 
-            text: "die Küche", 
-            target: "kitchen",
-            correct: true,
-            feedback: "Sehr gut! Das ist die Küche!" 
-          },
-          { 
-            text: "das Wohnzimmer", 
-            target: "living_room",
-            correct: true,
-            feedback: "Perfect! Das ist das Wohnzimmer!" 
-          },
-          { 
-            text: "das Schlafzimmer", 
-            target: "bedroom",
-            correct: true,
-            feedback: "Wunderbar! Das ist das Schlafzimmer!" 
-          },
-          { 
-            text: "mein Zimmer", 
-            target: "bjorn_room",
-            correct: true,
-            feedback: "Toll! Das ist Björns Zimmer!" 
-          }
+        type: "house_tour_adventure",
+        instructor: "björn",
+        title: "Tur prin Casa lui Björn!",
+        rooms: [
+          { id: 'wohnzimmer', name: 'das Wohnzimmer', german: 'Hier ist das Wohnzimmer!', romanian: 'Aici este camera de zi!', image: 'living_room_scene' },
+          { id: 'küche', name: 'die Küche', german: 'Das ist die Küche!', romanian: 'Aceasta este bucătăria!', image: 'kitchen_scene' },
+          { id: 'schlafzimmer', name: 'das Schlafzimmer', german: 'Hier sind die Schlafzimmer!', romanian: 'Aici sunt dormitoarele!', image: 'bedroom_scene' },
+          { id: 'bjorn_zimmer', name: 'mein Zimmer', german: 'Das ist mein Zimmer!', romanian: 'Aceasta este camera mea!', image: 'castle_scenes_combined' }
         ]
       },
       {
-        type: "speaking_challenge",
+        type: "room_sound_match",
         instructor: "emma",
-        title: "Repetă numele camerelor!",
-        phrases: [
-          {
-            german: "Das Wohnzimmer",
-            romanian: "Camera de zi",
-            audio: "emma_wohnzimmer",
-            feedback: "Sehr gut! Pronunția perfectă!"
+        title: "Ghicește Camera după Sunete!",
+        soundRounds: [
+          { 
+            sound: 'kitchen_cooking', 
+            correctRoom: 'küche', 
+            rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+            description: 'Țăcăitul din bucătărie'
           },
-          {
-            german: "Die Küche",
-            romanian: "Bucătăria",
-            audio: "emma_küche",
-            feedback: "Wunderbar! Excelent!"
+          { 
+            sound: 'tv_sounds', 
+            correctRoom: 'wohnzimmer', 
+            rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+            description: 'Sunetul TV-ului'
           },
-          {
-            german: "Mein Zimmer",
-            romanian: "Camera mea",
-            audio: "emma_mein_zimmer",
-            feedback: "Toll! Ai învățat!"
+          { 
+            sound: 'bed_creaking', 
+            correctRoom: 'schlafzimmer', 
+            rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+            description: 'Scârțâitul patului'
+          },
+          { 
+            sound: 'toys_playing', 
+            correctRoom: 'bjorn_zimmer', 
+            rooms: ['bjorn_zimmer', 'wohnzimmer', 'küche'],
+            description: 'Jucării în cameră'
           }
         ]
       },
       {
-        type: "story_sequence",
+        type: "drag_objects_home",
         instructor: "max",
-        title: "Aranjează în ordine povestea:",
-        sequence: [
-          { image: "house_showing", text: "Björn arată casa", order: 1 },
-          { image: "living_room", text: "Intră în living", order: 2 },
-          { image: "kitchen_visit", text: "Vizitează bucătăria", order: 3 },
-          { image: "bedroom_upstairs", text: "Urcă la dormitoare", order: 4 }
+        title: "Pune Obiectele la Locul Lor!",
+        furniture: [
+          { id: 'bed', name: 'das Bett', image: 'bed_furniture', correctRoom: 'schlafzimmer', germanRoom: 'ins Schlafzimmer' },
+          { id: 'stove', name: 'der Herd', image: 'stove_furniture', correctRoom: 'küche', germanRoom: 'in die Küche' },
+          { id: 'sofa', name: 'das Sofa', image: 'sofa_furniture', correctRoom: 'wohnzimmer', germanRoom: 'ins Wohnzimmer' },
+          { id: 'desk', name: 'der Schreibtisch', image: 'desk_furniture', correctRoom: 'bjorn_zimmer', germanRoom: 'in mein Zimmer' },
+          { id: 'table', name: 'der Tisch', image: 'dining_table', correctRoom: 'küche', germanRoom: 'in die Küche' },
+          { id: 'wardrobe', name: 'der Kleiderschrank', image: 'wardrobe_furniture', correctRoom: 'schlafzimmer', germanRoom: 'ins Schlafzimmer' },
+          { id: 'bookshelf', name: 'das Bücherregal', image: 'bookshelf_furniture', correctRoom: 'bjorn_zimmer', germanRoom: 'in mein Zimmer' },
+          { id: 'refrigerator', name: 'der Kühlschrank', image: 'fridge_furniture', correctRoom: 'küche', germanRoom: 'in die Küche' }
         ]
       }
     ],

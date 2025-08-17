@@ -369,6 +369,17 @@ export const isLessonUnlocked = (lessonId, userProgress = {}) => {
   const lesson = getLessonById(lessonId);
   if (!lesson) return false;
   
+  // ========================================
+  // 🚧 TEMPORARY: ALL LESSONS UNLOCKED FOR TESTING
+  // TODO: Restore original logic after implementation is complete
+  // ========================================
+  console.log(`🔓 TEMP DEBUG: Lesson ${lessonId} is temporarily unlocked for testing purposes`);
+  return true;
+  
+  // ========================================
+  // ORIGINAL LOGIC (commented out for testing)
+  // ========================================
+  /*
   // Prima lecție este întotdeauna deblocată
   if (lessonId === 1) return true;
   
@@ -379,6 +390,7 @@ export const isLessonUnlocked = (lessonId, userProgress = {}) => {
   }
   
   return true;
+  */
 };
 
 /**

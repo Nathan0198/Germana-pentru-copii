@@ -79,7 +79,13 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.headerTitle}>👤 Profilul Meu</Text>
         </View>
 
-        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          style={styles.scrollContainer} 
+          contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }}
+          showsVerticalScrollIndicator={true}
+          scrollEnabled={true}
+          bounces={true}
+        >
           {/* Profile Card */}
           <View style={styles.profileCard}>
             <View style={styles.profileHeader}>

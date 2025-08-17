@@ -1,0 +1,436 @@
+{
+  "project": "MiniDeutsch - Complete Audio System Mapping (All 25 Lessons)",
+  "version": "3.0",
+  "elevenlabs_config": {
+    "voices": {
+      "german_male": {
+        "voice_id": "pqHfZKP75CvOlQylNhV4",
+        "language": "de", 
+        "gender": "male",
+        "description": "German narrator voice - Björn and male characters"
+      },
+      "romanian_female": {
+        "voice_id": "EXAVITQu4vr4xnSDxMaL",
+        "language": "ro",
+        "gender": "female", 
+        "description": "Romanian narrator voice - Emma and translations"
+      }
+    },
+    "naming_convention": {
+      "pattern": "[lesson]_[type]_[index]_[language].mp3",
+      "vocabulary_pattern": "[lesson]_vocab_[word]_[language].mp3",
+      "examples": [
+        "lesson1_story_1_de.mp3",
+        "lesson1_story_1_ro.mp3",
+        "lesson1_game1_intro_de.mp3", 
+        "lesson1_vocab_hallo_de.mp3",
+        "lesson1_vocab_hallo_ro.mp3"
+      ]
+    }
+  },
+  "lessons": {
+    "lesson1": {
+      "title": "Salutul lui Björn",
+      "vocabulary": ["Hallo", "Ich bin", "der Bär", "die Ente", "die Familie", "gut", "danke", "die Kinder"],
+      "games": {
+        "game1": {
+          "name": "Touch & Listen Salutări", 
+          "type": "TouchAndListenGame",
+          "audio_files": {
+            "intro_de": "lesson1_game1_intro_de.mp3",
+            "intro_ro": "lesson1_game1_intro_ro.mp3",
+            "instructions_de": "lesson1_game1_instructions_de.mp3",
+            "instructions_ro": "lesson1_game1_instructions_ro.mp3"
+          },
+          "vocabulary_audio": {
+            "hallo_de": "lesson1_vocab_hallo_de.mp3",
+            "hallo_ro": "lesson1_vocab_hallo_ro.mp3",
+            "ich_bin_bjorn_de": "lesson1_vocab_ich_bin_bjorn_de.mp3",
+            "ich_bin_bjorn_ro": "lesson1_vocab_ich_bin_bjorn_ro.mp3",
+            "die_familie_de": "lesson1_vocab_die_familie_de.mp3", 
+            "die_familie_ro": "lesson1_vocab_die_familie_ro.mp3",
+            "die_kinder_de": "lesson1_vocab_die_kinder_de.mp3",
+            "die_kinder_ro": "lesson1_vocab_die_kinder_ro.mp3"
+          }
+        },
+        "game2": {
+          "name": "Drag & Match Voices",
+          "type": "DragMatchVoicesGame",
+          "audio_files": {
+            "intro_de": "lesson1_game2_intro_de.mp3",
+            "intro_ro": "lesson1_game2_intro_ro.mp3",
+            "success_de": "lesson1_game2_success_de.mp3",
+            "success_ro": "lesson1_game2_success_ro.mp3"
+          },
+          "vocabulary_audio": {
+            "hallo_de": "lesson1_vocab_hallo_de.mp3",
+            "danke_de": "lesson1_vocab_danke_de.mp3", 
+            "familie_de": "lesson1_vocab_familie_de.mp3",
+            "baer_de": "lesson1_vocab_baer_de.mp3"
+          }
+        },
+        "game3": {
+          "name": "Simon Says German",
+          "type": "SimonSaysGame", 
+          "audio_files": {
+            "intro_de": "lesson1_game3_intro_de.mp3",
+            "intro_ro": "lesson1_game3_intro_ro.mp3",
+            "command_show_hallo_de": "lesson1_game3_show_hallo_de.mp3",
+            "command_show_familie_de": "lesson1_game3_show_familie_de.mp3",
+            "command_show_baer_de": "lesson1_game3_show_baer_de.mp3",
+            "success_de": "lesson1_game3_success_de.mp3",
+            "timeout_de": "lesson1_game3_timeout_de.mp3"
+          }
+        }
+      }
+    },
+    "lesson3": {
+      "title": "Casa noastră", 
+      "vocabulary": ["das Haus", "das Wohnzimmer", "die Küche", "das Schlafzimmer", "mein", "das Zimmer", "das Essen", "hier"],
+      "games": {
+        "game1": {
+          "name": "House Tour Adventure",
+          "type": "HouseTourAdventureGame", 
+          "audio_files": {
+            "intro_de": "lesson3_game1_intro_de.mp3",
+            "intro_ro": "lesson3_game1_intro_ro.mp3",
+            "instructions_de": "lesson3_game1_instructions_de.mp3",
+            "instructions_ro": "lesson3_game1_instructions_ro.mp3"
+          },
+          "room_audio": {
+            "wohnzimmer_de": "lesson3_room_wohnzimmer_de.mp3",
+            "wohnzimmer_ro": "lesson3_room_wohnzimmer_ro.mp3",
+            "küche_de": "lesson3_room_küche_de.mp3", 
+            "küche_ro": "lesson3_room_küche_ro.mp3",
+            "schlafzimmer_de": "lesson3_room_schlafzimmer_de.mp3",
+            "schlafzimmer_ro": "lesson3_room_schlafzimmer_ro.mp3",
+            "bjorn_zimmer_de": "lesson3_room_bjorn_zimmer_de.mp3",
+            "bjorn_zimmer_ro": "lesson3_room_bjorn_zimmer_ro.mp3"
+          }
+        },
+        "game2": {
+          "name": "Room Sound Match", 
+          "type": "RoomSoundMatchGame",
+          "audio_files": {
+            "intro_de": "lesson3_game2_intro_de.mp3",
+            "intro_ro": "lesson3_game2_intro_ro.mp3",
+            "instructions_de": "lesson3_game2_instructions_de.mp3",
+            "instructions_ro": "lesson3_game2_instructions_ro.mp3"
+          },
+          "sound_effects": {
+            "kitchen_cooking": "lesson3_sound_kitchen_cooking.mp3",
+            "tv_sounds": "lesson3_sound_tv_sounds.mp3",
+            "bed_creaking": "lesson3_sound_bed_creaking.mp3",
+            "toys_playing": "lesson3_sound_toys_playing.mp3"
+          },
+          "feedback_audio": {
+            "correct_room_de": "lesson3_feedback_correct_room_de.mp3",
+            "correct_room_ro": "lesson3_feedback_correct_room_ro.mp3",
+            "wrong_room_de": "lesson3_feedback_wrong_room_de.mp3",
+            "wrong_room_ro": "lesson3_feedback_wrong_room_ro.mp3"
+          }
+        },
+        "game3": {
+          "name": "Drag Objects Home",
+          "type": "DragObjectsHomeGame",
+          "audio_files": {
+            "intro_de": "lesson3_game3_intro_de.mp3",
+            "intro_ro": "lesson3_game3_intro_ro.mp3", 
+            "instructions_de": "lesson3_game3_instructions_de.mp3",
+            "instructions_ro": "lesson3_game3_instructions_ro.mp3"
+          },
+          "furniture_audio": {
+            "bed_de": "lesson3_furniture_bed_de.mp3",
+            "bed_ro": "lesson3_furniture_bed_ro.mp3",
+            "stove_de": "lesson3_furniture_stove_de.mp3",
+            "stove_ro": "lesson3_furniture_stove_ro.mp3", 
+            "sofa_de": "lesson3_furniture_sofa_de.mp3",
+            "sofa_ro": "lesson3_furniture_sofa_ro.mp3",
+            "desk_de": "lesson3_furniture_desk_de.mp3",
+            "desk_ro": "lesson3_furniture_desk_ro.mp3",
+            "table_de": "lesson3_furniture_table_de.mp3",
+            "table_ro": "lesson3_furniture_table_ro.mp3",
+            "wardrobe_de": "lesson3_furniture_wardrobe_de.mp3",
+            "wardrobe_ro": "lesson3_furniture_wardrobe_ro.mp3",
+            "bookshelf_de": "lesson3_furniture_bookshelf_de.mp3", 
+            "bookshelf_ro": "lesson3_furniture_bookshelf_ro.mp3",
+            "refrigerator_de": "lesson3_furniture_refrigerator_de.mp3",
+            "refrigerator_ro": "lesson3_furniture_refrigerator_ro.mp3"
+          },
+          "placement_audio": {
+            "bed_placed_de": "lesson3_placement_bed_placed_de.mp3",
+            "stove_placed_de": "lesson3_placement_stove_placed_de.mp3",
+            "sofa_placed_de": "lesson3_placement_sofa_placed_de.mp3",
+            "desk_placed_de": "lesson3_placement_desk_placed_de.mp3",
+            "table_placed_de": "lesson3_placement_table_placed_de.mp3",
+            "wardrobe_placed_de": "lesson3_placement_wardrobe_placed_de.mp3",
+            "bookshelf_placed_de": "lesson3_placement_bookshelf_placed_de.mp3",
+            "refrigerator_placed_de": "lesson3_placement_refrigerator_placed_de.mp3",
+            "wrong_room_drop_de": "lesson3_placement_wrong_room_drop_de.mp3"
+          }
+        }
+      },
+      "vocabulary_audio": {
+        "das_haus_de": "lesson3_vocab_das_haus_de.mp3",
+        "das_haus_ro": "lesson3_vocab_das_haus_ro.mp3",
+        "das_wohnzimmer_de": "lesson3_vocab_das_wohnzimmer_de.mp3",
+        "das_wohnzimmer_ro": "lesson3_vocab_das_wohnzimmer_ro.mp3",
+        "die_küche_de": "lesson3_vocab_die_küche_de.mp3",
+        "die_küche_ro": "lesson3_vocab_die_küche_ro.mp3",
+        "das_schlafzimmer_de": "lesson3_vocab_das_schlafzimmer_de.mp3", 
+        "das_schlafzimmer_ro": "lesson3_vocab_das_schlafzimmer_ro.mp3",
+        "mein_de": "lesson3_vocab_mein_de.mp3",
+        "mein_ro": "lesson3_vocab_mein_ro.mp3",
+        "das_zimmer_de": "lesson3_vocab_das_zimmer_de.mp3",
+        "das_zimmer_ro": "lesson3_vocab_das_zimmer_ro.mp3",
+        "das_essen_de": "lesson3_vocab_das_essen_de.mp3",
+        "das_essen_ro": "lesson3_vocab_das_essen_ro.mp3", 
+        "hier_de": "lesson3_vocab_hier_de.mp3",
+        "hier_ro": "lesson3_vocab_hier_ro.mp3"
+      },
+      "story_audio": {
+        "scene1_de": "lesson3_story_scene1_de.mp3",
+        "scene1_ro": "lesson3_story_scene1_ro.mp3",
+        "scene2_de": "lesson3_story_scene2_de.mp3",
+        "scene2_ro": "lesson3_story_scene2_ro.mp3",
+        "scene3_de": "lesson3_story_scene3_de.mp3",
+        "scene3_ro": "lesson3_story_scene3_ro.mp3",
+        "scene4_de": "lesson3_story_scene4_de.mp3", 
+        "scene4_ro": "lesson3_story_scene4_ro.mp3",
+        "scene5_de": "lesson3_story_scene5_de.mp3",
+        "scene5_ro": "lesson3_story_scene5_ro.mp3"
+      },
+      "estimated_files": 59
+    },
+    "lesson2": {
+      "title": "Familia lui Björn", 
+      "vocabulary": ["der Vater", "die Mutter", "Papa", "Mama", "er", "sie", "die Schwester", "schön"],
+      "games": {
+        "game1": {"name": "Family Photo Builder", "type": "PhotoBuilderGame"},
+        "game2": {"name": "Guess the Family Voice", "type": "VoiceGuessGame"}, 
+        "game3": {"name": "Memory Pairs Familie", "type": "MemoryPairsGame"}
+      }
+    },
+    "lesson3": {
+      "title": "Casa Noastră",
+      "vocabulary": ["das Haus", "das Wohnzimmer", "die Küche", "das Schlafzimmer", "mein", "das Zimmer", "das Essen", "hier"],
+      "games": {
+        "game1": {"name": "House Tour Adventure", "type": "HouseTourGame"},
+        "game2": {"name": "Room Sound Match", "type": "SoundMatchGame"},
+        "game3": {"name": "Drag Objects Home", "type": "ObjectPlacementGame"}
+      }
+    },
+    "lesson4": {
+      "title": "Dimineața în Familie", 
+      "vocabulary": ["Guten Morgen", "aufstehen", "schlafen", "das Frühstück", "fertig", "der Tisch", "ja", "früh"],
+      "games": {
+        "game1": {"name": "Morning Routine Sequence", "type": "SequenceGame"},
+        "game2": {"name": "Wake Up Björn Game", "type": "InteractiveStoryGame"},
+        "game3": {"name": "Morning Words Catch", "type": "CatchGame"}
+      }
+    },
+    "lesson5": {
+      "title": "Jocurile cu Anna",
+      "vocabulary": ["spielen", "wollen", "der Ball", "lesen", "das Buch", "lieben", "zusammen", "toll"],
+      "games": {
+        "game1": {"name": "Play Choice Selector", "type": "ChoiceSelectorGame"},
+        "game2": {"name": "Ball Throw Game", "type": "BallThrowGame"},
+        "game3": {"name": "Reading Together Story", "type": "InteractiveReadingGame"}
+      }
+    },
+    "lesson6": {
+      "title": "Culorile Casei",
+      "vocabulary": ["bunt", "gelb", "braun", "rot", "blau", "die Blumen", "der Garten", "farbenfroh"],
+      "games": {
+        "game1": {"name": "Color Paint House", "type": "PaintingGame"},
+        "game2": {"name": "Color Memory Safari", "type": "ColorMemoryGame"},
+        "game3": {"name": "Rainbow Building Game", "type": "RainbowBuilderGame"}
+      }
+    },
+    "lesson7": {
+      "title": "Mâncarea Preferată", 
+      "vocabulary": ["hungrig", "das Mittagessen", "die Suppe", "das Brot", "der Apfel", "der Käse", "die Milch", "der Kuchen"],
+      "games": {
+        "game1": {"name": "Restaurant Order Game", "type": "RestaurantGame"},
+        "game2": {"name": "Hungry Tummy Fill", "type": "FeedingGame"}, 
+        "game3": {"name": "Kitchen Cooking Simulator", "type": "CookingGame"}
+      }
+    },
+    "lesson8": {
+      "title": "Bunicii Dragi",
+      "vocabulary": ["der Opa", "die Oma", "zu Besuch", "sich freuen", "die Enkelkinder", "das Geschenk", "mitbringen", "sehr"],
+      "games": {
+        "game1": {"name": "Grandparents Visit Preparation", "type": "PreparationGame"},
+        "game2": {"name": "Present Unwrapping Surprise", "type": "UnwrappingGame"},
+        "game3": {"name": "Family Tree Builder", "type": "TreeBuilderGame"}
+      }
+    },
+    "lesson9": {
+      "title": "Seara în Familie",
+      "vocabulary": ["der Abend", "vorbei", "dunkel", "fernsehen", "die Musik", "putzen", "die Zähne", "Gute Nacht"],
+      "games": {
+        "game1": {"name": "Evening Routine Timer", "type": "RoutineTimerGame"},
+        "game2": {"name": "Toothbrush Rhythm Game", "type": "RhythmGame"},
+        "game3": {"name": "Goodnight Lullaby", "type": "LullabyGame"}
+      }
+    },
+    "lesson10": {
+      "title": "Ziua de Naștere",
+      "vocabulary": ["der Geburtstag", "Jahre alt", "Herzlichen Glückwunsch", "die Torte", "die Kerzen", "die Luftballons", "viel Glück", "werden"],
+      "games": {
+        "game1": {"name": "Birthday Cake Decorator", "type": "CakeDecoratorGame"},
+        "game2": {"name": "Balloon Pop Counting", "type": "CountingGame"},
+        "game3": {"name": "Birthday Song Karaoke", "type": "KaraokeGame"}
+      }
+    },
+    "lesson11": {
+      "title": "Hainele Noastre",
+      "vocabulary": ["anziehen", "kalt", "die Jacke", "warm", "die Schuhe", "die Socken", "die Hose", "das T-Shirt"],
+      "games": {
+        "game1": {"name": "Dress Up Weather Game", "type": "DressUpGame"},
+        "game2": {"name": "Wardrobe Organization", "type": "OrganizationGame"},
+        "game3": {"name": "Quick Dress Challenge", "type": "SpeedChallengeGame"}
+      }
+    },
+    "lesson12": {
+      "title": "Vremea de Afară", 
+      "vocabulary": ["das Wetter", "regnen", "sonnig", "schneien", "gestern", "morgen", "vielleicht", "die Jahreszeiten"],
+      "games": {
+        "game1": {"name": "Weather Prediction Game", "type": "PredictionGame"},
+        "game2": {"name": "Rain Dance Rhythm", "type": "RainDanceGame"},
+        "game3": {"name": "Season Wheel Spinner", "type": "WheelSpinnerGame"}
+      }
+    },
+    "lesson13": {
+      "title": "Animalele de Casă",
+      "vocabulary": ["die Haustiere", "der Hund", "die Katze", "das Sofa", "der Hamster", "klein", "leben", "der Käfig"],
+      "games": {
+        "game1": {"name": "Pet Care Simulator", "type": "PetCareGame"},
+        "game2": {"name": "Hide and Seek Pets", "type": "HideSeekGame"},
+        "game3": {"name": "Pet Home Builder", "type": "HomeBuilderGame"}
+      }
+    },
+    "lesson14": {
+      "title": "Jucăriile Noastre",
+      "vocabulary": ["die Spielsachen", "der Lieblingsteddy", "die Puppe", "am liebsten", "bauen", "die Bauklötze", "malen", "die Buntstifte"],
+      "games": {
+        "game1": {"name": "Toy Box Organizer", "type": "ToyOrganizerGame"},
+        "game2": {"name": "Building Blocks Tower", "type": "BuildingGame"},
+        "game3": {"name": "Coloring Book Fun", "type": "ColoringGame"}
+      }
+    },
+    "lesson15": {
+      "title": "Îndatoririle Casei",
+      "vocabulary": ["putzen", "müssen", "aufräumen", "helfen", "staubsaugen", "gießen", "können", "tun"],
+      "games": {
+        "game1": {"name": "Family Cleaning Team", "type": "CleaningTeamGame"},
+        "game2": {"name": "Vacuum Cleaner Race", "type": "VacuumRaceGame"},
+        "game3": {"name": "Garden Watering Helper", "type": "WateringGame"}
+      }
+    },
+    "lesson16": {
+      "title": "Vizita la Magazine",
+      "vocabulary": ["einkaufen", "brauchen", "der Bäcker", "frisch", "das Obst", "der Markt", "die Einkaufstasche", "der Verkäufer"],
+      "games": {
+        "game1": {"name": "Shopping List Adventure", "type": "ShoppingGame"},
+        "game2": {"name": "Fresh Fruit Picker", "type": "FruitPickerGame"},
+        "game3": {"name": "Baker Shop Roleplay", "type": "RoleplayGame"}
+      }
+    },
+    "lesson17": {
+      "title": "Mersul la Doctor",
+      "vocabulary": ["weh tun", "der Bauch", "der Arzt", "was ist los", "nicht gut", "die Bauchschmerzen", "besser", "die Medizin"],
+      "games": {
+        "game1": {"name": "Doctor Visit Simulator", "type": "DoctorSimulatorGame"},
+        "game2": {"name": "Body Parts Pain Pointer", "type": "BodyPartsGame"},
+        "game3": {"name": "Medicine Schedule Helper", "type": "ScheduleGame"}
+      }
+    },
+    "lesson18": {
+      "title": "Distracția în Familie",
+      "vocabulary": ["das Spiel", "singen", "tanzen", "lieben", "lustig", "die Witze", "erzählen", "oder"],
+      "games": {
+        "game1": {"name": "Family Talent Show", "type": "TalentShowGame"},
+        "game2": {"name": "Dance Party Rhythm", "type": "DancePartyGame"},
+        "game3": {"name": "Joke Telling Game", "type": "JokeGame"}
+      }
+    },
+    "lesson19": {
+      "title": "Sărbătorile Speciale",
+      "vocabulary": ["bald", "Weihnachten", "das Lieblingsfest", "Ostern", "die Eier", "das neue Jahr", "lecker", "feiern"],
+      "games": {
+        "game1": {"name": "Holiday Calendar Creator", "type": "CalendarCreatorGame"},
+        "game2": {"name": "Easter Egg Hunt", "type": "EggHuntGame"},
+        "game3": {"name": "New Year Fireworks", "type": "FireworksGame"}
+      }
+    },
+    "lesson20": {
+      "title": "Prietenii Noștri",
+      "vocabulary": ["die besten Freunde", "Verstecken spielen", "die Freundschaft", "wichtig", "sich helfen", "immer", "gegenseitig", "heute"],
+      "games": {
+        "game1": {"name": "Best Friends Forever", "type": "FriendshipGame"},
+        "game2": {"name": "Hide and Seek Champion", "type": "HideSeekChampionGame"},
+        "game3": {"name": "Helping Hands Circle", "type": "HelpingGame"}
+      }
+    },
+    "lesson21": {
+      "title": "Telefonul și Comunicarea",
+      "vocabulary": ["das Telefon", "klingeln", "wer spricht", "mein Schatz", "am Telefon", "die Stimme", "hören", "sprechen"],
+      "games": {
+        "game1": {"name": "Phone Call Simulator", "type": "PhoneSimulatorGame"},
+        "game2": {"name": "Voice Recognition Game", "type": "VoiceRecognitionGame"},
+        "game3": {"name": "Telephone Chain Message", "type": "ChainMessageGame"}
+      }
+    },
+    "lesson22": {
+      "title": "Călătoria cu Mașina",
+      "vocabulary": ["einsteigen", "fahren", "hinten", "das Fenster", "die Landschaft", "dauern", "die Fahrt", "die Stunde"],
+      "games": {
+        "game1": {"name": "Car Journey Planner", "type": "JourneyPlannerGame"},
+        "game2": {"name": "Window View Spotter", "type": "ViewSpotterGame"},
+        "game3": {"name": "Family Car Games", "type": "CarGamesGame"}
+      }
+    },
+    "lesson23": {
+      "title": "Picnicul în Parc",
+      "vocabulary": ["das Picknick", "der Park", "einpacken", "die Sandwiches", "die Getränke", "die Decke", "sitzen", "der Spaß"],
+      "games": {
+        "game1": {"name": "Picnic Basket Packer", "type": "BasketPackerGame"},
+        "game2": {"name": "Perfect Picnic Spot Finder", "type": "SpotFinderGame"},
+        "game3": {"name": "Picnic Food Sharing", "type": "FoodSharingGame"}
+      }
+    },
+    "lesson24": {
+      "title": "Pregătirea pentru Școală",
+      "vocabulary": ["die Schule", "der Schulranzen", "die Stifte", "die Hefte", "die Bücher", "aufgeregt", "finden", "interessant"],
+      "games": {
+        "game1": {"name": "School Bag Essentials", "type": "SchoolBagGame"},
+        "game2": {"name": "School Building Explorer", "type": "SchoolExplorerGame"},
+        "game3": {"name": "New Friends Maker", "type": "FriendsMakerGame"}
+      }
+    },
+    "lesson25": {
+      "title": "Mare Petrecere de Despărțire",
+      "vocabulary": ["besonders", "feiern", "die Zeit", "viel lernen", "kennen", "hatten", "tschüss", "bis bald"],
+      "games": {
+        "game1": {"name": "Memory Lane Journey", "type": "MemoryJourneyGame"},
+        "game2": {"name": "Grand Finale Party", "type": "FinalePartyGame"},
+        "game3": {"name": "Certificate of Achievement", "type": "CertificateGame"}
+      }
+    }
+  },
+  "estimated_totals": {
+    "total_audio_files": 450,
+    "vocabulary_files": 200,
+    "game_audio_files": 225,
+    "story_audio_files": 25,
+    "total_vocabulary_words": 200,
+    "unique_game_types": 75
+  },
+  "progress_tracking": {
+    "completed_lessons": 0,
+    "total_lessons": 25,
+    "implementation_status": "Ready to begin with Lesson 1",
+    "last_updated": "2024-08-17"
+  }
+}

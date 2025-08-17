@@ -115,6 +115,10 @@ ${Object.entries(characters).map(([id, char]) => `• ${char.name} (${char.type}
     <SafeAreaView style={styles.container}>
       <ScrollView
         style={styles.scrollView}
+        contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }}
+        showsVerticalScrollIndicator={true}
+        scrollEnabled={true}
+        bounces={true}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }

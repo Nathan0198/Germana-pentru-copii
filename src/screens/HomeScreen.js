@@ -58,7 +58,13 @@ export default function HomeScreen({ navigation }) {
         colors={['#87CEEB', '#4A90E2']}
         style={styles.background}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          showsVerticalScrollIndicator={true}
+          scrollEnabled={true}
+          bounces={true}
+          contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+        >
           {/* Header cu titlul principal */}
           <View style={styles.header}>
             <Text style={styles.title}>🌟 LUMEA LUI BJÖRN 🌟</Text>
@@ -79,7 +85,10 @@ export default function HomeScreen({ navigation }) {
             <ScrollView 
               horizontal 
               showsHorizontalScrollIndicator={false}
+              scrollEnabled={true}
+              bounces={true}
               style={styles.charactersScroll}
+              contentContainerStyle={{ paddingHorizontal: 10 }}
             >
               {characters.map((character, index) => (
                 <CharacterCard 

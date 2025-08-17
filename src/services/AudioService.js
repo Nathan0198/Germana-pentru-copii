@@ -1,4 +1,5 @@
 import { Audio } from 'expo-av';
+import { Platform } from 'react-native';
 
 class AudioService {
   constructor() {
@@ -15,35 +16,48 @@ class AudioService {
 
   async initialize() {
     try {
-      // Set audio mode for optimal playback
-      await Audio.setAudioModeAsync({
-        staysActiveInBackground: false,
-        allowsRecordingIOS: false,
-        interruptionModeIOS: Audio.InterruptionModeIOS.DuckOthers,
-        playsInSilentModeIOS: true,
-        shouldDuckAndroid: true,
-        interruptionModeAndroid: Audio.InterruptionModeAndroid.DuckOthers,
-        playThroughEarpieceAndroid: false,
-      });
-      
-      this.isInitialized = true;
-      console.log('🎵 Audio service initialized with pre-recorded audio files');
-    } catch (error) {
-      console.error('Error initializing audio service:', error);
-      // Fallback initialization without iOS specific settings
+      // Check if we're on web platform and Audio API is available
+      if (typeof Audio === 'undefined' || !Audio.setAudioModeAsync) {
+        console.log('🌐 Web platform detected - skipping Audio.setAudioModeAsync');
+        this.isInitialized = true;
+        return;
+      }
+
+      // Try to set audio mode for mobile platforms
       try {
+        await Audio.setAudioModeAsync({
+          staysActiveInBackground: false,
+          allowsRecordingIOS: false,
+          // Use string constants instead of enum for better compatibility
+          interruptionModeIOS: 'duckOthers',
+          playsInSilentModeIOS: true,
+          shouldDuckAndroid: true,
+          interruptionModeAndroid: 'duckOthers',
+          playThroughEarpieceAndroid: false,
+        });
+        
+        this.isInitialized = true;
+        console.log('🎵 Audio service initialized for mobile platform');
+      } catch (enumError) {
+        console.warn('Enum-based initialization failed, trying fallback:', enumError);
+        
+        // Fallback initialization without specific modes
         await Audio.setAudioModeAsync({
           staysActiveInBackground: false,
           playsInSilentModeIOS: true,
           shouldDuckAndroid: true,
           playThroughEarpieceAndroid: false,
         });
+        
         this.isInitialized = true;
         console.log('🎵 Audio service initialized with fallback settings');
-      } catch (fallbackError) {
-        console.error('Fallback audio initialization failed:', fallbackError);
-        this.isInitialized = false;
       }
+      
+    } catch (error) {
+      console.warn('Audio initialization failed, continuing without audio setup:', error);
+      // Don't fail the entire app if audio can't be initialized
+      this.isInitialized = true;
+      console.log('🎵 Audio service initialized in minimal mode');
     }
   }
 
@@ -148,35 +162,48 @@ class AudioService {
       
       // If lesson structure is provided, use lesson-based path
       if (lessonId && character && language) {
-        // For React Native, we need to map to the actual require paths
-        const audioMap = this.getAudioFileMap();
-        const mapKey = `lesson_${lessonId}/${character}/${language}/${fileName}`;
-        audioUri = audioMap[mapKey];
-        
-        if (!audioUri) {
-          console.warn(`⚠️ Audio file not found in map: ${mapKey}`);
-          return null;
+        if (Platform.OS === 'web') {
+          // For web platform, use direct URLs
+          const webPath = `lesson_${lessonId}/${character}/${language}/${fileName}`;
+          audioUri = this.getWebAudioUrl(webPath);
+          console.log(`🌐 Using web audio URL: ${audioUri}`);
+        } else {
+          // For React Native, we need to map to the actual require paths
+          const audioMap = this.getAudioFileMap();
+          const mapKey = `lesson_${lessonId}/${character}/${language}/${fileName}`;
+          audioUri = audioMap[mapKey];
+          
+          if (!audioUri) {
+            console.warn(`⚠️ Audio file not found in map: ${mapKey}`);
+            return null;
+          }
         }
       } else {
-        // Fallback for other audio files - use require for React Native
-        const audioFiles = {
-          'characters/bjorn_placeholder.mp3': require('../../assets/audio/characters/bjorn_placeholder.mp3'),
-          'characters/emma_placeholder.mp3': require('../../assets/audio/characters/emma_placeholder.mp3'),
-          'characters/max_placeholder.mp3': require('../../assets/audio/characters/max_placeholder.mp3'),
-          'effects/button_click.mp3': require('../../assets/audio/effects/button_click.mp3'),
-          'effects/success.mp3': require('../../assets/audio/effects/success.mp3'),
-          'effects/error.mp3': require('../../assets/audio/effects/error.mp3'),
-          'sounds/click.mp3': require('../../assets/audio/effects/button_click.mp3'),
-          'sounds/success.mp3': require('../../assets/audio/effects/success.mp3'),
-          'sounds/error.mp3': require('../../assets/audio/effects/error.mp3'),
-        };
-        
-        audioUri = audioFiles[fileName];
-        
-        if (!audioUri) {
-          console.warn(`⚠️ Audio file not found: ${fileName}`);
-          // Use a fallback placeholder
-          audioUri = audioFiles['characters/bjorn_placeholder.mp3'];
+        if (Platform.OS === 'web') {
+          // For web platform, use direct URLs for effect files
+          audioUri = `/assets/audio/${fileName}`;
+          console.log(`🌐 Using web audio URL for effects: ${audioUri}`);
+        } else {
+          // Fallback for other audio files - use require for React Native
+          const audioFiles = {
+            'characters/bjorn_placeholder.mp3': require('../../assets/audio/characters/bjorn_placeholder.mp3'),
+            'characters/emma_placeholder.mp3': require('../../assets/audio/characters/emma_placeholder.mp3'),
+            'characters/max_placeholder.mp3': require('../../assets/audio/characters/max_placeholder.mp3'),
+            'effects/button_click.mp3': require('../../assets/audio/effects/button_click.mp3'),
+            'effects/success.mp3': require('../../assets/audio/effects/success.mp3'),
+            'effects/error.mp3': require('../../assets/audio/effects/error.mp3'),
+            'sounds/click.mp3': require('../../assets/audio/effects/button_click.mp3'),
+            'sounds/success.mp3': require('../../assets/audio/effects/success.mp3'),
+            'sounds/error.mp3': require('../../assets/audio/effects/error.mp3'),
+          };
+          
+          audioUri = audioFiles[fileName];
+          
+          if (!audioUri) {
+            console.warn(`⚠️ Audio file not found: ${fileName}`);
+            // Use a fallback placeholder
+            audioUri = audioFiles['characters/bjorn_placeholder.mp3'];
+          }
         }
       }
       
@@ -198,6 +225,14 @@ class AudioService {
       console.warn(`⚠️ Audio file not found: ${fileName}, error:`, error);
       return null;
     }
+  }
+
+  // Get web-compatible audio URLs
+  getWebAudioUrl(filePath) {
+    // For web platform, convert file paths to public URLs
+    // Expo serves assets from /assets/ path on web
+    const webPath = filePath.replace('lessons/', 'audio/lessons/');
+    return `/assets/audio/${webPath}`;
   }
 
   // Map audio files to require statements for React Native
@@ -348,10 +383,20 @@ class AudioService {
   async playBjornVoice(textKey, language = 'de') {
     console.log(`🐻 Björn voice: ${textKey} (${language})`);
     
-    // Use placeholder audio files that exist in assets
-    if (language === 'de') {
+    // Try to use real audio files from lesson structure first
+    try {
+      // For lesson 1, use real files
+      if (textKey.includes('Hallo') || textKey.includes('Ich bin') || textKey.includes('gut')) {
+        const lessonId = '1';
+        const fileName = 'story_1.mp3'; // Default story file
+        await this.playAudioFile(fileName, lessonId, 'bjorn', language);
+        return;
+      }
+      
+      // Fallback to placeholder for other cases
       await this.playAudioFile('characters/bjorn_placeholder.mp3');
-    } else {
+    } catch (error) {
+      console.warn('Bjorn voice fallback to placeholder:', error);
       await this.playAudioFile('characters/bjorn_placeholder.mp3');
     }
   }
@@ -359,15 +404,38 @@ class AudioService {
   async playEmmaVoice(textKey, language = 'de') {
     console.log(`🦆 Emma voice: ${textKey} (${language})`);
     
-    // Use placeholder audio files that exist in assets
-    await this.playAudioFile('characters/emma_placeholder.mp3');
+    // Try to use real audio files from lesson structure first
+    try {
+      // For lesson 1, use real files
+      if (textKey.includes('Hallo') || textKey.includes('Wie geht')) {
+        const lessonId = '1';
+        const fileName = 'story_1.mp3'; // Default story file
+        await this.playAudioFile(fileName, lessonId, 'emma', language);
+        return;
+      }
+      
+      // Fallback to placeholder for other cases
+      await this.playAudioFile('characters/emma_placeholder.mp3');
+    } catch (error) {
+      console.warn('Emma voice fallback to placeholder:', error);
+      await this.playAudioFile('characters/emma_placeholder.mp3');
+    }
   }
 
   async playMaxVoice(textKey, language = 'de') {
     console.log(`🐰 Max voice: ${textKey} (${language})`);
     
-    // Use placeholder audio files that exist in assets
-    await this.playAudioFile('characters/max_placeholder.mp3');
+    // Try to use real audio files from lesson structure first
+    try {
+      // For lesson 1 games, use real files
+      const lessonId = '1';
+      const fileName = 'game_1_instruction.mp3'; // Default game file
+      await this.playAudioFile(fileName, lessonId, 'max', language);
+      return;
+    } catch (error) {
+      console.warn('Max voice fallback to placeholder:', error);
+      await this.playAudioFile('characters/max_placeholder.mp3');
+    }
   }
 
   // Character voice methods with bilingual support
@@ -856,17 +924,34 @@ class AudioService {
     const audioPath = `lessons/lesson_1/${character}/${language}/story_${audioFileNumber}.mp3`;
     console.log(`📖 Playing Lesson 1 story part ${partNumber} -> ${audioPath}`);
     
-    // Create require map for lesson 1 files
+    let audioUri;
+    
+    if (Platform.OS === 'web') {
+      // For web platform, use direct URLs
+      audioUri = `/assets/audio/${audioPath}`;
+      console.log(`🌐 Using web audio URL for lesson 1: ${audioUri}`);
+      await this.playSpecificAudioFile(audioUri, audioPath);
+      return;
+    }
+    
+    // Create require map for lesson 1 files (React Native only)
     const lesson1Files = {
+      // Björn story files
       'lessons/lesson_1/bjorn/de/story_1.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/de/story_1.mp3'),
       'lessons/lesson_1/bjorn/de/story_2.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/de/story_2.mp3'),
       'lessons/lesson_1/bjorn/de/story_3.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/de/story_3.mp3'),
       'lessons/lesson_1/bjorn/ro/story_1.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/ro/story_1.mp3'),
       'lessons/lesson_1/bjorn/ro/story_2.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/ro/story_2.mp3'),
       'lessons/lesson_1/bjorn/ro/story_3.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/ro/story_3.mp3'),
+      
+      // Emma story files
+      'lessons/lesson_1/emma/de/story_1.mp3': require('../../assets/audio/lessons/lesson_1/emma/de/story_1.mp3'),
+      'lessons/lesson_1/emma/de/story_2.mp3': require('../../assets/audio/lessons/lesson_1/emma/de/story_2.mp3'),
+      'lessons/lesson_1/emma/ro/story_1.mp3': require('../../assets/audio/lessons/lesson_1/emma/ro/story_1.mp3'),
+      'lessons/lesson_1/emma/ro/story_2.mp3': require('../../assets/audio/lessons/lesson_1/emma/ro/story_2.mp3'),
     };
     
-    const audioUri = lesson1Files[audioPath];
+    audioUri = lesson1Files[audioPath];
     if (audioUri) {
       await this.playSpecificAudioFile(audioUri, audioPath);
     } else {

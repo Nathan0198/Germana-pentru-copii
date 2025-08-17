@@ -16,14 +16,22 @@ export default function App() {
         await LanguageService.initialize();
         await AudioService.initialize();
         
-        // Initialize our new StoryManager with all story modules
-        await StoryManager.initialize();
+        // Initialize StoryManager only on supported platforms
+        if (Platform.OS !== 'web') {
+          try {
+            await StoryManager.initialize();
+            console.log('StoryManager loaded', StoryManager.getStoryCount(), 'story modules');
+          } catch (storyError) {
+            console.warn('StoryManager failed to initialize (non-critical):', storyError);
+          }
+        } else {
+          console.log('🌐 Web platform - StoryManager disabled');
+        }
         
         // Update streak on app start
         await ProgressService.updateStreak();
         
-        console.log('MiniDeutsch app initialized successfully');
-        console.log('StoryManager loaded', StoryManager.getStoryCount(), 'story modules');
+        console.log('🚀 MiniDeutsch app initialized successfully');
       } catch (error) {
         console.error('Error initializing app:', error);
       }

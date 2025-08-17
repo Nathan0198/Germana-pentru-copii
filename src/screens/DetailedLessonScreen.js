@@ -19,7 +19,16 @@ import {
   SpeakingChallenge, 
   QuickChoice, 
   WordBuilder, 
-  StorySequence 
+  StorySequence,
+  TouchAndListenGame,
+  DragMatchVoicesGame,
+  SimonSaysGame,
+  FamilyTreeBuilderGame,
+  VoiceMatchingPairsGame,
+  CharacterEmotionReaderGame,
+  HouseTourAdventureGame,
+  RoomSoundMatchGame,
+  DragObjectsHomeGame
 } from '../games/GameTypes';
 import AudioService from '../services/AudioService';
 
@@ -32,6 +41,7 @@ export default function DetailedLessonScreen({ route, navigation }) {
   const [gameResults, setGameResults] = useState({});
   const [currentGameScore, setCurrentGameScore] = useState(0);
   const [forceUpdate, setForceUpdate] = useState(0); // Trigger for UI updates
+  const [currentGameCompleted, setCurrentGameCompleted] = useState(false); // Direct game completion state
   // AudioService este deja o instanță singleton, nu trebuie recreat
 
   useEffect(() => {
@@ -172,6 +182,7 @@ export default function DetailedLessonScreen({ route, navigation }) {
     });
     
     setCurrentGameScore(score);
+    setCurrentGameCompleted(true); // Mark current game as completed
     
     // Show completion message for this game
     Alert.alert(
@@ -263,6 +274,24 @@ export default function DetailedLessonScreen({ route, navigation }) {
           return <WordBuilder {...gameProps} />;
         case 'story_sequence':
           return <StorySequence {...gameProps} />;
+        case 'touch_and_listen':
+          return <TouchAndListenGame {...gameProps} />;
+        case 'drag_match_voices':
+          return <DragMatchVoicesGame {...gameProps} />;
+        case 'simon_says':
+          return <SimonSaysGame {...gameProps} />;
+        case 'family_tree_builder':
+          return <FamilyTreeBuilderGame {...gameProps} />;
+        case 'voice_matching_pairs':
+          return <VoiceMatchingPairsGame {...gameProps} />;
+        case 'character_emotion_reader':
+          return <CharacterEmotionReaderGame {...gameProps} />;
+        case 'house_tour_adventure':
+          return <HouseTourAdventureGame {...gameProps} />;
+        case 'room_sound_match':
+          return <RoomSoundMatchGame {...gameProps} />;
+        case 'drag_objects_home':
+          return <DragObjectsHomeGame {...gameProps} />;
         default:
           return (
             <View style={styles.gamePlaceholder}>
@@ -285,12 +314,13 @@ export default function DetailedLessonScreen({ route, navigation }) {
         </Text>
         
         {/* Next Game Button - visible after game completion */}
-        {gameResults[`game_${currentGameIndex}`]?.completed && (
+        {currentGameCompleted && (
           <TouchableOpacity 
             style={styles.nextGameButton}
             onPress={() => {
               if (currentGameIndex < lesson.games.length - 1) {
                 setCurrentGameIndex(currentGameIndex + 1);
+                setCurrentGameCompleted(false); // Reset for next game
               } else {
                 // All games completed - show final completion
                 const totalScore = Object.values(gameResults).reduce((sum, result) => sum + result.score, 0);
@@ -391,7 +421,13 @@ export default function DetailedLessonScreen({ route, navigation }) {
     return (
       <View style={styles.vocabularyContainer}>
         <Text style={styles.vocabularyTitle}>📚 Cuvinte noi ({lesson.vocabulary.length})</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          scrollEnabled={true}
+          bounces={true}
+          contentContainerStyle={{ paddingHorizontal: 5 }}
+        >
           {lesson.vocabulary.map((word, index) => (
             <TouchableOpacity 
               key={index} 
@@ -437,7 +473,14 @@ export default function DetailedLessonScreen({ route, navigation }) {
         {renderVocabulary()}
 
         {/* Main Content */}
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          style={styles.content} 
+          contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }}
+          showsVerticalScrollIndicator={true}
+          scrollEnabled={true}
+          bounces={true}
+          keyboardShouldPersistTaps="handled"
+        >
           {isPlayingStory ? renderStoryScene() : renderGame()}
         </ScrollView>
 

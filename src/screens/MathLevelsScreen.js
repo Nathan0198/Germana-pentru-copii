@@ -126,7 +126,10 @@ export default function MathLevelsScreen({ navigation }) {
         {/* Levels List */}
         <ScrollView 
           style={styles.scrollContainer}
-          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }}
+          showsVerticalScrollIndicator={true}
+          scrollEnabled={true}
+          bounces={true}
         >
           <View style={styles.levelsContainer}>
             {MATH_LEVELS.map((level, index) => (

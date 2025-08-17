@@ -1,0 +1,199 @@
+{
+  "project": "MiniDeutsch - Complete Audio System Mapping",
+  "version": "2.0",
+  "elevenlabs_config": {
+    "voices": {
+      "german_male": {
+        "voice_id": "pqHfZKP75CvOlQylNhV4",
+        "language": "de",
+        "gender": "male",
+        "description": "German narrator voice"
+      },
+      "romanian_female": {
+        "voice_id": "EXAVITQu4vr4xnSDxMaL", 
+        "language": "ro",
+        "gender": "female",
+        "description": "Romanian narrator voice"
+      }
+    },
+    "naming_convention": {
+      "pattern": "[lesson]_[type]_[index]_[language].mp3",
+      "examples": [
+        "lesson1_story_1_de.mp3",
+        "lesson1_story_1_ro.mp3", 
+        "lesson1_game1_intro_de.mp3",
+        "lesson1_game1_intro_ro.mp3",
+        "lesson1_game1_success_de.mp3",
+        "lesson1_game1_success_ro.mp3"
+      ]
+    }
+  },
+  "audio_structure": {
+    "base_path": "/assets/audio/",
+    "organization": {
+      "lessons": {
+        "path": "lessons/",
+        "structure": {
+          "lesson[N]": {
+            "story": "Story narration audio files",
+            "games": "Game-specific audio files",
+            "instructions": "Game instruction audio files",
+            "feedback": "Success/failure feedback audio"
+          }
+        }
+      },
+      "shared": {
+        "path": "shared/",
+        "ui_sounds": "Button clicks, navigation sounds",
+        "feedback": "Generic success/failure sounds"
+      }
+    }
+  },
+  "lessons": {
+    "lesson1": {
+      "title": "[TBD - Awaiting game script]",
+      "story_audio": {
+        "total_segments": "[TBD]",
+        "files": {
+          "segment_1": {
+            "german": "lesson1_story_1_de.mp3",
+            "romanian": "lesson1_story_1_ro.mp3",
+            "text_german": "[TBD]",
+            "text_romanian": "[TBD]"
+          }
+        }
+      },
+      "games": {
+        "game1": {
+          "type": "[TBD]",
+          "audio_files": {
+            "intro": {
+              "german": "lesson1_game1_intro_de.mp3",
+              "romanian": "lesson1_game1_intro_ro.mp3"
+            },
+            "instructions": {
+              "german": "lesson1_game1_instructions_de.mp3", 
+              "romanian": "lesson1_game1_instructions_ro.mp3"
+            },
+            "success": {
+              "german": "lesson1_game1_success_de.mp3",
+              "romanian": "lesson1_game1_success_ro.mp3"
+            },
+            "failure": {
+              "german": "lesson1_game1_failure_de.mp3",
+              "romanian": "lesson1_game1_failure_ro.mp3"
+            }
+          }
+        }
+      }
+    },
+    "lesson2": {
+      "status": "pending",
+      "note": "Will be populated after lesson 1 completion"
+    },
+    "lesson3": {
+      "status": "pending", 
+      "note": "Will be populated after lesson 2 completion"
+    },
+    "lesson4": {
+      "status": "pending",
+      "note": "Will be populated after lesson 3 completion"
+    },
+    "lesson5": {
+      "status": "pending",
+      "note": "Will be populated after lesson 4 completion"
+    },
+    "lesson6": {
+      "status": "pending",
+      "note": "Will be populated after lesson 5 completion"
+    },
+    "lesson7": {
+      "status": "pending",
+      "note": "Will be populated after lesson 6 completion"
+    },
+    "lesson8": {
+      "status": "pending",
+      "note": "Will be populated after lesson 7 completion"
+    },
+    "lesson9": {
+      "status": "pending",
+      "note": "Will be populated after lesson 8 completion"
+    },
+    "lesson10": {
+      "status": "pending",
+      "note": "Will be populated after lesson 9 completion"
+    },
+    "lesson11": {
+      "status": "pending",
+      "note": "Will be populated after lesson 10 completion"
+    },
+    "lesson12": {
+      "status": "pending",
+      "note": "Will be populated after lesson 11 completion"
+    },
+    "lesson13": {
+      "status": "pending",
+      "note": "Will be populated after lesson 12 completion"
+    },
+    "lesson14": {
+      "status": "pending",
+      "note": "Will be populated after lesson 13 completion"
+    },
+    "lesson15": {
+      "status": "pending",
+      "note": "Will be populated after lesson 14 completion"
+    },
+    "lesson16": {
+      "status": "pending",
+      "note": "Will be populated after lesson 15 completion"
+    },
+    "lesson17": {
+      "status": "pending",
+      "note": "Will be populated after lesson 16 completion"
+    },
+    "lesson18": {
+      "status": "pending",
+      "note": "Will be populated after lesson 17 completion"
+    },
+    "lesson19": {
+      "status": "pending",
+      "note": "Will be populated after lesson 18 completion"
+    },
+    "lesson20": {
+      "status": "pending",
+      "note": "Will be populated after lesson 19 completion"
+    },
+    "lesson21": {
+      "status": "pending",
+      "note": "Will be populated after lesson 20 completion"
+    },
+    "lesson22": {
+      "status": "pending",
+      "note": "Will be populated after lesson 21 completion"
+    },
+    "lesson23": {
+      "status": "pending",
+      "note": "Will be populated after lesson 22 completion"
+    },
+    "lesson24": {
+      "status": "pending",
+      "note": "Will be populated after lesson 23 completion"
+    },
+    "lesson25": {
+      "status": "pending",
+      "note": "Will be populated after lesson 24 completion"
+    }
+  },
+  "implementation_notes": {
+    "sequential_playback": "Each audio segment plays German first, then Romanian",
+    "file_generation": "All audio files will be generated using ElevenLabs TTS",
+    "quality_settings": "High quality audio suitable for educational content",
+    "platform_compatibility": "Files optimized for both mobile and web platforms"
+  },
+  "progress_tracking": {
+    "completed_lessons": 0,
+    "total_lessons": 25,
+    "estimated_audio_files": "300-500 files total (12-20 per lesson)",
+    "last_updated": "[To be updated with each lesson completion]"
+  }
+}

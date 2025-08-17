@@ -940,6 +940,1376 @@ export const WordBuilder = ({ gameData, onComplete }) => {
   );
 };
 
+// ============= LESSON 1 SPECIFIC GAMES =============
+// Touch & Listen Game - Copiii ating imaginile pentru a auzi saluturile
+export const TouchAndListenGame = ({ gameData, onComplete }) => {
+  const [touchedItems, setTouchedItems] = React.useState([]);
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+  const [hasPlayed, setHasPlayed] = React.useState({});
+
+  // Game data structure for Touch & Listen
+  const items = gameData?.items || [
+    { id: 'bjorn', name: 'Björn', image: 'bjorn_waving', audio: 'hallo_ich_bin_bjorn' },
+    { id: 'emma', name: 'Emma', image: 'emma_smiling', audio: 'emma_greeting' },
+    { id: 'familie', name: 'Familie', image: 'bear_family', audio: 'die_familie' },
+    { id: 'kinder', name: 'Kinder', image: 'happy_children', audio: 'die_kinder' }
+  ];
+
+  const handleImageTouch = (item) => {
+    if (completed) return;
+
+    // Play audio for the touched item
+    playItemAudio(item);
+    
+    // Mark as touched if not already
+    if (!touchedItems.includes(item.id)) {
+      setTouchedItems(prev => [...prev, item.id]);
+      setScore(prev => prev + 25);
+      
+      // Show visual feedback
+      showTouchFeedback(item);
+    }
+  };
+
+  const playItemAudio = (item) => {
+    // Set as played to show animation
+    setHasPlayed(prev => ({ ...prev, [item.id]: true }));
+    
+    // Sequential German -> Romanian audio
+    AudioService.playSequential([
+      { file: `lesson1_${item.audio}_de.mp3`, language: 'de' },
+      { file: `lesson1_${item.audio}_ro.mp3`, language: 'ro' }
+    ]);
+    
+    // Reset animation after 2 seconds
+    setTimeout(() => {
+      setHasPlayed(prev => ({ ...prev, [item.id]: false }));
+    }, 2000);
+  };
+
+  const showTouchFeedback = (item) => {
+    // Visual feedback with stars and sound
+    // This would trigger star animation and celebration sound
+    console.log(`✨ Touched ${item.name}! Playing celebration.`);
+  };
+
+  React.useEffect(() => {
+    if (touchedItems.length === items.length && !completed) {
+      setCompleted(true);
+      setTimeout(() => {
+        Alert.alert(
+          '🎉 Wunderbar!',
+          `Ai atins toate imaginile și ai învățat saluturile!\nScor: ${score}/100`,
+          [
+            {
+              text: 'Continuă',
+              onPress: () => onComplete && onComplete(score)
+            }
+          ]
+        );
+      }, 1000);
+    }
+  }, [touchedItems, items.length, completed, score]);
+
+  return (
+    <View style={styles.gameContainer}>
+      {/* Björn's Header */}
+      <View style={styles.maxImageContainerLarge}>
+        <Image 
+          source={ImageService.getImage('bjorn')} 
+          style={styles.maxHeaderImageLarge}
+          resizeMode="contain"
+        />
+        <Text style={styles.gameTitleOverlay}>Touch & Listen Salutări!</Text>
+      </View>
+      
+      <View style={styles.scoreContainer}>
+        <Text style={styles.scoreText}>Scor: {score}</Text>
+        <Text style={styles.progressText}>{touchedItems.length}/{items.length}</Text>
+      </View>
+
+      <Text style={styles.instructions}>
+        Atinge imaginile pentru a auzi saluturile în germană și română!
+      </Text>
+      
+      <View style={styles.touchListenGrid}>
+        {items.map((item, index) => (
+          <TouchableOpacity 
+            key={item.id}
+            style={[
+              styles.touchListenItem,
+              touchedItems.includes(item.id) && styles.touchedItem,
+              hasPlayed[item.id] && styles.playingItem
+            ]}
+            onPress={() => handleImageTouch(item)}
+          >
+            <View style={styles.touchImageContainer}>
+              <Image 
+                source={ImageService.getImage(item.image)} 
+                style={styles.touchListenImage}
+                resizeMode="cover"
+              />
+              {touchedItems.includes(item.id) && (
+                <View style={styles.touchedOverlay}>
+                  <Text style={styles.touchedCheck}>✅</Text>
+                </View>
+              )}
+              {hasPlayed[item.id] && (
+                <View style={styles.playingOverlay}>
+                  <Text style={styles.soundWaves}>🔊</Text>
+                </View>
+              )}
+            </View>
+            <Text style={[
+              styles.touchItemName,
+              touchedItems.includes(item.id) && styles.touchedItemName
+            ]}>
+              {item.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Alle Bilder berührt!</Text>
+          <Text style={styles.completedSubtext}>Toate imaginile atinse!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// Drag & Match Voices Game - Copiii trag cuvintele audio pe personajele corespunzătoare
+export const DragMatchVoicesGame = ({ gameData, onComplete }) => {
+  const [selectedAudio, setSelectedAudio] = React.useState(null);
+  const [matches, setMatches] = React.useState([]);
+  const [attempts, setAttempts] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+  const [wrongAttempts, setWrongAttempts] = React.useState(0);
+
+  const audioButtons = gameData?.audioButtons || [
+    { id: 'hallo', text: 'Hallo!', audioFile: 'hallo', targetCharacter: 'bjorn' },
+    { id: 'danke', text: 'Danke!', audioFile: 'danke', targetCharacter: 'emma' },
+    { id: 'familie', text: 'Familie!', audioFile: 'familie', targetCharacter: 'family' },
+    { id: 'baer', text: 'Bär!', audioFile: 'baer', targetCharacter: 'bjorn' }
+  ];
+
+  const characters = gameData?.characters || [
+    { id: 'bjorn', name: 'Björn', image: 'bjorn_happy' },
+    { id: 'emma', name: 'Emma', image: 'emma_happy' },
+    { id: 'family', name: 'Familie', image: 'bear_family' }
+  ];
+
+  const handleAudioButtonPress = (audioButton) => {
+    // Play the audio
+    AudioService.playLesson1Vocabulary(audioButton.audioFile, 'de');
+    
+    // Select this audio button
+    setSelectedAudio(audioButton);
+  };
+
+  const handleCharacterDrop = (character) => {
+    if (!selectedAudio) {
+      Alert.alert('📢 Hint', 'Apasă mai întâi pe un buton audio!');
+      return;
+    }
+
+    if (matches.some(m => m.audioId === selectedAudio.id)) {
+      Alert.alert('✅ Deja făcut', 'Acest cuvânt a fost deja potrivit!');
+      return;
+    }
+
+    setAttempts(prev => prev + 1);
+
+    if (selectedAudio.targetCharacter === character.id) {
+      // Correct match!
+      setMatches(prev => [...prev, { 
+        audioId: selectedAudio.id, 
+        characterId: character.id,
+        correct: true 
+      }]);
+      setScore(prev => prev + 25);
+      
+      // Play success feedback
+      setTimeout(() => {
+        AudioService.playSequential([
+          { file: `lesson1_${selectedAudio.audioFile}_de.mp3`, language: 'de' },
+          { file: `lesson1_${selectedAudio.audioFile}_ro.mp3`, language: 'ro' }
+        ]);
+      }, 300);
+      
+      Alert.alert('🎉 Richtig!', `${selectedAudio.text} gehört zu ${character.name}!`);
+    } else {
+      // Wrong match
+      setWrongAttempts(prev => prev + 1);
+      
+      Alert.alert('❌ Probier nochmal!', 'Das ist nicht die richtige Kombination.');
+      
+      // Show visual guidance after 3 wrong attempts
+      if (wrongAttempts >= 2) {
+        setTimeout(() => {
+          showVisualGuidance();
+        }, 1500);
+      }
+    }
+
+    setSelectedAudio(null);
+  };
+
+  const showVisualGuidance = () => {
+    Alert.alert(
+      '💡 Hilfe',
+      'Schau genau hin! Hallo sagt Björn, Familie ist die ganze Familie zusammen!',
+      [{ text: 'Verstanden!' }]
+    );
+  };
+
+  React.useEffect(() => {
+    if (matches.length === audioButtons.length && !completed) {
+      setCompleted(true);
+      setTimeout(() => {
+        Alert.alert(
+          '🎉 Ausgezeichnet!',
+          `Alle Stimmen richtig zugeordnet!\nScor: ${score}/100`,
+          [
+            {
+              text: 'Weiter',
+              onPress: () => onComplete && onComplete(score)
+            }
+          ]
+        );
+      }, 1000);
+    }
+  }, [matches, audioButtons.length, completed, score]);
+
+  const isAudioMatched = (audioId) => matches.some(m => m.audioId === audioId);
+  const isCharacterMatched = (characterId) => matches.some(m => m.characterId === characterId);
+
+  return (
+    <View style={styles.gameContainer}>
+      {/* Emma's Header */}
+      <View style={styles.maxImageContainerLarge}>
+        <Image 
+          source={ImageService.getImage('emma')} 
+          style={styles.maxHeaderImageLarge}
+          resizeMode="contain"
+        />
+        <Text style={styles.gameTitleOverlay}>Drag & Match Voices!</Text>
+      </View>
+      
+      <View style={styles.scoreContainer}>
+        <Text style={styles.scoreText}>Scor: {score}</Text>
+        <Text style={styles.progressText}>{matches.length}/{audioButtons.length}</Text>
+      </View>
+
+      <Text style={styles.instructions}>
+        Apasă pe butonul audio, apoi pe personajul potrivit!
+      </Text>
+      
+      {/* Audio Buttons Section */}
+      <View style={styles.audioButtonsSection}>
+        <Text style={styles.sectionTitle}>🔊 Audio Buttons:</Text>
+        <View style={styles.audioButtonsRow}>
+          {audioButtons.map((audioButton) => (
+            <TouchableOpacity 
+              key={audioButton.id}
+              style={[
+                styles.audioButton,
+                selectedAudio?.id === audioButton.id && styles.selectedAudioButton,
+                isAudioMatched(audioButton.id) && styles.matchedAudioButton
+              ]}
+              onPress={() => handleAudioButtonPress(audioButton)}
+              disabled={isAudioMatched(audioButton.id)}
+            >
+              <Text style={styles.audioButtonText}>{audioButton.text}</Text>
+              {isAudioMatched(audioButton.id) && (
+                <Text style={styles.audioButtonCheck}>✅</Text>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Characters Drop Zone */}
+      <View style={styles.charactersSection}>
+        <Text style={styles.sectionTitle}>👥 Personaje:</Text>
+        <View style={styles.charactersRow}>
+          {characters.map((character) => (
+            <TouchableOpacity 
+              key={character.id}
+              style={[
+                styles.characterDropZone,
+                isCharacterMatched(character.id) && styles.matchedCharacterZone
+              ]}
+              onPress={() => handleCharacterDrop(character)}
+              disabled={isCharacterMatched(character.id)}
+            >
+              <Image 
+                source={ImageService.getImage(character.image)} 
+                style={styles.characterImage}
+                resizeMode="cover"
+              />
+              <Text style={styles.characterName}>{character.name}</Text>
+              {isCharacterMatched(character.id) && (
+                <View style={styles.characterCheckOverlay}>
+                  <Text style={styles.characterCheck}>✅</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Selected Audio Indicator */}
+      {selectedAudio && (
+        <View style={styles.selectedAudioIndicator}>
+          <Text style={styles.selectedAudioText}>
+            Selectat: {selectedAudio.text} 🎵
+          </Text>
+        </View>
+      )}
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Alle Stimmen zugeordnet!</Text>
+          <Text style={styles.completedSubtext}>Toate vocile potrivite!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// Simon Says German Game - Björn dă instrucțiuni audio, copiii ating imaginea corectă
+export const SimonSaysGame = ({ gameData, onComplete }) => {
+  const [currentRound, setCurrentRound] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [timeLeft, setTimeLeft] = React.useState(5);
+  const [isListening, setIsListening] = React.useState(false);
+  const [showImages, setShowImages] = React.useState(false);
+  const [completed, setCompleted] = React.useState(false);
+  const [currentImages, setCurrentImages] = React.useState([]);
+
+  const rounds = gameData?.rounds || [
+    { 
+      command: 'Zeig mir... Hallo!', 
+      correctImage: 'hand_waving', 
+      images: ['hand_waving', 'bear_family', 'house'],
+      audio: 'show_hallo'
+    },
+    { 
+      command: 'Zeig mir... Familie!', 
+      correctImage: 'bear_family', 
+      images: ['hand_waving', 'bear_family', 'children_playing'],
+      audio: 'show_familie'
+    },
+    { 
+      command: 'Zeig mir... Bär!', 
+      correctImage: 'bjorn_standing', 
+      images: ['emma_duck', 'bjorn_standing', 'children_group'],
+      audio: 'show_baer'
+    }
+  ];
+
+  const totalRounds = rounds.length;
+  const currentRoundData = rounds[currentRound];
+
+  // Timer countdown
+  React.useEffect(() => {
+    let interval;
+    if (showImages && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && showImages) {
+      // Time's up!
+      handleTimeout();
+    }
+    return () => clearInterval(interval);
+  }, [showImages, timeLeft]);
+
+  const startRound = () => {
+    if (currentRound >= totalRounds) return;
+    
+    setIsListening(true);
+    setShowImages(false);
+    setTimeLeft(5);
+    
+    // Shuffle images for this round
+    const shuffledImages = [...currentRoundData.images].sort(() => Math.random() - 0.5);
+    setCurrentImages(shuffledImages);
+    
+    // Björn speaks the command
+    setTimeout(() => {
+      AudioService.playLesson1Game(3, currentRoundData.audio, 'de');
+    }, 500);
+    
+    // Show images after 2 seconds
+    setTimeout(() => {
+      setIsListening(false);
+      setShowImages(true);
+    }, 2500);
+  };
+
+  const handleImageSelect = (selectedImage) => {
+    if (!showImages || completed) return;
+    
+    setShowImages(false);
+    
+    if (selectedImage === currentRoundData.correctImage) {
+      // Correct answer!
+      const timeBonus = timeLeft * 2;
+      const roundScore = 20 + timeBonus;
+      setScore(prev => prev + roundScore);
+      
+      Alert.alert(
+        '🎉 Sehr gut!', 
+        `Richtige Antwort!\nZeit-Bonus: +${timeBonus}\nRunden-Punkte: ${roundScore}`,
+        [
+          {
+            text: 'Weiter',
+            onPress: () => nextRound()
+          }
+        ]
+      );
+    } else {
+      // Wrong answer
+      Alert.alert(
+        '❌ Nicht richtig!', 
+        'Das war nicht das richtige Bild. Versuch es nochmal!',
+        [
+          {
+            text: 'OK',
+            onPress: () => nextRound()
+          }
+        ]
+      );
+    }
+  };
+
+  const handleTimeout = () => {
+    Alert.alert(
+      '⏰ Zeit ist um!', 
+      'Du warst zu langsam. Björn wartet auf dich!',
+      [
+        {
+          text: 'Nächste Runde',
+          onPress: () => nextRound()
+        }
+      ]
+    );
+  };
+
+  const nextRound = () => {
+    if (currentRound < totalRounds - 1) {
+      setCurrentRound(prev => prev + 1);
+      // Auto-start next round after 1 second
+      setTimeout(() => {
+        startRound();
+      }, 1000);
+    } else {
+      // Game completed
+      setCompleted(true);
+      const finalScore = Math.max(30, score);
+      setTimeout(() => {
+        Alert.alert(
+          '🎉 Simon Says beendet!',
+          `Alle Runden gespielt!\nFinal-Punkte: ${finalScore}/100`,
+          [
+            {
+              text: 'Fertig',
+              onPress: () => onComplete && onComplete(finalScore)
+            }
+          ]
+        );
+      }, 1000);
+    }
+  };
+
+  // Auto-start first round
+  React.useEffect(() => {
+    if (currentRound === 0 && !isListening && !showImages) {
+      setTimeout(() => {
+        startRound();
+      }, 1000);
+    }
+  }, []);
+
+  return (
+    <View style={styles.gameContainer}>
+      {/* Björn's Header */}
+      <View style={styles.maxImageContainerLarge}>
+        <Image 
+          source={ImageService.getImage('bjorn')} 
+          style={styles.maxHeaderImageLarge}
+          resizeMode="contain"
+        />
+        <Text style={styles.gameTitleOverlay}>Simon Says German!</Text>
+      </View>
+      
+      <View style={styles.scoreContainer}>
+        <Text style={styles.scoreText}>Scor: {score}</Text>
+        <Text style={styles.progressText}>Runda: {currentRound + 1}/{totalRounds}</Text>
+      </View>
+
+      {/* Game Status */}
+      <View style={styles.simonStatusContainer}>
+        {isListening && (
+          <View style={styles.listeningIndicator}>
+            <Text style={styles.listeningText}>🐻 Björn spricht...</Text>
+            <Text style={styles.commandText}>{currentRoundData?.command}</Text>
+          </View>
+        )}
+        
+        {showImages && (
+          <View style={styles.timerContainer}>
+            <Text style={styles.timerText}>⏰ Zeit: {timeLeft}s</Text>
+            <View style={styles.timerBar}>
+              <View style={[
+                styles.timerProgress, 
+                { width: `${(timeLeft / 5) * 100}%` }
+              ]} />
+            </View>
+          </View>
+        )}
+      </View>
+
+      {showImages && (
+        <View style={styles.simonImagesContainer}>
+          <Text style={styles.simonInstructions}>
+            Wähle das richtige Bild schnell aus!
+          </Text>
+          <View style={styles.simonImagesGrid}>
+            {currentImages.map((image, index) => (
+              <TouchableOpacity 
+                key={index}
+                style={styles.simonImageButton}
+                onPress={() => handleImageSelect(image)}
+              >
+                <Image 
+                  source={ImageService.getImage(image)} 
+                  style={styles.simonImage}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {!isListening && !showImages && !completed && (
+        <View style={styles.waitingContainer}>
+          <Text style={styles.waitingText}>Bereit für die nächste Runde...</Text>
+        </View>
+      )}
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Simon Says geschafft!</Text>
+          <Text style={styles.completedSubtext}>Ai terminat cu Björn!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 2 - FAMILY TREE BUILDER GAME
+// ===============================
+export const FamilyTreeBuilderGame = ({ gameData, onComplete }) => {
+  const [familyTree, setFamilyTree] = React.useState({
+    papa: null,
+    mama: null,
+    bjorn: null,
+    anna: null
+  });
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+  const [selectedMember, setSelectedMember] = React.useState(null);
+
+  const familyMembers = gameData?.familyMembers || [
+    { id: 'papa_bear', name: 'Papa Bär', image: 'papa_bear', slot: 'papa' },
+    { id: 'mama_bear', name: 'Mama Bär', image: 'mama_bear', slot: 'mama' },
+    { id: 'bjorn_bear', name: 'Björn', image: 'bjorn_happy', slot: 'bjorn' },
+    { id: 'anna_bear', name: 'Anna', image: 'anna_bear', slot: 'anna' }
+  ];
+
+  const handleMemberSelect = (member) => {
+    if (selectedMember && selectedMember.id === member.id) {
+      setSelectedMember(null);
+    } else {
+      setSelectedMember(member);
+    }
+  };
+
+  const handleSlotSelect = (slotId) => {
+    if (selectedMember) {
+      setFamilyTree(prev => ({
+        ...prev,
+        [slotId]: selectedMember
+      }));
+      
+      setScore(prev => prev + 25);
+      
+      // Play feedback audio
+      AudioService.playLesson2Game('family_placed', 'de');
+      
+      setSelectedMember(null);
+
+      // Check if tree is complete
+      const newTree = { ...familyTree, [slotId]: selectedMember };
+      if (Object.values(newTree).every(member => member !== null)) {
+        setTimeout(() => {
+          setCompleted(true);
+          onComplete?.(100);
+        }, 1000);
+      }
+    }
+  };
+
+  const availableMembers = familyMembers.filter(
+    member => !Object.values(familyTree).find(placed => placed?.id === member.id)
+  );
+
+  return (
+    <View style={styles.familyTreeContainer}>
+      <Text style={styles.familyTreeTitle}>Construiește Arborele Familiei! 🌳</Text>
+      
+      <ScrollView style={styles.familyTreeArea}>
+        {/* Parents Row */}
+        <View style={styles.familyTreeRow}>
+          <TouchableOpacity 
+            style={[styles.familyMemberSlot, familyTree.papa && styles.familyMemberSlotFilled]}
+            onPress={() => handleSlotSelect('papa')}
+          >
+            {familyTree.papa ? (
+              <>
+                <Image 
+                  source={ImageService.getImage(familyTree.papa.image)}
+                  style={styles.familyMemberImage}
+                />
+                <Text style={styles.familyMemberName}>{familyTree.papa.name}</Text>
+              </>
+            ) : (
+              <Text style={styles.familyMemberName}>Papa</Text>
+            )}
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.familyMemberSlot, familyTree.mama && styles.familyMemberSlotFilled]}
+            onPress={() => handleSlotSelect('mama')}
+          >
+            {familyTree.mama ? (
+              <>
+                <Image 
+                  source={ImageService.getImage(familyTree.mama.image)}
+                  style={styles.familyMemberImage}
+                />
+                <Text style={styles.familyMemberName}>{familyTree.mama.name}</Text>
+              </>
+            ) : (
+              <Text style={styles.familyMemberName}>Mama</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        {/* Children Row */}
+        <View style={styles.familyTreeRow}>
+          <TouchableOpacity 
+            style={[styles.familyMemberSlot, familyTree.bjorn && styles.familyMemberSlotFilled]}
+            onPress={() => handleSlotSelect('bjorn')}
+          >
+            {familyTree.bjorn ? (
+              <>
+                <Image 
+                  source={ImageService.getImage(familyTree.bjorn.image)}
+                  style={styles.familyMemberImage}
+                />
+                <Text style={styles.familyMemberName}>{familyTree.bjorn.name}</Text>
+              </>
+            ) : (
+              <Text style={styles.familyMemberName}>Björn</Text>
+            )}
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.familyMemberSlot, familyTree.anna && styles.familyMemberSlotFilled]}
+            onPress={() => handleSlotSelect('anna')}
+          >
+            {familyTree.anna ? (
+              <>
+                <Image 
+                  source={ImageService.getImage(familyTree.anna.image)}
+                  style={styles.familyMemberImage}
+                />
+                <Text style={styles.familyMemberName}>{familyTree.anna.name}</Text>
+              </>
+            ) : (
+              <Text style={styles.familyMemberName}>Anna</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      {/* Available Family Members Pool */}
+      <View style={styles.familyMembersPool}>
+        {availableMembers.map((member) => (
+          <TouchableOpacity
+            key={member.id}
+            style={[
+              styles.familyMemberCard,
+              selectedMember?.id === member.id && { backgroundColor: '#FFF3CD' }
+            ]}
+            onPress={() => handleMemberSelect(member)}
+          >
+            <Image 
+              source={ImageService.getImage(member.image)}
+              style={styles.familyMemberCardImage}
+            />
+            <Text style={styles.familyMemberCardName}>{member.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Familie completă!</Text>
+          <Text style={styles.completedSubtext}>Arbore familiar perfect!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 2 - VOICE MATCHING PAIRS GAME  
+// ===============================
+export const VoiceMatchingPairsGame = ({ gameData, onComplete }) => {
+  const [selectedVoice, setSelectedVoice] = React.useState(null);
+  const [selectedCharacter, setSelectedCharacter] = React.useState(null);
+  const [matches, setMatches] = React.useState([]);
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+
+  const voicePairs = gameData?.voicePairs || [
+    { id: 'papa_voice', audioFile: 'papa_voice', character: 'papa_bear', feedback: 'Das ist Papa Bärs Stimme!' },
+    { id: 'mama_voice', audioFile: 'mama_voice', character: 'mama_bear', feedback: 'Das ist Mama Bärs Stimme!' },
+    { id: 'bjorn_voice', audioFile: 'bjorn_voice', character: 'bjorn_happy', feedback: 'Das ist Björns Stimme!' },
+    { id: 'anna_voice', audioFile: 'anna_voice', character: 'anna_bear', feedback: 'Das ist Annas Stimme!' }
+  ];
+
+  const characters = gameData?.characters || [
+    { id: 'papa_bear', name: 'Papa Bär', image: 'papa_bear' },
+    { id: 'mama_bear', name: 'Mama Bär', image: 'mama_bear' },
+    { id: 'bjorn_happy', name: 'Björn', image: 'bjorn_happy' },
+    { id: 'anna_bear', name: 'Anna', image: 'anna_bear' }
+  ];
+
+  const handleVoiceSelect = (voice) => {
+    setSelectedVoice(voice);
+    // Play voice audio
+    AudioService.playLesson2Game(voice.audioFile, 'de');
+  };
+
+  const handleCharacterSelect = (character) => {
+    if (selectedVoice) {
+      const isCorrectMatch = selectedVoice.character === character.id;
+      
+      if (isCorrectMatch) {
+        setMatches(prev => [...prev, { voice: selectedVoice, character: character }]);
+        setScore(prev => prev + 25);
+        
+        // Play success feedback
+        AudioService.playLesson2Game('correct_match', 'de');
+        
+        if (matches.length + 1 >= voicePairs.length) {
+          setTimeout(() => {
+            setCompleted(true);
+            onComplete?.(100);
+          }, 1000);
+        }
+      } else {
+        // Wrong match feedback
+        AudioService.playLesson2Game('wrong_match', 'de');
+      }
+      
+      setSelectedVoice(null);
+      setSelectedCharacter(null);
+    }
+  };
+
+  const isVoiceMatched = (voiceId) => {
+    return matches.find(match => match.voice.id === voiceId);
+  };
+
+  const isCharacterMatched = (characterId) => {
+    return matches.find(match => match.character.id === characterId);
+  };
+
+  return (
+    <View style={styles.voiceMatchingContainer}>
+      <Text style={styles.voiceMatchingTitle}>Potrivește Vocile cu Personajele! 🎵</Text>
+      
+      {/* Voice Buttons */}
+      <View style={styles.voicesRow}>
+        {voicePairs.map((voice) => (
+          <TouchableOpacity
+            key={voice.id}
+            style={[
+              styles.voiceButton,
+              selectedVoice?.id === voice.id && styles.voiceButtonSelected,
+              isVoiceMatched(voice.id) && styles.voiceButtonMatched
+            ]}
+            onPress={() => !isVoiceMatched(voice.id) && handleVoiceSelect(voice)}
+            disabled={isVoiceMatched(voice.id)}
+          >
+            <Text style={styles.voiceIcon}>🎵</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Character Cards */}
+      <View style={styles.charactersRow}>
+        {characters.map((character) => (
+          <TouchableOpacity
+            key={character.id}
+            style={[
+              styles.characterCard,
+              selectedCharacter?.id === character.id && styles.characterCardSelected,
+              isCharacterMatched(character.id) && styles.characterCardMatched
+            ]}
+            onPress={() => handleCharacterSelect(character)}
+            disabled={isCharacterMatched(character.id)}
+          >
+            <Image 
+              source={ImageService.getImage(character.image)}
+              style={styles.characterImage}
+            />
+            <Text style={styles.characterName}>{character.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {selectedVoice && (
+        <Text style={styles.instructionText}>
+          Acum selectează personajul care are această voce! 👆
+        </Text>
+      )}
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Vocile potrivite!</Text>
+          <Text style={styles.completedSubtext}>Excelent ureche muzicală!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 2 - CHARACTER EMOTION READER GAME
+// ===============================
+export const CharacterEmotionReaderGame = ({ gameData, onComplete }) => {
+  const [currentScene, setCurrentScene] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [selectedEmotion, setSelectedEmotion] = React.useState(null);
+  const [answered, setAnswered] = React.useState(false);
+  const [completed, setCompleted] = React.useState(false);
+
+  const emotionScenes = gameData?.emotionScenes || [
+    {
+      image: 'bjorn_happy',
+      text: 'Björn zâmbește larg și pare foarte fericit să-și prezinte familia.',
+      correctEmotion: 'happy',
+      options: ['happy', 'sad', 'angry', 'surprised']
+    },
+    {
+      image: 'emma_excited',
+      text: 'Emma bate din aripi de bucurie când vede familia frumoasă.',
+      correctEmotion: 'excited',
+      options: ['excited', 'tired', 'confused', 'scared']
+    },
+    {
+      image: 'anna_shy',
+      text: 'Anna se ascunde în spatele mamei când vede vizitatorii.',
+      correctEmotion: 'shy',
+      options: ['shy', 'angry', 'happy', 'sleepy']
+    }
+  ];
+
+  const emotionEmojis = {
+    happy: '😊',
+    sad: '😢',
+    angry: '😠',
+    surprised: '😲',
+    excited: '🤗',
+    tired: '😴',
+    confused: '😕',
+    scared: '😨',
+    shy: '😳',
+    sleepy: '😴'
+  };
+
+  const emotionLabels = {
+    happy: 'Fericit',
+    sad: 'Trist',
+    angry: 'Supărat',
+    surprised: 'Surprins',
+    excited: 'Entuziasmat',
+    tired: 'Obosit',
+    confused: 'Confuz',
+    scared: 'Speriat',
+    shy: 'Timid',
+    sleepy: 'Somnoros'
+  };
+
+  const currentSceneData = emotionScenes[currentScene];
+
+  const handleEmotionSelect = (emotion) => {
+    if (answered) return;
+    
+    setSelectedEmotion(emotion);
+    setAnswered(true);
+    
+    const isCorrect = emotion === currentSceneData.correctEmotion;
+    
+    if (isCorrect) {
+      setScore(prev => prev + Math.round(100 / emotionScenes.length));
+      AudioService.playLesson2Game('emotion_correct', 'de');
+    } else {
+      AudioService.playLesson2Game('emotion_wrong', 'de');
+    }
+    
+    setTimeout(() => {
+      if (currentScene < emotionScenes.length - 1) {
+        setCurrentScene(prev => prev + 1);
+        setSelectedEmotion(null);
+        setAnswered(false);
+      } else {
+        setCompleted(true);
+        onComplete?.(score);
+      }
+    }, 2000);
+  };
+
+  return (
+    <View style={styles.emotionReaderContainer}>
+      <Text style={styles.emotionReaderTitle}>Citește Emoțiile Personajelor! 😊</Text>
+      
+      <View style={styles.storySceneContainer}>
+        <Image 
+          source={ImageService.getImage(currentSceneData.image)}
+          style={styles.sceneImage}
+        />
+        <Text style={styles.sceneText}>{currentSceneData.text}</Text>
+      </View>
+
+      <View style={styles.emotionOptionsContainer}>
+        {currentSceneData.options.map((emotion) => (
+          <TouchableOpacity
+            key={emotion}
+            style={[
+              styles.emotionOption,
+              selectedEmotion === emotion && styles.emotionOptionSelected,
+              answered && emotion === currentSceneData.correctEmotion && styles.emotionOptionCorrect,
+              answered && selectedEmotion === emotion && emotion !== currentSceneData.correctEmotion && styles.emotionOptionWrong
+            ]}
+            onPress={() => handleEmotionSelect(emotion)}
+            disabled={answered}
+          >
+            <Text style={styles.emotionEmoji}>{emotionEmojis[emotion]}</Text>
+            <Text style={styles.emotionLabel}>{emotionLabels[emotion]}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <Text style={styles.progressText}>
+        Scena {currentScene + 1} din {emotionScenes.length}
+      </Text>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Emoții citite perfect!</Text>
+          <Text style={styles.completedSubtext}>Ești un expert în emoții!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 3 - HOUSE TOUR ADVENTURE GAME
+// ===============================
+export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
+  console.log('🏠 HouseTourAdventureGame rendering with data:', gameData);
+  
+  const [currentRoom, setCurrentRoom] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [isZoomed, setIsZoomed] = React.useState(false);
+  const [completed, setCompleted] = React.useState(false);
+  const [bjornSpeaking, setBjornSpeaking] = React.useState(false);
+
+  const rooms = gameData?.rooms || [
+    { id: 'wohnzimmer', name: 'das Wohnzimmer', german: 'Hier ist das Wohnzimmer!', romanian: 'Aici este camera de zi!', image: 'living_room_scene' },
+    { id: 'küche', name: 'die Küche', german: 'Das ist die Küche!', romanian: 'Aceasta este bucătăria!', image: 'kitchen_scene' },
+    { id: 'schlafzimmer', name: 'das Schlafzimmer', german: 'Hier sind die Schlafzimmer!', romanian: 'Aici sunt dormitoarele!', image: 'bedroom_scene' },
+    { id: 'bjorn_zimmer', name: 'mein Zimmer', german: 'Das ist mein Zimmer!', romanian: 'Aceasta este camera mea!', image: 'castle_scenes_combined' }
+  ];
+  
+  console.log('🏠 Rooms data:', rooms);
+  console.log('🏠 Current room data:', rooms[currentRoom]);
+
+  const currentRoomData = rooms[currentRoom];
+
+  const handleRoomTouch = (roomId) => {
+    if (roomId === currentRoomData.id) {
+      setScore(prev => prev + 25);
+      setIsZoomed(true);
+      setBjornSpeaking(true);
+      
+      // Play Björn's explanation
+      AudioService.playLesson3Game(currentRoomData.id, 'de');
+      
+      setTimeout(() => {
+        setIsZoomed(false);
+        setBjornSpeaking(false);
+        
+        if (currentRoom < rooms.length - 1) {
+          setCurrentRoom(prev => prev + 1);
+        } else {
+          setCompleted(true);
+          onComplete?.(100);
+        }
+      }, 3000);
+    }
+  };
+
+  console.log('🏠 About to render HouseTourAdventureGame UI');
+  
+  return (
+    <View style={styles.houseTourContainer}>
+      <Text style={styles.houseTourTitle}>Tur prin Casa lui Björn! 🏠</Text>
+      
+      {!isZoomed ? (
+        <View style={styles.houseContainer}>
+          <Image 
+            source={ImageService.getImage('house_cross_section')}
+            style={styles.houseImage}
+          />
+          
+          {/* Interactive room hotspots */}
+          <TouchableOpacity 
+            style={[styles.roomHotspot, styles.livingRoomHotspot]}
+            onPress={() => handleRoomTouch('wohnzimmer')}
+          >
+            <Text style={styles.roomLabel}>Living</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.roomHotspot, styles.kitchenHotspot]}
+            onPress={() => handleRoomTouch('küche')}
+          >
+            <Text style={styles.roomLabel}>Küche</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.roomHotspot, styles.bedroomHotspot]}
+            onPress={() => handleRoomTouch('schlafzimmer')}
+          >
+            <Text style={styles.roomLabel}>Zimmer</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.roomHotspot, styles.bjornRoomHotspot]}
+            onPress={() => handleRoomTouch('bjorn_zimmer')}
+          >
+            <Text style={styles.roomLabel}>Björn</Text>
+          </TouchableOpacity>
+          
+          {/* Björn guide character */}
+          <View style={styles.bjornGuide}>
+            <Image 
+              source={ImageService.getImage('bjorn_pointing')}
+              style={styles.bjornGuideImage}
+            />
+            <Text style={styles.bjornSpeech}>{currentRoomData.german}</Text>
+          </View>
+        </View>
+      ) : (
+        <View style={styles.roomZoomContainer}>
+          <Image 
+            source={ImageService.getImage(currentRoomData.image)}
+            style={styles.zoomedRoomImage}
+          />
+          <Text style={styles.roomDescription}>{currentRoomData.romanian}</Text>
+        </View>
+      )}
+
+      <Text style={styles.progressText}>
+        Camera {currentRoom + 1} din {rooms.length}
+      </Text>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🏠 Tur complet!</Text>
+          <Text style={styles.completedSubtext}>Acum cunoști toată casa!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 3 - ROOM SOUND MATCH GAME
+// ===============================
+export const RoomSoundMatchGame = ({ gameData, onComplete }) => {
+  const [currentRound, setCurrentRound] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [selectedRoom, setSelectedRoom] = React.useState(null);
+  const [showHint, setShowHint] = React.useState(false);
+  const [completed, setCompleted] = React.useState(false);
+
+  const soundRounds = gameData?.soundRounds || [
+    { 
+      sound: 'kitchen_cooking', 
+      correctRoom: 'küche', 
+      rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+      description: 'Țăcăitul din bucătărie'
+    },
+    { 
+      sound: 'tv_sounds', 
+      correctRoom: 'wohnzimmer', 
+      rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+      description: 'Sunetul TV-ului'
+    },
+    { 
+      sound: 'bed_creaking', 
+      correctRoom: 'schlafzimmer', 
+      rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+      description: 'Scârțâitul patului'
+    },
+    { 
+      sound: 'toys_playing', 
+      correctRoom: 'bjorn_zimmer', 
+      rooms: ['bjorn_zimmer', 'wohnzimmer', 'küche'],
+      description: 'Jucării în cameră'
+    }
+  ];
+
+  const currentRoundData = soundRounds[currentRound];
+
+  const playRoundSound = () => {
+    AudioService.playLesson3Game(currentRoundData.sound, 'sound');
+    setShowHint(true);
+    setTimeout(() => setShowHint(false), 2000);
+  };
+
+  const handleRoomSelect = (roomId) => {
+    setSelectedRoom(roomId);
+    
+    if (roomId === currentRoundData.correctRoom) {
+      setScore(prev => prev + 25);
+      AudioService.playLesson3Game('correct_room', 'de');
+      
+      setTimeout(() => {
+        if (currentRound < soundRounds.length - 1) {
+          setCurrentRound(prev => prev + 1);
+          setSelectedRoom(null);
+        } else {
+          setCompleted(true);
+          onComplete?.(100);
+        }
+      }, 1500);
+    } else {
+      AudioService.playLesson3Game('wrong_room', 'de');
+      setTimeout(() => setSelectedRoom(null), 1000);
+    }
+  };
+
+  return (
+    <View style={styles.roomSoundContainer}>
+      <Text style={styles.roomSoundTitle}>Ghicește Camera după Sunete! 🔊</Text>
+      
+      <TouchableOpacity 
+        style={styles.soundPlayButton}
+        onPress={playRoundSound}
+      >
+        <Text style={styles.soundPlayIcon}>🔊</Text>
+        <Text style={styles.soundPlayText}>Ascultă sunetul</Text>
+      </TouchableOpacity>
+
+      {showHint && (
+        <View style={styles.soundWaveContainer}>
+          <Text style={styles.soundWaveText}>🌊 {currentRoundData.description}</Text>
+        </View>
+      )}
+
+      <View style={styles.roomChoicesContainer}>
+        {currentRoundData.rooms.map((roomId) => (
+          <TouchableOpacity
+            key={roomId}
+            style={[
+              styles.roomChoice,
+              selectedRoom === roomId && styles.roomChoiceSelected,
+              selectedRoom === roomId && roomId === currentRoundData.correctRoom && styles.roomChoiceCorrect,
+              selectedRoom === roomId && roomId !== currentRoundData.correctRoom && styles.roomChoiceWrong
+            ]}
+            onPress={() => handleRoomSelect(roomId)}
+            disabled={selectedRoom !== null}
+          >
+            <Image 
+              source={ImageService.getImage(`${roomId}_icon`)}
+              style={styles.roomChoiceImage}
+            />
+            <Text style={styles.roomChoiceName}>
+              {roomId === 'küche' ? 'Bucătăria' : 
+               roomId === 'wohnzimmer' ? 'Living-ul' : 
+               roomId === 'schlafzimmer' ? 'Dormitorul' : 
+               'Camera lui Björn'}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <Text style={styles.progressText}>
+        Runda {currentRound + 1} din {soundRounds.length}
+      </Text>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎵 Ureche muzicală perfectă!</Text>
+          <Text style={styles.completedSubtext}>Cunoști toate sunetele casei!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 3 - DRAG OBJECTS HOME GAME
+// ===============================
+export const DragObjectsHomeGame = ({ gameData, onComplete }) => {
+  const [placedObjects, setPlacedObjects] = React.useState([]);
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+  const [selectedObject, setSelectedObject] = React.useState(null);
+
+  const furniture = gameData?.furniture || [
+    { id: 'bed', name: 'das Bett', image: 'bed_furniture', correctRoom: 'schlafzimmer', germanRoom: 'ins Schlafzimmer' },
+    { id: 'stove', name: 'der Herd', image: 'stove_furniture', correctRoom: 'küche', germanRoom: 'in die Küche' },
+    { id: 'sofa', name: 'das Sofa', image: 'sofa_furniture', correctRoom: 'wohnzimmer', germanRoom: 'ins Wohnzimmer' },
+    { id: 'desk', name: 'der Schreibtisch', image: 'desk_furniture', correctRoom: 'bjorn_zimmer', germanRoom: 'in mein Zimmer' },
+    { id: 'table', name: 'der Tisch', image: 'dining_table', correctRoom: 'küche', germanRoom: 'in die Küche' },
+    { id: 'wardrobe', name: 'der Kleiderschrank', image: 'wardrobe_furniture', correctRoom: 'schlafzimmer', germanRoom: 'ins Schlafzimmer' },
+    { id: 'bookshelf', name: 'das Bücherregal', image: 'bookshelf_furniture', correctRoom: 'bjorn_zimmer', germanRoom: 'in mein Zimmer' },
+    { id: 'refrigerator', name: 'der Kühlschrank', image: 'fridge_furniture', correctRoom: 'küche', germanRoom: 'in die Küche' }
+  ];
+
+  const rooms = [
+    { id: 'wohnzimmer', name: 'Wohnzimmer', color: '#FFE4B5' },
+    { id: 'küche', name: 'Küche', color: '#E6F3FF' },
+    { id: 'schlafzimmer', name: 'Schlafzimmer', color: '#F0E6FF' },
+    { id: 'bjorn_zimmer', name: 'Björns Zimmer', color: '#E6FFE6' }
+  ];
+
+  const handleObjectSelect = (furnitureItem) => {
+    setSelectedObject(furnitureItem);
+    // Play object name
+    AudioService.playLesson3Game(furnitureItem.id, 'de');
+  };
+
+  const handleRoomDrop = (roomId) => {
+    if (selectedObject && selectedObject.correctRoom === roomId) {
+      setPlacedObjects(prev => [...prev, selectedObject.id]);
+      setScore(prev => prev + Math.round(100 / furniture.length));
+      
+      // Play success audio
+      AudioService.playLesson3Game(`${selectedObject.id}_placed`, 'de');
+      
+      setSelectedObject(null);
+      
+      if (placedObjects.length + 1 >= furniture.length) {
+        setTimeout(() => {
+          setCompleted(true);
+          onComplete?.(100);
+        }, 1000);
+      }
+    } else if (selectedObject) {
+      // Wrong room
+      AudioService.playLesson3Game('wrong_room_drop', 'de');
+      setSelectedObject(null);
+    }
+  };
+
+  const availableFurniture = furniture.filter(item => !placedObjects.includes(item.id));
+
+  return (
+    <View style={styles.dragObjectsContainer}>
+      <Text style={styles.dragObjectsTitle}>Pune Obiectele la Locul Lor! 🏠</Text>
+      
+      {/* House with room zones */}
+      <View style={styles.houseDropZones}>
+        {rooms.map((room) => (
+          <TouchableOpacity
+            key={room.id}
+            style={[
+              styles.roomDropZone,
+              { backgroundColor: room.color }
+            ]}
+            onPress={() => handleRoomDrop(room.id)}
+          >
+            <Text style={styles.roomDropName}>{room.name}</Text>
+            <Text style={styles.roomDropCount}>
+              {placedObjects.filter(objId => 
+                furniture.find(f => f.id === objId)?.correctRoom === room.id
+              ).length} obiecte
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Available furniture */}
+      <View style={styles.furniturePool}>
+        {availableFurniture.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={[
+              styles.furnitureItem,
+              selectedObject?.id === item.id && styles.furnitureItemSelected
+            ]}
+            onPress={() => handleObjectSelect(item)}
+          >
+            <Image 
+              source={ImageService.getImage(item.image)}
+              style={styles.furnitureImage}
+            />
+            <Text style={styles.furnitureName}>{item.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {selectedObject && (
+        <Text style={styles.instructionText}>
+          Atinge camera potrivită pentru {selectedObject.name}!
+        </Text>
+      )}
+
+      <Text style={styles.progressText}>
+        {placedObjects.length} din {furniture.length} obiecte plasate
+      </Text>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Casa este complet mobilată!</Text>
+          <Text style={styles.completedSubtext}>Toate obiectele sunt la locul lor!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   gameContainer: {
     flex: 1,
@@ -1690,5 +3060,819 @@ const styles = StyleSheet.create({
     fontSize: 8,
     color: '#6C757D',
     textAlign: 'center',
+  },
+
+  // ============= LESSON 1 GAMES STYLES =============
+  // Touch & Listen Game styles
+  touchListenGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  touchListenItem: {
+    width: '48%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 15,
+    marginVertical: 8,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 2,
+    borderColor: '#E9ECEF',
+  },
+  touchedItem: {
+    borderColor: '#28A745',
+    backgroundColor: '#F8FFF9',
+  },
+  playingItem: {
+    borderColor: '#007BFF',
+    backgroundColor: '#F0F8FF',
+    transform: [{ scale: 1.05 }],
+  },
+  touchImageContainer: {
+    position: 'relative',
+    width: 80,
+    height: 80,
+    marginBottom: 10,
+  },
+  touchListenImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  touchedOverlay: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: '#28A745',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  touchedCheck: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  playingOverlay: {
+    position: 'absolute',
+    bottom: -5,
+    left: -5,
+    backgroundColor: '#007BFF',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  soundWaves: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  touchItemName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
+  touchedItemName: {
+    color: '#28A745',
+  },
+  completedSubtext: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 5,
+    fontStyle: 'italic',
+  },
+
+  // Drag & Match Voices Game styles
+  audioButtonsSection: {
+    marginBottom: 20,
+  },
+  audioButtonsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  audioButton: {
+    backgroundColor: '#17A2B8',
+    borderRadius: 12,
+    padding: 12,
+    marginVertical: 5,
+    width: '48%',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  selectedAudioButton: {
+    backgroundColor: '#FF6B35',
+    transform: [{ scale: 1.05 }],
+  },
+  matchedAudioButton: {
+    backgroundColor: '#28A745',
+    opacity: 0.7,
+  },
+  audioButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  audioButtonCheck: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    fontSize: 18,
+  },
+  charactersSection: {
+    marginBottom: 20,
+  },
+  charactersRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  characterDropZone: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 15,
+    alignItems: 'center',
+    width: 100,
+    borderWidth: 2,
+    borderColor: '#E9ECEF',
+    borderStyle: 'dashed',
+    position: 'relative',
+  },
+  matchedCharacterZone: {
+    borderColor: '#28A745',
+    borderStyle: 'solid',
+    backgroundColor: '#F8FFF9',
+  },
+  characterImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginBottom: 8,
+  },
+  characterName: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
+  characterCheckOverlay: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#28A745',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  characterCheck: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  selectedAudioIndicator: {
+    backgroundColor: '#FF6B35',
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  selectedAudioText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+
+  // Simon Says Game styles
+  simonStatusContainer: {
+    minHeight: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  listeningIndicator: {
+    backgroundColor: '#007BFF',
+    borderRadius: 15,
+    padding: 20,
+    alignItems: 'center',
+    width: '100%',
+  },
+  listeningText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  commandText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  timerContainer: {
+    backgroundColor: '#FFC107',
+    borderRadius: 15,
+    padding: 15,
+    alignItems: 'center',
+    width: '100%',
+  },
+  timerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 8,
+  },
+  timerBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  timerProgress: {
+    height: '100%',
+    backgroundColor: '#28A745',
+    borderRadius: 4,
+  },
+  simonImagesContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  simonInstructions: {
+    fontSize: 16,
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 15,
+    fontWeight: '500',
+  },
+  simonImagesGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  simonImageButton: {
+    width: 90,
+    height: 90,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  simonImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  waitingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  waitingText: {
+    fontSize: 18,
+    color: '#6C757D',
+    fontStyle: 'italic',
+  },
+
+  // ===============================
+  // LESSON 2 - FAMILY TREE BUILDER STYLES
+  // ===============================
+  familyTreeContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  familyTreeTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  familyTreeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  familyTreeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 15,
+    alignItems: 'center',
+  },
+  familyMemberSlot: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: '#E9ECEF',
+    borderStyle: 'dashed',
+    backgroundColor: '#F8F9FA',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  familyMemberSlotFilled: {
+    borderColor: '#28A745',
+    borderStyle: 'solid',
+    backgroundColor: '#D4EDDA',
+  },
+  familyMemberImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+  },
+  familyMemberName: {
+    fontSize: 12,
+    color: '#495057',
+    textAlign: 'center',
+    marginTop: 5,
+    fontWeight: '500',
+  },
+  familyMembersPool: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#E9ECEF',
+    borderRadius: 15,
+    padding: 15,
+    marginTop: 20,
+  },
+  familyMemberCard: {
+    width: 70,
+    height: 90,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 5,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  familyMemberCardImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  familyMemberCardName: {
+    fontSize: 10,
+    color: '#495057',
+    textAlign: 'center',
+    marginTop: 5,
+    fontWeight: '500',
+  },
+
+  // ===============================  
+  // LESSON 2 - VOICE MATCHING PAIRS STYLES
+  // ===============================
+  voiceMatchingContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  voiceMatchingTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  voicesRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 30,
+  },
+  voiceButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#007BFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  voiceButtonSelected: {
+    backgroundColor: '#FFC107',
+  },
+  voiceButtonMatched: {
+    backgroundColor: '#28A745',
+  },
+  voiceIcon: {
+    fontSize: 30,
+    color: '#FFFFFF',
+  },
+  charactersRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  characterCard: {
+    width: 80,
+    height: 100,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  characterCardSelected: {
+    backgroundColor: '#FFF3CD',
+    borderColor: '#FFC107',
+    borderWidth: 2,
+  },
+  characterCardMatched: {
+    backgroundColor: '#D4EDDA',
+    borderColor: '#28A745',
+    borderWidth: 2,
+  },
+  characterImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  characterName: {
+    fontSize: 12,
+    color: '#495057',
+    textAlign: 'center',
+    marginTop: 5,
+    fontWeight: '500',
+  },
+
+  // ===============================
+  // LESSON 2 - CHARACTER EMOTION READER STYLES  
+  // ===============================
+  emotionReaderContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  emotionReaderTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  storySceneContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  sceneImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  sceneText: {
+    fontSize: 16,
+    color: '#495057',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  emotionOptionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  emotionOption: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  emotionOptionSelected: {
+    backgroundColor: '#FFC107',
+  },
+  emotionOptionCorrect: {
+    backgroundColor: '#28A745',
+  },
+  emotionOptionWrong: {
+    backgroundColor: '#DC3545',
+  },
+  emotionEmoji: {
+    fontSize: 30,
+  },
+  emotionLabel: {
+    fontSize: 12,
+    color: '#495057',
+    textAlign: 'center',
+    marginTop: 5,
+    fontWeight: '500',
+  },
+
+  // ===============================
+  // LESSON 3 - HOUSE TOUR ADVENTURE STYLES
+  // ===============================
+  houseTourContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  houseTourTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  houseContainer: {
+    flex: 1,
+    position: 'relative',
+    alignItems: 'center',
+  },
+  houseImage: {
+    width: '100%',
+    height: 300,
+    resizeMode: 'contain',
+  },
+  roomHotspot: {
+    position: 'absolute',
+    width: 80,
+    height: 60,
+    backgroundColor: 'rgba(255, 255, 0, 0.3)',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#FFD700',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  livingRoomHotspot: {
+    top: 180,
+    left: 50,
+  },
+  kitchenHotspot: {
+    top: 180,
+    right: 50,
+  },
+  bedroomHotspot: {
+    top: 100,
+    left: 50,
+  },
+  bjornRoomHotspot: {
+    top: 100,
+    right: 50,
+  },
+  roomLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
+  bjornGuide: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    alignItems: 'center',
+  },
+  bjornGuideImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  bjornSpeech: {
+    backgroundColor: '#FFFFFF',
+    padding: 10,
+    borderRadius: 15,
+    marginTop: 10,
+    maxWidth: 150,
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#2C3E50',
+  },
+  roomZoomContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  zoomedRoomImage: {
+    width: '100%',
+    height: 250,
+    borderRadius: 15,
+    marginBottom: 20,
+  },
+  roomDescription: {
+    fontSize: 18,
+    color: '#2C3E50',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+
+  // ===============================
+  // LESSON 3 - ROOM SOUND MATCH STYLES
+  // ===============================
+  roomSoundContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  roomSoundTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  soundPlayButton: {
+    backgroundColor: '#007BFF',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  soundPlayIcon: {
+    fontSize: 30,
+    marginBottom: 5,
+  },
+  soundPlayText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  soundWaveContainer: {
+    backgroundColor: '#E3F2FD',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  soundWaveText: {
+    fontSize: 16,
+    color: '#1976D2',
+    textAlign: 'center',
+  },
+  roomChoicesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  roomChoice: {
+    width: '45%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 15,
+    margin: 5,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  roomChoiceSelected: {
+    backgroundColor: '#FFF3CD',
+    borderColor: '#FFC107',
+    borderWidth: 2,
+  },
+  roomChoiceCorrect: {
+    backgroundColor: '#D4EDDA',
+    borderColor: '#28A745',
+    borderWidth: 2,
+  },
+  roomChoiceWrong: {
+    backgroundColor: '#F8D7DA',
+    borderColor: '#DC3545',
+    borderWidth: 2,
+  },
+  roomChoiceImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginBottom: 10,
+  },
+  roomChoiceName: {
+    fontSize: 14,
+    color: '#495057',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+
+  // ===============================
+  // LESSON 3 - DRAG OBJECTS HOME STYLES
+  // ===============================
+  dragObjectsContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  dragObjectsTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  houseDropZones: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  roomDropZone: {
+    width: '48%',
+    height: 80,
+    borderRadius: 15,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderWidth: 2,
+    borderColor: '#DDD',
+    borderStyle: 'dashed',
+  },
+  roomDropName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
+  roomDropCount: {
+    fontSize: 12,
+    color: '#6C757D',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  furniturePool: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  furnitureItem: {
+    width: 90,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 10,
+    margin: 5,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  furnitureItemSelected: {
+    backgroundColor: '#FFF3CD',
+    borderColor: '#FFC107',
+    borderWidth: 2,
+  },
+  furnitureImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginBottom: 5,
+  },
+  furnitureName: {
+    fontSize: 10,
+    color: '#495057',
+    textAlign: 'center',
+    fontWeight: '500',
   },
 });
