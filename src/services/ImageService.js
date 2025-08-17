@@ -58,6 +58,25 @@ class ImageService {
       'emma_excited': require('../../assets/images/characters/emma_happy.png'), // Use existing emma_happy for excited
 
       // ================================
+      // LESSON 3 - Casa noastră - Story Images (with castle backgrounds)
+      // ================================
+      'bjorn_shows_house': require('../../assets/images/lessons/lesson3/story/bjorn_shows_house.png'),
+      'emma_curious_house': require('../../assets/images/lessons/lesson3/story/emma_curious_house.png'),
+      'living_room_scene': require('../../assets/images/lessons/lesson3/story/living_room_scene.png'),
+      'kitchen_scene': require('../../assets/images/lessons/lesson3/story/kitchen_scene.png'),
+      'bedroom_scene': require('../../assets/images/lessons/lesson3/story/bedroom_scene.png'),
+      'castle_scenes_combined': require('../../assets/images/lessons/lesson3/story/castle_scenes_combined.png'),
+
+      // ================================
+      // LESSON 3 - Game Images
+      // ================================
+      'house_cross_section': require('../../assets/images/lessons/lesson3/games/house_cross_section.png'),
+      'bjorn_pointing': require('../../assets/images/lessons/lesson3/games/bjorn_pointing.png'),
+      'room_icons': require('../../assets/images/lessons/lesson3/games/room_icons.png'),
+      'furniture_collection': require('../../assets/images/lessons/lesson3/games/furniture_collection.png'),
+      'detailed_rooms': require('../../assets/images/lessons/lesson3/games/detailed_rooms.png'),
+
+      // ================================
       // BACKGROUNDS - Fundaluri (pentru viitor)
       // ================================
       // 'castle_background': require('../../assets/images/backgrounds/castle.png'),

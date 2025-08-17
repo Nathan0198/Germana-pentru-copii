@@ -324,70 +324,60 @@ export const CASTLE_LESSONS = [
 
     games: [
       {
-        type: "drag_drop",
-        instructor: "max",
-        title: "Conectează camerele casei:",
-        items: [
-          { 
-            text: "die Küche", 
-            target: "kitchen",
-            correct: true,
-            feedback: "Sehr gut! Das ist die Küche!" 
-          },
-          { 
-            text: "das Wohnzimmer", 
-            target: "living_room",
-            correct: true,
-            feedback: "Perfect! Das ist das Wohnzimmer!" 
-          },
-          { 
-            text: "das Schlafzimmer", 
-            target: "bedroom",
-            correct: true,
-            feedback: "Wunderbar! Das ist das Schlafzimmer!" 
-          },
-          { 
-            text: "mein Zimmer", 
-            target: "bjorn_room",
-            correct: true,
-            feedback: "Toll! Das ist Björns Zimmer!" 
-          }
+        type: "house_tour_adventure",
+        instructor: "björn",
+        title: "Tur prin Casa lui Björn!",
+        rooms: [
+          { id: 'wohnzimmer', name: 'das Wohnzimmer', german: 'Hier ist das Wohnzimmer!', romanian: 'Aici este camera de zi!', image: 'living_room_detailed' },
+          { id: 'küche', name: 'die Küche', german: 'Das ist die Küche!', romanian: 'Aceasta este bucătăria!', image: 'kitchen_detailed' },
+          { id: 'schlafzimmer', name: 'das Schlafzimmer', german: 'Hier sind die Schlafzimmer!', romanian: 'Aici sunt dormitoarele!', image: 'bedroom_detailed' },
+          { id: 'bjorn_zimmer', name: 'mein Zimmer', german: 'Das ist mein Zimmer!', romanian: 'Aceasta este camera mea!', image: 'bjorn_room_detailed' }
         ]
       },
       {
-        type: "speaking_challenge",
+        type: "room_sound_match",
         instructor: "emma",
-        title: "Repetă numele camerelor!",
-        phrases: [
-          {
-            german: "Das Wohnzimmer",
-            romanian: "Camera de zi",
-            audio: "emma_wohnzimmer",
-            feedback: "Sehr gut! Pronunția perfectă!"
+        title: "Ghicește Camera după Sunete!",
+        soundRounds: [
+          { 
+            sound: 'kitchen_cooking', 
+            correctRoom: 'küche', 
+            rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+            description: 'Țăcăitul din bucătărie'
           },
-          {
-            german: "Die Küche",
-            romanian: "Bucătăria",
-            audio: "emma_küche",
-            feedback: "Wunderbar! Excelent!"
+          { 
+            sound: 'tv_sounds', 
+            correctRoom: 'wohnzimmer', 
+            rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+            description: 'Sunetul TV-ului'
           },
-          {
-            german: "Mein Zimmer",
-            romanian: "Camera mea",
-            audio: "emma_mein_zimmer",
-            feedback: "Toll! Ai învățat!"
+          { 
+            sound: 'bed_creaking', 
+            correctRoom: 'schlafzimmer', 
+            rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+            description: 'Scârțâitul patului'
+          },
+          { 
+            sound: 'toys_playing', 
+            correctRoom: 'bjorn_zimmer', 
+            rooms: ['bjorn_zimmer', 'wohnzimmer', 'küche'],
+            description: 'Jucării în cameră'
           }
         ]
       },
       {
-        type: "story_sequence",
+        type: "drag_objects_home",
         instructor: "max",
-        title: "Aranjează în ordine povestea:",
-        sequence: [
-          { image: "house_showing", text: "Björn arată casa", order: 1 },
-          { image: "living_room", text: "Intră în living", order: 2 },
-          { image: "kitchen_visit", text: "Vizitează bucătăria", order: 3 },
-          { image: "bedroom_upstairs", text: "Urcă la dormitoare", order: 4 }
+        title: "Pune Obiectele la Locul Lor!",
+        furniture: [
+          { id: 'bed', name: 'das Bett', image: 'bed_furniture', correctRoom: 'schlafzimmer', germanRoom: 'ins Schlafzimmer' },
+          { id: 'stove', name: 'der Herd', image: 'stove_furniture', correctRoom: 'küche', germanRoom: 'in die Küche' },
+          { id: 'sofa', name: 'das Sofa', image: 'sofa_furniture', correctRoom: 'wohnzimmer', germanRoom: 'ins Wohnzimmer' },
+          { id: 'desk', name: 'der Schreibtisch', image: 'desk_furniture', correctRoom: 'bjorn_zimmer', germanRoom: 'in mein Zimmer' },
+          { id: 'table', name: 'der Tisch', image: 'dining_table', correctRoom: 'küche', germanRoom: 'in die Küche' },
+          { id: 'wardrobe', name: 'der Kleiderschrank', image: 'wardrobe_furniture', correctRoom: 'schlafzimmer', germanRoom: 'ins Schlafzimmer' },
+          { id: 'bookshelf', name: 'das Bücherregal', image: 'bookshelf_furniture', correctRoom: 'bjorn_zimmer', germanRoom: 'in mein Zimmer' },
+          { id: 'refrigerator', name: 'der Kühlschrank', image: 'fridge_furniture', correctRoom: 'küche', germanRoom: 'in die Küche' }
         ]
       }
     ],

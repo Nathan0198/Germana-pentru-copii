@@ -1939,6 +1939,370 @@ export const CharacterEmotionReaderGame = ({ gameData, onComplete }) => {
   );
 };
 
+// ===============================
+// LESSON 3 - HOUSE TOUR ADVENTURE GAME
+// ===============================
+export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
+  const [currentRoom, setCurrentRoom] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [isZoomed, setIsZoomed] = React.useState(false);
+  const [completed, setCompleted] = React.useState(false);
+  const [bjornSpeaking, setBjornSpeaking] = React.useState(false);
+
+  const rooms = gameData?.rooms || [
+    { id: 'wohnzimmer', name: 'das Wohnzimmer', german: 'Hier ist das Wohnzimmer!', romanian: 'Aici este camera de zi!', image: 'living_room_detailed' },
+    { id: 'küche', name: 'die Küche', german: 'Das ist die Küche!', romanian: 'Aceasta este bucătăria!', image: 'kitchen_detailed' },
+    { id: 'schlafzimmer', name: 'das Schlafzimmer', german: 'Hier sind die Schlafzimmer!', romanian: 'Aici sunt dormitoarele!', image: 'bedroom_detailed' },
+    { id: 'bjorn_zimmer', name: 'mein Zimmer', german: 'Das ist mein Zimmer!', romanian: 'Aceasta este camera mea!', image: 'bjorn_room_detailed' }
+  ];
+
+  const currentRoomData = rooms[currentRoom];
+
+  const handleRoomTouch = (roomId) => {
+    if (roomId === currentRoomData.id) {
+      setScore(prev => prev + 25);
+      setIsZoomed(true);
+      setBjornSpeaking(true);
+      
+      // Play Björn's explanation
+      AudioService.playLesson3Game(currentRoomData.id, 'de');
+      
+      setTimeout(() => {
+        setIsZoomed(false);
+        setBjornSpeaking(false);
+        
+        if (currentRoom < rooms.length - 1) {
+          setCurrentRoom(prev => prev + 1);
+        } else {
+          setCompleted(true);
+          onComplete?.(100);
+        }
+      }, 3000);
+    }
+  };
+
+  return (
+    <View style={styles.houseTourContainer}>
+      <Text style={styles.houseTourTitle}>Tur prin Casa lui Björn! 🏠</Text>
+      
+      {!isZoomed ? (
+        <View style={styles.houseContainer}>
+          <Image 
+            source={ImageService.getImage('house_cross_section')}
+            style={styles.houseImage}
+          />
+          
+          {/* Interactive room hotspots */}
+          <TouchableOpacity 
+            style={[styles.roomHotspot, styles.livingRoomHotspot]}
+            onPress={() => handleRoomTouch('wohnzimmer')}
+          >
+            <Text style={styles.roomLabel}>Living</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.roomHotspot, styles.kitchenHotspot]}
+            onPress={() => handleRoomTouch('küche')}
+          >
+            <Text style={styles.roomLabel}>Küche</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.roomHotspot, styles.bedroomHotspot]}
+            onPress={() => handleRoomTouch('schlafzimmer')}
+          >
+            <Text style={styles.roomLabel}>Zimmer</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.roomHotspot, styles.bjornRoomHotspot]}
+            onPress={() => handleRoomTouch('bjorn_zimmer')}
+          >
+            <Text style={styles.roomLabel}>Björn</Text>
+          </TouchableOpacity>
+          
+          {/* Björn guide character */}
+          <View style={styles.bjornGuide}>
+            <Image 
+              source={ImageService.getImage('bjorn_pointing')}
+              style={styles.bjornGuideImage}
+            />
+            <Text style={styles.bjornSpeech}>{currentRoomData.german}</Text>
+          </View>
+        </View>
+      ) : (
+        <View style={styles.roomZoomContainer}>
+          <Image 
+            source={ImageService.getImage(currentRoomData.image)}
+            style={styles.zoomedRoomImage}
+          />
+          <Text style={styles.roomDescription}>{currentRoomData.romanian}</Text>
+        </View>
+      )}
+
+      <Text style={styles.progressText}>
+        Camera {currentRoom + 1} din {rooms.length}
+      </Text>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🏠 Tur complet!</Text>
+          <Text style={styles.completedSubtext}>Acum cunoști toată casa!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 3 - ROOM SOUND MATCH GAME
+// ===============================
+export const RoomSoundMatchGame = ({ gameData, onComplete }) => {
+  const [currentRound, setCurrentRound] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [selectedRoom, setSelectedRoom] = React.useState(null);
+  const [showHint, setShowHint] = React.useState(false);
+  const [completed, setCompleted] = React.useState(false);
+
+  const soundRounds = gameData?.soundRounds || [
+    { 
+      sound: 'kitchen_cooking', 
+      correctRoom: 'küche', 
+      rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+      description: 'Țăcăitul din bucătărie'
+    },
+    { 
+      sound: 'tv_sounds', 
+      correctRoom: 'wohnzimmer', 
+      rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+      description: 'Sunetul TV-ului'
+    },
+    { 
+      sound: 'bed_creaking', 
+      correctRoom: 'schlafzimmer', 
+      rooms: ['küche', 'wohnzimmer', 'schlafzimmer'],
+      description: 'Scârțâitul patului'
+    },
+    { 
+      sound: 'toys_playing', 
+      correctRoom: 'bjorn_zimmer', 
+      rooms: ['bjorn_zimmer', 'wohnzimmer', 'küche'],
+      description: 'Jucării în cameră'
+    }
+  ];
+
+  const currentRoundData = soundRounds[currentRound];
+
+  const playRoundSound = () => {
+    AudioService.playLesson3Game(currentRoundData.sound, 'sound');
+    setShowHint(true);
+    setTimeout(() => setShowHint(false), 2000);
+  };
+
+  const handleRoomSelect = (roomId) => {
+    setSelectedRoom(roomId);
+    
+    if (roomId === currentRoundData.correctRoom) {
+      setScore(prev => prev + 25);
+      AudioService.playLesson3Game('correct_room', 'de');
+      
+      setTimeout(() => {
+        if (currentRound < soundRounds.length - 1) {
+          setCurrentRound(prev => prev + 1);
+          setSelectedRoom(null);
+        } else {
+          setCompleted(true);
+          onComplete?.(100);
+        }
+      }, 1500);
+    } else {
+      AudioService.playLesson3Game('wrong_room', 'de');
+      setTimeout(() => setSelectedRoom(null), 1000);
+    }
+  };
+
+  return (
+    <View style={styles.roomSoundContainer}>
+      <Text style={styles.roomSoundTitle}>Ghicește Camera după Sunete! 🔊</Text>
+      
+      <TouchableOpacity 
+        style={styles.soundPlayButton}
+        onPress={playRoundSound}
+      >
+        <Text style={styles.soundPlayIcon}>🔊</Text>
+        <Text style={styles.soundPlayText}>Ascultă sunetul</Text>
+      </TouchableOpacity>
+
+      {showHint && (
+        <View style={styles.soundWaveContainer}>
+          <Text style={styles.soundWaveText}>🌊 {currentRoundData.description}</Text>
+        </View>
+      )}
+
+      <View style={styles.roomChoicesContainer}>
+        {currentRoundData.rooms.map((roomId) => (
+          <TouchableOpacity
+            key={roomId}
+            style={[
+              styles.roomChoice,
+              selectedRoom === roomId && styles.roomChoiceSelected,
+              selectedRoom === roomId && roomId === currentRoundData.correctRoom && styles.roomChoiceCorrect,
+              selectedRoom === roomId && roomId !== currentRoundData.correctRoom && styles.roomChoiceWrong
+            ]}
+            onPress={() => handleRoomSelect(roomId)}
+            disabled={selectedRoom !== null}
+          >
+            <Image 
+              source={ImageService.getImage(`${roomId}_icon`)}
+              style={styles.roomChoiceImage}
+            />
+            <Text style={styles.roomChoiceName}>
+              {roomId === 'küche' ? 'Bucătăria' : 
+               roomId === 'wohnzimmer' ? 'Living-ul' : 
+               roomId === 'schlafzimmer' ? 'Dormitorul' : 
+               'Camera lui Björn'}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <Text style={styles.progressText}>
+        Runda {currentRound + 1} din {soundRounds.length}
+      </Text>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎵 Ureche muzicală perfectă!</Text>
+          <Text style={styles.completedSubtext}>Cunoști toate sunetele casei!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 3 - DRAG OBJECTS HOME GAME
+// ===============================
+export const DragObjectsHomeGame = ({ gameData, onComplete }) => {
+  const [placedObjects, setPlacedObjects] = React.useState([]);
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+  const [selectedObject, setSelectedObject] = React.useState(null);
+
+  const furniture = gameData?.furniture || [
+    { id: 'bed', name: 'das Bett', image: 'bed_furniture', correctRoom: 'schlafzimmer', germanRoom: 'ins Schlafzimmer' },
+    { id: 'stove', name: 'der Herd', image: 'stove_furniture', correctRoom: 'küche', germanRoom: 'in die Küche' },
+    { id: 'sofa', name: 'das Sofa', image: 'sofa_furniture', correctRoom: 'wohnzimmer', germanRoom: 'ins Wohnzimmer' },
+    { id: 'desk', name: 'der Schreibtisch', image: 'desk_furniture', correctRoom: 'bjorn_zimmer', germanRoom: 'in mein Zimmer' },
+    { id: 'table', name: 'der Tisch', image: 'dining_table', correctRoom: 'küche', germanRoom: 'in die Küche' },
+    { id: 'wardrobe', name: 'der Kleiderschrank', image: 'wardrobe_furniture', correctRoom: 'schlafzimmer', germanRoom: 'ins Schlafzimmer' },
+    { id: 'bookshelf', name: 'das Bücherregal', image: 'bookshelf_furniture', correctRoom: 'bjorn_zimmer', germanRoom: 'in mein Zimmer' },
+    { id: 'refrigerator', name: 'der Kühlschrank', image: 'fridge_furniture', correctRoom: 'küche', germanRoom: 'in die Küche' }
+  ];
+
+  const rooms = [
+    { id: 'wohnzimmer', name: 'Wohnzimmer', color: '#FFE4B5' },
+    { id: 'küche', name: 'Küche', color: '#E6F3FF' },
+    { id: 'schlafzimmer', name: 'Schlafzimmer', color: '#F0E6FF' },
+    { id: 'bjorn_zimmer', name: 'Björns Zimmer', color: '#E6FFE6' }
+  ];
+
+  const handleObjectSelect = (furnitureItem) => {
+    setSelectedObject(furnitureItem);
+    // Play object name
+    AudioService.playLesson3Game(furnitureItem.id, 'de');
+  };
+
+  const handleRoomDrop = (roomId) => {
+    if (selectedObject && selectedObject.correctRoom === roomId) {
+      setPlacedObjects(prev => [...prev, selectedObject.id]);
+      setScore(prev => prev + Math.round(100 / furniture.length));
+      
+      // Play success audio
+      AudioService.playLesson3Game(`${selectedObject.id}_placed`, 'de');
+      
+      setSelectedObject(null);
+      
+      if (placedObjects.length + 1 >= furniture.length) {
+        setTimeout(() => {
+          setCompleted(true);
+          onComplete?.(100);
+        }, 1000);
+      }
+    } else if (selectedObject) {
+      // Wrong room
+      AudioService.playLesson3Game('wrong_room_drop', 'de');
+      setSelectedObject(null);
+    }
+  };
+
+  const availableFurniture = furniture.filter(item => !placedObjects.includes(item.id));
+
+  return (
+    <View style={styles.dragObjectsContainer}>
+      <Text style={styles.dragObjectsTitle}>Pune Obiectele la Locul Lor! 🏠</Text>
+      
+      {/* House with room zones */}
+      <View style={styles.houseDropZones}>
+        {rooms.map((room) => (
+          <TouchableOpacity
+            key={room.id}
+            style={[
+              styles.roomDropZone,
+              { backgroundColor: room.color }
+            ]}
+            onPress={() => handleRoomDrop(room.id)}
+          >
+            <Text style={styles.roomDropName}>{room.name}</Text>
+            <Text style={styles.roomDropCount}>
+              {placedObjects.filter(objId => 
+                furniture.find(f => f.id === objId)?.correctRoom === room.id
+              ).length} obiecte
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Available furniture */}
+      <View style={styles.furniturePool}>
+        {availableFurniture.map((item) => (
+          <TouchableOpacity
+            key={item.id}
+            style={[
+              styles.furnitureItem,
+              selectedObject?.id === item.id && styles.furnitureItemSelected
+            ]}
+            onPress={() => handleObjectSelect(item)}
+          >
+            <Image 
+              source={ImageService.getImage(item.image)}
+              style={styles.furnitureImage}
+            />
+            <Text style={styles.furnitureName}>{item.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {selectedObject && (
+        <Text style={styles.instructionText}>
+          Atinge camera potrivită pentru {selectedObject.name}!
+        </Text>
+      )}
+
+      <Text style={styles.progressText}>
+        {placedObjects.length} din {furniture.length} obiecte plasate
+      </Text>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Casa este complet mobilată!</Text>
+          <Text style={styles.completedSubtext}>Toate obiectele sunt la locul lor!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   gameContainer: {
     flex: 1,
@@ -3229,6 +3593,279 @@ const styles = StyleSheet.create({
     color: '#495057',
     textAlign: 'center',
     marginTop: 5,
+    fontWeight: '500',
+  },
+
+  // ===============================
+  // LESSON 3 - HOUSE TOUR ADVENTURE STYLES
+  // ===============================
+  houseTourContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  houseTourTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  houseContainer: {
+    flex: 1,
+    position: 'relative',
+    alignItems: 'center',
+  },
+  houseImage: {
+    width: '100%',
+    height: 300,
+    resizeMode: 'contain',
+  },
+  roomHotspot: {
+    position: 'absolute',
+    width: 80,
+    height: 60,
+    backgroundColor: 'rgba(255, 255, 0, 0.3)',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#FFD700',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  livingRoomHotspot: {
+    top: 180,
+    left: 50,
+  },
+  kitchenHotspot: {
+    top: 180,
+    right: 50,
+  },
+  bedroomHotspot: {
+    top: 100,
+    left: 50,
+  },
+  bjornRoomHotspot: {
+    top: 100,
+    right: 50,
+  },
+  roomLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
+  bjornGuide: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    alignItems: 'center',
+  },
+  bjornGuideImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  bjornSpeech: {
+    backgroundColor: '#FFFFFF',
+    padding: 10,
+    borderRadius: 15,
+    marginTop: 10,
+    maxWidth: 150,
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#2C3E50',
+  },
+  roomZoomContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  zoomedRoomImage: {
+    width: '100%',
+    height: 250,
+    borderRadius: 15,
+    marginBottom: 20,
+  },
+  roomDescription: {
+    fontSize: 18,
+    color: '#2C3E50',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+
+  // ===============================
+  // LESSON 3 - ROOM SOUND MATCH STYLES
+  // ===============================
+  roomSoundContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  roomSoundTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  soundPlayButton: {
+    backgroundColor: '#007BFF',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  soundPlayIcon: {
+    fontSize: 30,
+    marginBottom: 5,
+  },
+  soundPlayText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  soundWaveContainer: {
+    backgroundColor: '#E3F2FD',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  soundWaveText: {
+    fontSize: 16,
+    color: '#1976D2',
+    textAlign: 'center',
+  },
+  roomChoicesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  roomChoice: {
+    width: '45%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 15,
+    margin: 5,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  roomChoiceSelected: {
+    backgroundColor: '#FFF3CD',
+    borderColor: '#FFC107',
+    borderWidth: 2,
+  },
+  roomChoiceCorrect: {
+    backgroundColor: '#D4EDDA',
+    borderColor: '#28A745',
+    borderWidth: 2,
+  },
+  roomChoiceWrong: {
+    backgroundColor: '#F8D7DA',
+    borderColor: '#DC3545',
+    borderWidth: 2,
+  },
+  roomChoiceImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginBottom: 10,
+  },
+  roomChoiceName: {
+    fontSize: 14,
+    color: '#495057',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+
+  // ===============================
+  // LESSON 3 - DRAG OBJECTS HOME STYLES
+  // ===============================
+  dragObjectsContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  dragObjectsTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  houseDropZones: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  roomDropZone: {
+    width: '48%',
+    height: 80,
+    borderRadius: 15,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderWidth: 2,
+    borderColor: '#DDD',
+    borderStyle: 'dashed',
+  },
+  roomDropName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
+  roomDropCount: {
+    fontSize: 12,
+    color: '#6C757D',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  furniturePool: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  furnitureItem: {
+    width: 90,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 10,
+    margin: 5,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  furnitureItemSelected: {
+    backgroundColor: '#FFF3CD',
+    borderColor: '#FFC107',
+    borderWidth: 2,
+  },
+  furnitureImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginBottom: 5,
+  },
+  furnitureName: {
+    fontSize: 10,
+    color: '#495057',
+    textAlign: 'center',
     fontWeight: '500',
   },
 });

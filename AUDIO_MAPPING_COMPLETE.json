@@ -84,6 +84,124 @@
         }
       }
     },
+    "lesson3": {
+      "title": "Casa noastră", 
+      "vocabulary": ["das Haus", "das Wohnzimmer", "die Küche", "das Schlafzimmer", "mein", "das Zimmer", "das Essen", "hier"],
+      "games": {
+        "game1": {
+          "name": "House Tour Adventure",
+          "type": "HouseTourAdventureGame", 
+          "audio_files": {
+            "intro_de": "lesson3_game1_intro_de.mp3",
+            "intro_ro": "lesson3_game1_intro_ro.mp3",
+            "instructions_de": "lesson3_game1_instructions_de.mp3",
+            "instructions_ro": "lesson3_game1_instructions_ro.mp3"
+          },
+          "room_audio": {
+            "wohnzimmer_de": "lesson3_room_wohnzimmer_de.mp3",
+            "wohnzimmer_ro": "lesson3_room_wohnzimmer_ro.mp3",
+            "küche_de": "lesson3_room_küche_de.mp3", 
+            "küche_ro": "lesson3_room_küche_ro.mp3",
+            "schlafzimmer_de": "lesson3_room_schlafzimmer_de.mp3",
+            "schlafzimmer_ro": "lesson3_room_schlafzimmer_ro.mp3",
+            "bjorn_zimmer_de": "lesson3_room_bjorn_zimmer_de.mp3",
+            "bjorn_zimmer_ro": "lesson3_room_bjorn_zimmer_ro.mp3"
+          }
+        },
+        "game2": {
+          "name": "Room Sound Match", 
+          "type": "RoomSoundMatchGame",
+          "audio_files": {
+            "intro_de": "lesson3_game2_intro_de.mp3",
+            "intro_ro": "lesson3_game2_intro_ro.mp3",
+            "instructions_de": "lesson3_game2_instructions_de.mp3",
+            "instructions_ro": "lesson3_game2_instructions_ro.mp3"
+          },
+          "sound_effects": {
+            "kitchen_cooking": "lesson3_sound_kitchen_cooking.mp3",
+            "tv_sounds": "lesson3_sound_tv_sounds.mp3",
+            "bed_creaking": "lesson3_sound_bed_creaking.mp3",
+            "toys_playing": "lesson3_sound_toys_playing.mp3"
+          },
+          "feedback_audio": {
+            "correct_room_de": "lesson3_feedback_correct_room_de.mp3",
+            "correct_room_ro": "lesson3_feedback_correct_room_ro.mp3",
+            "wrong_room_de": "lesson3_feedback_wrong_room_de.mp3",
+            "wrong_room_ro": "lesson3_feedback_wrong_room_ro.mp3"
+          }
+        },
+        "game3": {
+          "name": "Drag Objects Home",
+          "type": "DragObjectsHomeGame",
+          "audio_files": {
+            "intro_de": "lesson3_game3_intro_de.mp3",
+            "intro_ro": "lesson3_game3_intro_ro.mp3", 
+            "instructions_de": "lesson3_game3_instructions_de.mp3",
+            "instructions_ro": "lesson3_game3_instructions_ro.mp3"
+          },
+          "furniture_audio": {
+            "bed_de": "lesson3_furniture_bed_de.mp3",
+            "bed_ro": "lesson3_furniture_bed_ro.mp3",
+            "stove_de": "lesson3_furniture_stove_de.mp3",
+            "stove_ro": "lesson3_furniture_stove_ro.mp3", 
+            "sofa_de": "lesson3_furniture_sofa_de.mp3",
+            "sofa_ro": "lesson3_furniture_sofa_ro.mp3",
+            "desk_de": "lesson3_furniture_desk_de.mp3",
+            "desk_ro": "lesson3_furniture_desk_ro.mp3",
+            "table_de": "lesson3_furniture_table_de.mp3",
+            "table_ro": "lesson3_furniture_table_ro.mp3",
+            "wardrobe_de": "lesson3_furniture_wardrobe_de.mp3",
+            "wardrobe_ro": "lesson3_furniture_wardrobe_ro.mp3",
+            "bookshelf_de": "lesson3_furniture_bookshelf_de.mp3", 
+            "bookshelf_ro": "lesson3_furniture_bookshelf_ro.mp3",
+            "refrigerator_de": "lesson3_furniture_refrigerator_de.mp3",
+            "refrigerator_ro": "lesson3_furniture_refrigerator_ro.mp3"
+          },
+          "placement_audio": {
+            "bed_placed_de": "lesson3_placement_bed_placed_de.mp3",
+            "stove_placed_de": "lesson3_placement_stove_placed_de.mp3",
+            "sofa_placed_de": "lesson3_placement_sofa_placed_de.mp3",
+            "desk_placed_de": "lesson3_placement_desk_placed_de.mp3",
+            "table_placed_de": "lesson3_placement_table_placed_de.mp3",
+            "wardrobe_placed_de": "lesson3_placement_wardrobe_placed_de.mp3",
+            "bookshelf_placed_de": "lesson3_placement_bookshelf_placed_de.mp3",
+            "refrigerator_placed_de": "lesson3_placement_refrigerator_placed_de.mp3",
+            "wrong_room_drop_de": "lesson3_placement_wrong_room_drop_de.mp3"
+          }
+        }
+      },
+      "vocabulary_audio": {
+        "das_haus_de": "lesson3_vocab_das_haus_de.mp3",
+        "das_haus_ro": "lesson3_vocab_das_haus_ro.mp3",
+        "das_wohnzimmer_de": "lesson3_vocab_das_wohnzimmer_de.mp3",
+        "das_wohnzimmer_ro": "lesson3_vocab_das_wohnzimmer_ro.mp3",
+        "die_küche_de": "lesson3_vocab_die_küche_de.mp3",
+        "die_küche_ro": "lesson3_vocab_die_küche_ro.mp3",
+        "das_schlafzimmer_de": "lesson3_vocab_das_schlafzimmer_de.mp3", 
+        "das_schlafzimmer_ro": "lesson3_vocab_das_schlafzimmer_ro.mp3",
+        "mein_de": "lesson3_vocab_mein_de.mp3",
+        "mein_ro": "lesson3_vocab_mein_ro.mp3",
+        "das_zimmer_de": "lesson3_vocab_das_zimmer_de.mp3",
+        "das_zimmer_ro": "lesson3_vocab_das_zimmer_ro.mp3",
+        "das_essen_de": "lesson3_vocab_das_essen_de.mp3",
+        "das_essen_ro": "lesson3_vocab_das_essen_ro.mp3", 
+        "hier_de": "lesson3_vocab_hier_de.mp3",
+        "hier_ro": "lesson3_vocab_hier_ro.mp3"
+      },
+      "story_audio": {
+        "scene1_de": "lesson3_story_scene1_de.mp3",
+        "scene1_ro": "lesson3_story_scene1_ro.mp3",
+        "scene2_de": "lesson3_story_scene2_de.mp3",
+        "scene2_ro": "lesson3_story_scene2_ro.mp3",
+        "scene3_de": "lesson3_story_scene3_de.mp3",
+        "scene3_ro": "lesson3_story_scene3_ro.mp3",
+        "scene4_de": "lesson3_story_scene4_de.mp3", 
+        "scene4_ro": "lesson3_story_scene4_ro.mp3",
+        "scene5_de": "lesson3_story_scene5_de.mp3",
+        "scene5_ro": "lesson3_story_scene5_ro.mp3"
+      },
+      "estimated_files": 59
+    },
     "lesson2": {
       "title": "Familia lui Björn", 
       "vocabulary": ["der Vater", "die Mutter", "Papa", "Mama", "er", "sie", "die Schwester", "schön"],
