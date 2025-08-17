@@ -40,6 +40,24 @@ class ImageService {
       'children_group': require('../../assets/images/lessons/lesson1/games/children_group.png'),
 
       // ================================
+      // LESSON 2 - Familia lui Björn - Story Images (with castle backgrounds)
+      // ================================
+      'bjorn_with_papa': require('../../assets/images/lessons/lesson2/story/bjorn_with_papa.png'),
+      'emma_curious': require('../../assets/images/lessons/lesson2/story/emma_curious.png'),
+      'bjorn_with_mama': require('../../assets/images/lessons/lesson2/story/bjorn_with_mama.png'),
+      'bjorn_with_anna': require('../../assets/images/lessons/lesson2/story/bjorn_with_anna.png'),
+      'whole_bear_family': require('../../assets/images/lessons/lesson2/story/whole_bear_family.png'),
+
+      // ================================
+      // LESSON 2 - Family Members & Game Images
+      // ================================
+      'papa_bear': require('../../assets/images/characters/papa_bear.png'),
+      'mama_bear': require('../../assets/images/characters/mama_bear.png'),
+      'anna_bear': require('../../assets/images/characters/anna_bear.png'),
+      'anna_shy': require('../../assets/images/lessons/lesson2/games/anna_shy.png'),
+      'emma_excited': require('../../assets/images/characters/emma_happy.png'), // Use existing emma_happy for excited
+
+      // ================================
       // BACKGROUNDS - Fundaluri (pentru viitor)
       // ================================
       // 'castle_background': require('../../assets/images/backgrounds/castle.png'),
