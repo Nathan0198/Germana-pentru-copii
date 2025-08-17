@@ -39,7 +39,8 @@ export default function ZoneLessonsScreen({ route, navigation }) {
   }, [zoneId, navigation]);
 
   const handleLessonPress = (lesson) => {
-    const isUnlocked = isLessonUnlocked(lesson.id, userProgress);
+    // First lesson is always unlocked
+    const isUnlocked = lesson.id === 1 || isLessonUnlocked(lesson.id, userProgress);
     
     if (!isUnlocked) {
       Alert.alert(
@@ -58,7 +59,8 @@ export default function ZoneLessonsScreen({ route, navigation }) {
 
   const getLessonStatus = (lesson) => {
     const isCompleted = userProgress.completedLessons.includes(lesson.id);
-    const isUnlocked = isLessonUnlocked(lesson.id, userProgress);
+    // First lesson is always unlocked
+    const isUnlocked = lesson.id === 1 || isLessonUnlocked(lesson.id, userProgress);
     
     if (isCompleted) return 'completed';
     if (isUnlocked) return 'available';
@@ -151,7 +153,13 @@ export default function ZoneLessonsScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={true}
+        scrollEnabled={true}
+        bounces={true}
+      >
         {/* Header zona */}
         <View style={styles.zoneHeader}>
           <LinearGradient
@@ -225,6 +233,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    paddingBottom: 50,
   },
   zoneHeader: {
     margin: 15,

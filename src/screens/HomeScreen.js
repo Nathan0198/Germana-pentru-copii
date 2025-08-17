@@ -32,7 +32,8 @@ export default function HomeScreen({ navigation }) {
   };
 
   const handleGermanPress = () => {
-    navigation.navigate('German');
+    // Navigate directly to the German Map to start the journey
+    navigation.navigate('GermanMap');
   };
 
   const handleMathPress = () => {
@@ -106,6 +107,20 @@ export default function HomeScreen({ navigation }) {
               colors={['#FF6B6B', '#FFE66D']}
               onPress={handleGermanPress}
             />
+            
+            {/* Quick Continue Button for Current Lesson */}
+            <TouchableOpacity 
+              style={styles.continueButton} 
+              onPress={() => navigation.navigate('ZoneLessons', { zoneId: 'castle' })}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.continueIcon}>🏰</Text>
+              <View style={styles.continueTextContainer}>
+                <Text style={styles.continueTitle}>Castelul Familiei</Text>
+                <Text style={styles.continueSubtitle}>Continuă aventura cu Björn</Text>
+              </View>
+              <Text style={styles.continueArrow}>→</Text>
+            </TouchableOpacity>
             
             <ProgressCard
               title="🔢 Exerciții de Matematică"
@@ -305,5 +320,43 @@ const styles = StyleSheet.create({
   },
   spacer: {
     height: 30,
+  },
+  continueButton: {
+    backgroundColor: 'rgba(139, 69, 19, 0.95)',
+    borderRadius: 15,
+    padding: 20,
+    marginTop: 15,
+    marginHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    borderTopWidth: 4,
+    borderTopColor: '#8B4513',
+  },
+  continueIcon: {
+    fontSize: 35,
+    marginRight: 15,
+  },
+  continueTextContainer: {
+    flex: 1,
+  },
+  continueTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 3,
+  },
+  continueSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+  },
+  continueArrow: {
+    fontSize: 24,
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

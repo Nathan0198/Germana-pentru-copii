@@ -149,6 +149,24 @@ export default function AppNavigator() {
             headerBackTitle: 'Home',
           }}
         />
+        
+        <Stack.Screen
+          name="GermanMap"
+          component={GermanMapScreen}
+          options={{
+            title: '🗺️ Harta Aventurilor',
+            headerBackTitle: 'Acasă',
+          }}
+        />
+        
+        <Stack.Screen
+          name="Lesson1AudioDemo"
+          component={AudioTestScreen}
+          options={{
+            title: '🎵 Audio Demo',
+            headerBackTitle: 'Acasă',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

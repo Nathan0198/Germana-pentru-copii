@@ -16,11 +16,18 @@ const { width } = Dimensions.get('window');
 
 export default function GermanMapScreen({ navigation }) {
   const handleZonePress = (zone) => {
-    if (!zone.isUnlocked) {
+    // Castle Family is always unlocked - first zone
+    if (zone.id === 'castle') {
+      navigation.navigate('ZoneLessons', { zoneId: zone.id });
+      return;
+    }
+    
+    // Check if zone is unlocked for other zones
+    if (!zone.isUnlocked && !zone.unlocked) {
       alert('Această zonă este încă blocată! Completează zona anterioară pentru a o debloca.');
       return;
     }
-    // Pentru primul carton, navighează la lecții individuale
+    
     navigation.navigate('ZoneLessons', { zoneId: zone.id });
   };
 
@@ -141,7 +148,10 @@ export default function GermanMapScreen({ navigation }) {
         {/* Zones Grid */}
         <ScrollView 
           style={styles.scrollContainer}
-          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={true}
+          scrollEnabled={true}
+          bounces={true}
         >
           <View style={styles.zonesContainer}>
             {GERMAN_ZONES.map((zone, index) => (
@@ -153,10 +163,10 @@ export default function GermanMapScreen({ navigation }) {
                   index % 2 === 0 ? styles.leftZone : styles.rightZone
                 ]}
                 onPress={() => handleZonePress(zone)}
-                activeOpacity={zone.unlocked ? 0.8 : 1}
+                activeOpacity={(zone.unlocked || zone.isUnlocked || zone.id === 'castle') ? 0.8 : 1}
               >
                 <LinearGradient
-                  colors={zone.unlocked ? 
+                  colors={(zone.unlocked || zone.isUnlocked || zone.id === 'castle') ? 
                     [zone.color, zone.color + '80'] : 
                     ['#BDC3C7', '#95A5A6']
                   }
@@ -167,7 +177,7 @@ export default function GermanMapScreen({ navigation }) {
                     styles.zoneEmoji,
                     !zone.unlocked && styles.lockedEmoji
                   ]}>
-                    {zone.unlocked ? zone.emoji : '🔒'}
+                    {(zone.unlocked || zone.isUnlocked || zone.id === 'castle') ? zone.emoji : '🔒'}
                   </Text>
 
                   {/* Zone Info */}
@@ -188,12 +198,12 @@ export default function GermanMapScreen({ navigation }) {
                       styles.zoneDescription,
                       !zone.unlocked && styles.lockedDescription
                     ]}>
-                      {zone.unlocked ? zone.description : 'Zonă blocată'}
+                      {(zone.unlocked || zone.isUnlocked || zone.id === 'castle') ? zone.description : 'Zonă blocată'}
                     </Text>
                   </View>
 
                   {/* Progress Bar */}
-                  {zone.unlocked && (
+                  {(zone.unlocked || zone.isUnlocked || zone.id === 'castle') && (
                     <View style={styles.progressContainer}>
                       <View style={styles.progressBar}>
                         <View 
@@ -210,7 +220,7 @@ export default function GermanMapScreen({ navigation }) {
                   )}
 
                   {/* Stars indicator for completed zones */}
-                  {zone.unlocked && zone.completed > 0 && (
+                  {(zone.unlocked || zone.isUnlocked || zone.id === 'castle') && zone.completed > 0 && (
                     <View style={styles.starsContainer}>
                       <Text style={styles.starsText}>⭐⭐⭐</Text>
                     </View>
@@ -247,6 +257,7 @@ const styles = StyleSheet.create({
   },
   background: {
     flex: 1,
+    minHeight: '100%',
   },
   header: {
     alignItems: 'center',
@@ -292,10 +303,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   zonesContainer: {
-    paddingBottom: 20,
+    paddingBottom: 100, // More space at bottom for scrolling
+    minHeight: 800, // Ensure minimum height for scrolling
   },
   zoneCard: {
-    marginVertical: 8,
+    marginVertical: 12,
     borderRadius: 20,
     overflow: 'hidden',
     elevation: 5,
@@ -303,6 +315,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
+    minHeight: 160, // Ensure consistent card height
   },
   leftZone: {
     marginRight: width * 0.25,

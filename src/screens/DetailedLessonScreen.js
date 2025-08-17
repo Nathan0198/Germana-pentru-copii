@@ -172,7 +172,28 @@ export default function DetailedLessonScreen({ route, navigation }) {
         'Felicitări! 🎉',
         message,
         [
-          { text: 'Continuă', onPress: () => navigation.goBack() }
+          { text: 'Înapoi la Lecții', onPress: () => navigation.goBack() },
+          { 
+            text: 'Următoarea Lecție →', 
+            onPress: () => {
+              const nextLessonId = lessonId + 1;
+              // Check if next lesson exists (max 25 lessons in Castle)
+              if (nextLessonId <= 25) {
+                navigation.replace('DetailedLesson', { 
+                  lessonId: nextLessonId,
+                  zoneId: route.params.zoneId 
+                });
+              } else {
+                // Completed all lessons in Castle - go back to zones
+                Alert.alert(
+                  '🏆 Castelul Completat!',
+                  'Ai terminat toate lecțiile din Castelul Familiei! Felicitări!',
+                  [{ text: 'Înapoi la Zonă', onPress: () => navigation.goBack() }]
+                );
+              }
+            },
+            style: 'default'
+          }
         ]
       );
     }
@@ -211,10 +232,10 @@ export default function DetailedLessonScreen({ route, navigation }) {
         </View>
 
         <TouchableOpacity 
-          style={styles.nextButton}
+          style={[styles.nextButton, currentStoryIndex >= lesson.story.scenes.length - 1 && styles.gameStartButton]}
           onPress={handleStoryNext}
         >
-          <Text style={styles.nextButtonText}>
+          <Text style={[styles.nextButtonText, currentStoryIndex >= lesson.story.scenes.length - 1 && styles.gameStartText]}>
             {currentStoryIndex < lesson.story.scenes.length - 1 ? 'Următorul →' : 'Hai să ne jucăm! 🎮'}
           </Text>
         </TouchableOpacity>
@@ -515,6 +536,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
+  },
+  gameStartButton: {
+    backgroundColor: '#FF6B6B',
+    borderWidth: 2,
+    borderColor: '#FFE66D',
+  },
+  gameStartText: {
+    fontSize: 18,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   gameContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',

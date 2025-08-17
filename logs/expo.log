@@ -9,3 +9,17 @@ The following packages should be updated for best compatibility with the install
 Your project may not work correctly until you install the expected versions of the packages.
 Waiting on http://localhost:3000
 Logs for your project will appear below.
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+[Reanimated] Seems like you are using a Babel plugin `react-native-reanimated/plugin`. It was moved to `react-native-worklets` package. Please use `react-native-worklets/plugin` instead.
+Web ./index.js ▓▓░░░░░░░░░░░░░░ 17.6% ( 77/209)
+Web ./index.js ▓▓▓▓░░░░░░░░░░░░ 28.0% (168/332)
+Web ./index.js ▓▓▓▓▓▓░░░░░░░░░░ 38.4% (285/460)
+Web ./index.js ▓▓▓▓▓▓▓▓▓░░░░░░░ 62.5% (409/530)
+Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 79.9% (564/631)
+Web Bundled 19842ms index.js (632 modules)
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 74ms index.js (1 module)
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 176ms index.js (1 module)
+Starting project at /home/user/webapp
+Starting Metro Bundler
