@@ -49,6 +49,66 @@ MiniDeutsch este o aplicație educațională concepută special pentru copii rom
 - **Lottie** pentru animații recompense
 - **Expo Linear Gradient** pentru interfața vizuală
 
+## 🏗️ **NOUĂ Arhitectură Modulară pentru Povești**
+
+MiniDeutsch acum utilizează un sistem modular de povești care permite adăugarea ușoară de noi conținuturi fără modificarea codului principal:
+
+### ✨ Caracteristici Noi:
+- **🔧 Modularitate Completă**: Fiecare poveste este un modul independent
+- **⚡ Încărcare Dinamică**: Poveștile se încarcă la cerere
+- **🎯 Progresie Automată**: Deblocarea automată a poveștilor pe baza progresului
+- **🎨 Teme Personalizabile**: Fiecare poveste își poate defini propria temă vizuală
+- **📦 Gestionare Resurse**: Management automat al resurselor (imagini, audio)
+- **🛠️ CLI pentru Dezvoltatori**: Instrument în linia de comandă pentru crearea rapidă de povești
+
+### 📁 Structura Modulară:
+```
+src/
+├── stories/                    # 📚 Module de povești
+│   ├── castle/                # 🏰 Castelul Familiei (implementat)
+│   ├── forest/                # 🌲 Pădurea Cuvintelor (șablon generat)
+│   └── index.js               # Registry pentru înregistrarea poveștilor
+├── services/story/            # 🔧 Servicii pentru sistemul de povești
+│   ├── StoryManager.js        # Manager central pentru povești
+│   ├── StoryInterface.js      # Interfața pentru module
+│   ├── BaseStory.js          # Clasa de bază pentru povești
+│   ├── StoryProgressionService.js # Logica de progresie
+│   └── StoryTemplate.js       # Generator de șabloane
+└── data/
+    └── ModularAppData.js      # 🔄 Nou layer de date modular
+```
+
+### 🚀 Cum să Adaugi o Poveste Nouă:
+
+1. **Folosind CLI-ul (Recomandat)**:
+```bash
+# Vezi șabloanele disponibile
+node tools/story-cli.js list
+
+# Creează o nouă poveste
+node tools/story-cli.js create forest
+
+# Verifică starea sistemului
+node tools/story-cli.js status
+```
+
+2. **Înregistrare Automată**:
+```javascript
+// Povestea se înregistrează automat în src/stories/index.js
+StoryManager.registerStory('forest', ForestStory, {
+  dependencies: ['castle'],
+  autoLoad: false
+});
+```
+
+3. **Zero Modificări la Codul Principal**:
+- ✅ Aplicația principală rămâne intactă
+- ✅ UI-ul funcționează automat cu modulele noi
+- ✅ Progresul se gestionează automat
+
+### 📖 Documentație Detaliată:
+Vezi `docs/MODULAR_STORY_ARCHITECTURE.md` pentru ghidul complet de dezvoltare.
+
 ## 🏗️ Arhitectura Proiectului
 
 ```
@@ -146,23 +206,44 @@ npm run web
 
 ## 🔄 Următorii Pași
 
-1. **Adăugare conținut educațional**
-   - Poveștile pentru fiecare lecție
-   - Exercițiile matematice
-   - Înregistrări audio pentru personaje
+### ✅ Arhitectura Modulară (COMPLETATĂ)
+- ✅ **Sistem modular pentru povești implementat**
+- ✅ **Castle Story refactorizat ca primul modul**
+- ✅ **CLI pentru generarea automată de povești**
+- ✅ **Sistem de progresie automată**
+- ✅ **Template generator pentru dezvoltatori**
 
-2. **Implementare logică jocuri**
-   - Completarea logicii pentru fiecare tip de joc
-   - Sistemul de punctare detaliat
+### 🎯 Următoarele Implementări
 
-3. **Integrare Supabase**
-   - Backend pentru sincronizare
+1. **📚 Extindere Conținut folosind sistemul modular**
+   - Finalizare poveste Forest folosind template-ul generat
+   - Adăugare conținut pentru Village, City, Ocean, Mountains, Space, Magic
+   - Folosire CLI pentru generarea rapidă: `node tools/story-cli.js create village`
+
+2. **🎮 Îmbunătățiri Jocuri**
+   - Completarea logicii pentru fiecare tip de joc în modulele de povești
+   - Sistemul de punctare detaliat per poveste
+
+3. **🎵 Integrare Assets**
+   - Adăugarea sistemului de cache pentru imagini și audio
+   - Implementarea loading-ului automat de resurse per poveste
+
+4. **☁️ Integrare Supabase**
+   - Backend pentru sincronizare progres modular
    - Sistem de autentificare
+   - Backup pentru progresul din fiecare poveste
 
-4. **Polish și optimizări**
-   - Animații și tranziții
-   - Optimizări performanță
-   - Testing extensiv
+5. **✨ Polish și optimizări**
+   - Animații și tranziții între povești
+   - Optimizări performanță pentru încărcare modulară
+   - Testing extensiv pentru sistemul modular
+
+### 🛠️ Instrumente pentru Dezvoltatori
+
+- **Story CLI**: `node tools/story-cli.js help`
+- **Template Generator**: Generare automată de povești noi
+- **Story Manager**: Gestionare centralizată a modulelor
+- **Progress Tracking**: Urmărire automată a progresului între povești
 
 ## 📝 Licență
 
@@ -174,4 +255,7 @@ Creat cu ❤️ pentru învățarea distractivă a copiilor români din Germania
 
 ---
 
-**Status**: Framework complet + Componente UI profesionale - pregătit pentru testare și adăugarea conținutului educațional 🚀
+**Status**: 🎯 **SISTEM MODULAR IMPLEMENTAT** - Framework complet cu arhitectură modulară pentru povești + CLI pentru dezvoltatori - pregătit pentru adăugarea ușoară de noi povești! 🚀
+
+### 🎉 **PROGRES MAJOR**: 
+Aplicația are acum un sistem complet modular care permite adăugarea de noi povești fără modificarea codului principal. Fiecare poveste trăiește în propriul modul și se gestionează automat!

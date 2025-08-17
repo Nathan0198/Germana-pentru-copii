@@ -6,21 +6,30 @@ import AppNavigator from './src/navigation/AppNavigator';
 import AudioService from './src/services/AudioService';
 import ProgressService from './src/services/ProgressService';
 import LanguageService from './src/services/LanguageService';
+import { initializeModularAppData } from './src/data/ModularAppData';
+import StoryManager from './src/services/story/StoryManager';
 
 export default function App() {
   useEffect(() => {
     // Initialize services when app starts
     const initializeApp = async () => {
       try {
+        console.log('🚀 Starting MiniDeutsch initialization...');
+        
+        // Initialize core services
         await LanguageService.initialize();
         await AudioService.initialize();
+        
+        // Initialize modular story system
+        await initializeModularAppData();
         
         // Update streak on app start
         await ProgressService.updateStreak();
         
-        console.log('MiniDeutsch app initialized successfully');
+        console.log('✅ MiniDeutsch app initialized successfully with modular story system');
       } catch (error) {
-        console.error('Error initializing app:', error);
+        console.error('❌ Error initializing app:', error);
+        // Show user-friendly error message or fallback
       }
     };
 
@@ -29,6 +38,7 @@ export default function App() {
     // Cleanup when app unmounts
     return () => {
       AudioService.cleanup();
+      StoryManager.cleanup();
     };
   }, []);
 
