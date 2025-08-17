@@ -677,31 +677,31 @@ export const CASTLE_LESSONS = [
           character: "björn",
           german: "Schau, Emma! Unser Haus ist bunt!",
           romanian: "Uită-te, Emma! Casa noastră este colorată!",
-          image: "colorful_house"
+          image: "bjorn_house_colorful"
         },
         {
           character: "emma",
           german: "Ja! Die Wände sind gelb wie die Sonne!",
           romanian: "Da! Pereții sunt galbeni ca soarele!",
-          image: "yellow_walls_sun"
+          image: "emma_yellow_walls"
         },
         {
           character: "björn",
           german: "Und die Türen sind braun wie Schokolade!",
           romanian: "Și ușile sunt maro ca ciocolata!",
-          image: "brown_doors_chocolate"
+          image: "bjorn_brown_doors"
         },
         {
           character: "emma",
           german: "Die Blumen im Garten sind rot und blau!",
           romanian: "Florile din grădină sunt roșii și albastre!",
-          image: "red_blue_flowers"
+          image: "emma_garden_flowers"
         },
         {
           character: "björn",
           german: "Alles ist so schön und farbenfroh!",
           romanian: "Totul este atât de frumos și colorat!",
-          image: "beautiful_colorful_scene"
+          image: "bjorn_everything_colorful"
         }
       ]
     },
