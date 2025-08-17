@@ -184,13 +184,36 @@ export default function DetailedLessonScreen({ route, navigation }) {
     setCurrentGameScore(score);
     setCurrentGameCompleted(true); // Mark current game as completed
     
-    // Show completion message for this game
+    // Enhanced completion message with score feedback
+    let scoreMessage = '';
+    let scoreEmoji = '';
+    if (score >= 90) {
+      scoreMessage = 'Performanță excepțională!';
+      scoreEmoji = '🌟';
+    } else if (score >= 75) {
+      scoreMessage = 'Foarte bine lucrat!';
+      scoreEmoji = '🎉';
+    } else if (score >= 60) {
+      scoreMessage = 'Bună treabă!';
+      scoreEmoji = '👏';
+    } else {
+      scoreMessage = 'Continuă să exersezi!';
+      scoreEmoji = '💪';
+    }
+
+    const currentGameName = lesson.games[currentGameIndex]?.name || `Jocul ${currentGameIndex + 1}`;
+    const completedGames = Object.keys(gameResults).length + 1; // Include current game
+    const totalGames = lesson.games.length;
+    
     Alert.alert(
-      '🎉 Joc Completat!',
-      `Felicitări! Ai terminat jocul cu scorul: ${score} puncte!`,
+      `${scoreEmoji} Joc Completat!`,
+      `${scoreMessage}\n\n` +
+      `🎮 ${currentGameName}\n` +
+      `📊 Scor: ${score}/100 puncte\n` +
+      `📈 Progres: ${completedGames}/${totalGames} jocuri completate`,
       [
         { 
-          text: 'Continuă!', 
+          text: completedGames < totalGames ? 'Următorul Joc →' : 'Vezi Rezultatul Final →', 
           onPress: () => {
             // Force UI update to show next game button
             setForceUpdate(prev => prev + 1);
@@ -315,61 +338,81 @@ export default function DetailedLessonScreen({ route, navigation }) {
           Jocul {currentGameIndex + 1} / {lesson.games.length}
         </Text>
         
-        {/* Next Game Button - visible after game completion */}
+        {/* Game Completion Summary - visible after game completion */}
         {currentGameCompleted && (
-          <TouchableOpacity 
-            style={styles.nextGameButton}
-            onPress={() => {
-              if (currentGameIndex < lesson.games.length - 1) {
-                setCurrentGameIndex(currentGameIndex + 1);
-                setCurrentGameCompleted(false); // Reset for next game
-              } else {
-                // All games completed - show final completion
-                const totalScore = Object.values(gameResults).reduce((sum, result) => sum + result.score, 0);
-                const averageScore = totalScore / lesson.games.length;
-                
-                let message = 'Ai completat lecția cu succes!';
-                if (averageScore >= 80) {
-                  message = 'Excelent! Ai obținut un scor fantastic! 🌟';
-                } else if (averageScore >= 60) {
-                  message = 'Foarte bine! Continuă tot așa! 👏';
+          <View style={styles.gameCompletionContainer}>
+            <View style={styles.scoreDisplay}>
+              <Text style={styles.scoreDisplayTitle}>Joc Completat!</Text>
+              <Text style={styles.scoreDisplayScore}>{currentGameScore}/100</Text>
+              <Text style={styles.scoreDisplaySubtext}>
+                {currentGameScore >= 90 ? 'Excelent! 🌟' : 
+                 currentGameScore >= 75 ? 'Foarte bine! 🎉' : 
+                 currentGameScore >= 60 ? 'Bună treabă! 👏' : 'Mai exersează! 💪'}
+              </Text>
+            </View>
+            
+            <TouchableOpacity 
+              style={styles.nextGameButton}
+              onPress={() => {
+                if (currentGameIndex < lesson.games.length - 1) {
+                  setCurrentGameIndex(currentGameIndex + 1);
+                  setCurrentGameCompleted(false); // Reset for next game
                 } else {
-                  message = 'Bun început! Poți să mai exersezi! 💪';
+                  // All games completed - show final completion
+                  const allResults = {...gameResults, [`game_${currentGameIndex}`]: {score: currentGameScore, completed: true}};
+                  const totalScore = Object.values(allResults).reduce((sum, result) => sum + result.score, 0);
+                  const averageScore = totalScore / lesson.games.length;
+                  
+                  let message = 'Ai completat lecția cu succes!';
+                  let emoji = '🎉';
+                  if (averageScore >= 80) {
+                    message = 'Excelent! Ai obținut un scor fantastic!';
+                    emoji = '🌟';
+                  } else if (averageScore >= 60) {
+                    message = 'Foarte bine! Continuă tot așa!';
+                    emoji = '👏';
+                  } else {
+                    message = 'Bun început! Poți să mai exersezi!';
+                    emoji = '💪';
+                  }
+                  
+                  Alert.alert(
+                    `Felicitări! ${emoji}`,
+                    `${message}\n\n` +
+                    `📊 Scor total: ${Math.round(totalScore)}/100\n` +
+                    `📈 Scor mediu: ${Math.round(averageScore)}/100\n` +
+                    `🎮 Jocuri completate: ${lesson.games.length}/${lesson.games.length}`,
+                    [
+                      { text: 'Înapoi la Lecții', onPress: () => navigation.goBack() },
+                      { 
+                        text: 'Următoarea Lecție →', 
+                        onPress: () => {
+                          const nextLessonId = lessonId + 1;
+                          if (nextLessonId <= 25) {
+                            navigation.replace('DetailedLesson', { 
+                              lessonId: nextLessonId,
+                              zoneId: route.params.zoneId 
+                            });
+                          } else {
+                            Alert.alert(
+                              '🏆 Castelul Completat!',
+                              'Ai terminat toate lecțiile din Castelul Familiei! Felicitări!',
+                              [{ text: 'Înapoi la Zonă', onPress: () => navigation.goBack() }]
+                            );
+                          }
+                        },
+                        style: 'default'
+                      }
+                    ]
+                  );
                 }
-                
-                Alert.alert(
-                  'Felicitări! 🎉',
-                  message,
-                  [
-                    { text: 'Înapoi la Lecții', onPress: () => navigation.goBack() },
-                    { 
-                      text: 'Următoarea Lecție →', 
-                      onPress: () => {
-                        const nextLessonId = lessonId + 1;
-                        if (nextLessonId <= 25) {
-                          navigation.replace('DetailedLesson', { 
-                            lessonId: nextLessonId,
-                            zoneId: route.params.zoneId 
-                          });
-                        } else {
-                          Alert.alert(
-                            '🏆 Castelul Completat!',
-                            'Ai terminat toate lecțiile din Castelul Familiei! Felicitări!',
-                            [{ text: 'Înapoi la Zonă', onPress: () => navigation.goBack() }]
-                          );
-                        }
-                      },
-                      style: 'default'
-                    }
-                  ]
-                );
-              }
-            }}
-          >
-            <Text style={styles.nextGameButtonText}>
-              {currentGameIndex < lesson.games.length - 1 ? 'Următorul Joc 🎮' : 'Finalizează Lecția 🎉'}
-            </Text>
-          </TouchableOpacity>
+              }}
+            >
+              <Text style={styles.nextGameButtonText}>
+                {currentGameIndex < lesson.games.length - 1 ? 'Următorul Joc 🎮' : 'Finalizează Lecția 🎉'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
     );
@@ -753,5 +796,42 @@ const styles = StyleSheet.create({
     width: 300,
     height: 220,
     borderRadius: 20,
+  },
+  
+  // ================================
+  // GAME COMPLETION STYLES
+  // ================================
+  gameCompletionContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 15,
+    padding: 20,
+    margin: 15,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  scoreDisplay: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  scoreDisplayTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 10,
+  },
+  scoreDisplayScore: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#28A745',
+    marginBottom: 5,
+  },
+  scoreDisplaySubtext: {
+    fontSize: 16,
+    color: '#6C757D',
+    textAlign: 'center',
   },
 });
