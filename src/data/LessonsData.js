@@ -1436,7 +1436,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_explorer": 1 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -1557,7 +1557,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_explorer": 2 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -1694,7 +1694,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_explorer": 3 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -1813,7 +1813,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_explorer": 4 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -1950,7 +1950,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_explorer": 5 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -2072,7 +2072,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_explorer": 6 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -2209,7 +2209,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_explorer": 7 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -2328,7 +2328,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_explorer": 8 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -2465,7 +2465,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_explorer": 9 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -2594,7 +2594,7 @@ export const CASTLE_LESSONS = [
       }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -2731,7 +2731,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_master": 1 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -2850,7 +2850,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_master": 2 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -2987,7 +2987,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_master": 3 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -3110,7 +3110,7 @@ export const CASTLE_LESSONS = [
       badge_progress: { "castle_master": 4 }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 70
@@ -3274,7 +3274,7 @@ export const CASTLE_LESSONS = [
       }
     },
 
-    unlock_requirements: null // TEMP: Made available for testing,
+    unlock_requirements: null, // TEMP: Made available for testing
     completion_requirements: {
       all_games_completed: true,
       minimum_score: 85
