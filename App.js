@@ -6,6 +6,7 @@ import AppNavigator from './src/navigation/AppNavigator';
 import AudioService from './src/services/AudioService';
 import ProgressService from './src/services/ProgressService';
 import LanguageService from './src/services/LanguageService';
+import { StoryManager } from './src/services/story/StoryManager';
 
 export default function App() {
   useEffect(() => {
@@ -15,10 +16,14 @@ export default function App() {
         await LanguageService.initialize();
         await AudioService.initialize();
         
+        // Initialize our new StoryManager with all story modules
+        await StoryManager.initialize();
+        
         // Update streak on app start
         await ProgressService.updateStreak();
         
         console.log('MiniDeutsch app initialized successfully');
+        console.log('StoryManager loaded', StoryManager.getStoryCount(), 'story modules');
       } catch (error) {
         console.error('Error initializing app:', error);
       }

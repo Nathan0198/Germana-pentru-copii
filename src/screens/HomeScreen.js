@@ -47,6 +47,10 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate('Settings');
   };
 
+  const handleStoryModulesPress = () => {
+    navigation.navigate('StoryModules');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -132,6 +136,17 @@ export default function HomeScreen({ navigation }) {
               <Text style={styles.smallMenuTitle}>SETĂRI</Text>
             </TouchableOpacity>
           </View>
+
+          {/* Story Modules Button - NEW FEATURE */}
+          <TouchableOpacity 
+            style={styles.storyModulesButton} 
+            onPress={handleStoryModulesPress}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.storyModulesIcon}>📚</Text>
+            <Text style={styles.storyModulesTitle}>STORY MODULES (NEW)</Text>
+            <Text style={styles.storyModulesSubtitle}>View all 25 lessons in modular format</Text>
+          </TouchableOpacity>
 
           {/* Audio Test Button */}
           <TouchableOpacity 
@@ -232,6 +247,36 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#2C3E50',
+    textAlign: 'center',
+  },
+  storyModulesButton: {
+    backgroundColor: 'rgba(74, 144, 226, 0.95)',
+    borderRadius: 15,
+    padding: 20,
+    alignItems: 'center',
+    marginTop: 15,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    borderTopWidth: 4,
+    borderTopColor: '#3498DB',
+  },
+  storyModulesIcon: {
+    fontSize: 30,
+    marginBottom: 8,
+  },
+  storyModulesTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  storyModulesSubtitle: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
   },
   audioTestButton: {

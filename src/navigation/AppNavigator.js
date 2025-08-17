@@ -13,6 +13,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ZoneLessonsScreen from '../screens/ZoneLessonsScreen';
 import AudioTestScreen from '../screens/AudioTestScreen';
+import StoryModulesScreen from '../screens/StoryModulesScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -137,6 +138,15 @@ export default function AppNavigator() {
           options={{
             title: 'Test Audio TTS',
             headerBackTitle: 'Setări',
+          }}
+        />
+        
+        <Stack.Screen
+          name="StoryModules"
+          component={StoryModulesScreen}
+          options={{
+            title: '📚 Story Modules',
+            headerBackTitle: 'Home',
           }}
         />
       </Stack.Navigator>
