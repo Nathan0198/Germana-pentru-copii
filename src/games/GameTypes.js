@@ -1943,6 +1943,8 @@ export const CharacterEmotionReaderGame = ({ gameData, onComplete }) => {
 // LESSON 3 - HOUSE TOUR ADVENTURE GAME
 // ===============================
 export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
+  console.log('🏠 HouseTourAdventureGame rendering with data:', gameData);
+  
   const [currentRoom, setCurrentRoom] = React.useState(0);
   const [score, setScore] = React.useState(0);
   const [isZoomed, setIsZoomed] = React.useState(false);
@@ -1950,11 +1952,14 @@ export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
   const [bjornSpeaking, setBjornSpeaking] = React.useState(false);
 
   const rooms = gameData?.rooms || [
-    { id: 'wohnzimmer', name: 'das Wohnzimmer', german: 'Hier ist das Wohnzimmer!', romanian: 'Aici este camera de zi!', image: 'living_room_detailed' },
-    { id: 'küche', name: 'die Küche', german: 'Das ist die Küche!', romanian: 'Aceasta este bucătăria!', image: 'kitchen_detailed' },
-    { id: 'schlafzimmer', name: 'das Schlafzimmer', german: 'Hier sind die Schlafzimmer!', romanian: 'Aici sunt dormitoarele!', image: 'bedroom_detailed' },
-    { id: 'bjorn_zimmer', name: 'mein Zimmer', german: 'Das ist mein Zimmer!', romanian: 'Aceasta este camera mea!', image: 'bjorn_room_detailed' }
+    { id: 'wohnzimmer', name: 'das Wohnzimmer', german: 'Hier ist das Wohnzimmer!', romanian: 'Aici este camera de zi!', image: 'living_room_scene' },
+    { id: 'küche', name: 'die Küche', german: 'Das ist die Küche!', romanian: 'Aceasta este bucătăria!', image: 'kitchen_scene' },
+    { id: 'schlafzimmer', name: 'das Schlafzimmer', german: 'Hier sind die Schlafzimmer!', romanian: 'Aici sunt dormitoarele!', image: 'bedroom_scene' },
+    { id: 'bjorn_zimmer', name: 'mein Zimmer', german: 'Das ist mein Zimmer!', romanian: 'Aceasta este camera mea!', image: 'castle_scenes_combined' }
   ];
+  
+  console.log('🏠 Rooms data:', rooms);
+  console.log('🏠 Current room data:', rooms[currentRoom]);
 
   const currentRoomData = rooms[currentRoom];
 
@@ -1981,6 +1986,8 @@ export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
     }
   };
 
+  console.log('🏠 About to render HouseTourAdventureGame UI');
+  
   return (
     <View style={styles.houseTourContainer}>
       <Text style={styles.houseTourTitle}>Tur prin Casa lui Björn! 🏠</Text>
