@@ -417,19 +417,19 @@ export const CASTLE_LESSONS = [
           character: "björn",
           german: "Guten Morgen! Ich stehe früh auf.",
           romanian: "Bună dimineața! Mă scol devreme.",
-          image: "bjorn_waking_up"
+          image: "bjorn_morning_wakeup"
         },
         {
           character: "papa_bear",
           german: "Guten Morgen, Björn! Hast du gut geschlafen?",
           romanian: "Bună dimineața, Björn! Ai dormit bine?",
-          image: "papa_greeting"
+          image: "papa_greeting_bjorn"
         },
         {
           character: "björn",
           german: "Ja, sehr gut! Wo ist das Frühstück?",
           romanian: "Da, foarte bine! Unde este micul dejun?",
-          image: "bjorn_looking_for_breakfast"
+          image: "bjorn_looking_breakfast"
         },
         {
           character: "mama_bear",
