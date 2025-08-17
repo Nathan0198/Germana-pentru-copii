@@ -1515,6 +1515,430 @@ export const SimonSaysGame = ({ gameData, onComplete }) => {
   );
 };
 
+// ===============================
+// LESSON 2 - FAMILY TREE BUILDER GAME
+// ===============================
+export const FamilyTreeBuilderGame = ({ gameData, onComplete }) => {
+  const [familyTree, setFamilyTree] = React.useState({
+    papa: null,
+    mama: null,
+    bjorn: null,
+    anna: null
+  });
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+  const [selectedMember, setSelectedMember] = React.useState(null);
+
+  const familyMembers = gameData?.familyMembers || [
+    { id: 'papa_bear', name: 'Papa Bär', image: 'papa_bear', slot: 'papa' },
+    { id: 'mama_bear', name: 'Mama Bär', image: 'mama_bear', slot: 'mama' },
+    { id: 'bjorn_bear', name: 'Björn', image: 'bjorn_happy', slot: 'bjorn' },
+    { id: 'anna_bear', name: 'Anna', image: 'anna_bear', slot: 'anna' }
+  ];
+
+  const handleMemberSelect = (member) => {
+    if (selectedMember && selectedMember.id === member.id) {
+      setSelectedMember(null);
+    } else {
+      setSelectedMember(member);
+    }
+  };
+
+  const handleSlotSelect = (slotId) => {
+    if (selectedMember) {
+      setFamilyTree(prev => ({
+        ...prev,
+        [slotId]: selectedMember
+      }));
+      
+      setScore(prev => prev + 25);
+      
+      // Play feedback audio
+      AudioService.playLesson2Game('family_placed', 'de');
+      
+      setSelectedMember(null);
+
+      // Check if tree is complete
+      const newTree = { ...familyTree, [slotId]: selectedMember };
+      if (Object.values(newTree).every(member => member !== null)) {
+        setTimeout(() => {
+          setCompleted(true);
+          onComplete?.(100);
+        }, 1000);
+      }
+    }
+  };
+
+  const availableMembers = familyMembers.filter(
+    member => !Object.values(familyTree).find(placed => placed?.id === member.id)
+  );
+
+  return (
+    <View style={styles.familyTreeContainer}>
+      <Text style={styles.familyTreeTitle}>Construiește Arborele Familiei! 🌳</Text>
+      
+      <ScrollView style={styles.familyTreeArea}>
+        {/* Parents Row */}
+        <View style={styles.familyTreeRow}>
+          <TouchableOpacity 
+            style={[styles.familyMemberSlot, familyTree.papa && styles.familyMemberSlotFilled]}
+            onPress={() => handleSlotSelect('papa')}
+          >
+            {familyTree.papa ? (
+              <>
+                <Image 
+                  source={ImageService.getImage(familyTree.papa.image)}
+                  style={styles.familyMemberImage}
+                />
+                <Text style={styles.familyMemberName}>{familyTree.papa.name}</Text>
+              </>
+            ) : (
+              <Text style={styles.familyMemberName}>Papa</Text>
+            )}
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.familyMemberSlot, familyTree.mama && styles.familyMemberSlotFilled]}
+            onPress={() => handleSlotSelect('mama')}
+          >
+            {familyTree.mama ? (
+              <>
+                <Image 
+                  source={ImageService.getImage(familyTree.mama.image)}
+                  style={styles.familyMemberImage}
+                />
+                <Text style={styles.familyMemberName}>{familyTree.mama.name}</Text>
+              </>
+            ) : (
+              <Text style={styles.familyMemberName}>Mama</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        {/* Children Row */}
+        <View style={styles.familyTreeRow}>
+          <TouchableOpacity 
+            style={[styles.familyMemberSlot, familyTree.bjorn && styles.familyMemberSlotFilled]}
+            onPress={() => handleSlotSelect('bjorn')}
+          >
+            {familyTree.bjorn ? (
+              <>
+                <Image 
+                  source={ImageService.getImage(familyTree.bjorn.image)}
+                  style={styles.familyMemberImage}
+                />
+                <Text style={styles.familyMemberName}>{familyTree.bjorn.name}</Text>
+              </>
+            ) : (
+              <Text style={styles.familyMemberName}>Björn</Text>
+            )}
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.familyMemberSlot, familyTree.anna && styles.familyMemberSlotFilled]}
+            onPress={() => handleSlotSelect('anna')}
+          >
+            {familyTree.anna ? (
+              <>
+                <Image 
+                  source={ImageService.getImage(familyTree.anna.image)}
+                  style={styles.familyMemberImage}
+                />
+                <Text style={styles.familyMemberName}>{familyTree.anna.name}</Text>
+              </>
+            ) : (
+              <Text style={styles.familyMemberName}>Anna</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      {/* Available Family Members Pool */}
+      <View style={styles.familyMembersPool}>
+        {availableMembers.map((member) => (
+          <TouchableOpacity
+            key={member.id}
+            style={[
+              styles.familyMemberCard,
+              selectedMember?.id === member.id && { backgroundColor: '#FFF3CD' }
+            ]}
+            onPress={() => handleMemberSelect(member)}
+          >
+            <Image 
+              source={ImageService.getImage(member.image)}
+              style={styles.familyMemberCardImage}
+            />
+            <Text style={styles.familyMemberCardName}>{member.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Familie completă!</Text>
+          <Text style={styles.completedSubtext}>Arbore familiar perfect!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 2 - VOICE MATCHING PAIRS GAME  
+// ===============================
+export const VoiceMatchingPairsGame = ({ gameData, onComplete }) => {
+  const [selectedVoice, setSelectedVoice] = React.useState(null);
+  const [selectedCharacter, setSelectedCharacter] = React.useState(null);
+  const [matches, setMatches] = React.useState([]);
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+
+  const voicePairs = gameData?.voicePairs || [
+    { id: 'papa_voice', audioFile: 'papa_voice', character: 'papa_bear', feedback: 'Das ist Papa Bärs Stimme!' },
+    { id: 'mama_voice', audioFile: 'mama_voice', character: 'mama_bear', feedback: 'Das ist Mama Bärs Stimme!' },
+    { id: 'bjorn_voice', audioFile: 'bjorn_voice', character: 'bjorn_happy', feedback: 'Das ist Björns Stimme!' },
+    { id: 'anna_voice', audioFile: 'anna_voice', character: 'anna_bear', feedback: 'Das ist Annas Stimme!' }
+  ];
+
+  const characters = gameData?.characters || [
+    { id: 'papa_bear', name: 'Papa Bär', image: 'papa_bear' },
+    { id: 'mama_bear', name: 'Mama Bär', image: 'mama_bear' },
+    { id: 'bjorn_happy', name: 'Björn', image: 'bjorn_happy' },
+    { id: 'anna_bear', name: 'Anna', image: 'anna_bear' }
+  ];
+
+  const handleVoiceSelect = (voice) => {
+    setSelectedVoice(voice);
+    // Play voice audio
+    AudioService.playLesson2Game(voice.audioFile, 'de');
+  };
+
+  const handleCharacterSelect = (character) => {
+    if (selectedVoice) {
+      const isCorrectMatch = selectedVoice.character === character.id;
+      
+      if (isCorrectMatch) {
+        setMatches(prev => [...prev, { voice: selectedVoice, character: character }]);
+        setScore(prev => prev + 25);
+        
+        // Play success feedback
+        AudioService.playLesson2Game('correct_match', 'de');
+        
+        if (matches.length + 1 >= voicePairs.length) {
+          setTimeout(() => {
+            setCompleted(true);
+            onComplete?.(100);
+          }, 1000);
+        }
+      } else {
+        // Wrong match feedback
+        AudioService.playLesson2Game('wrong_match', 'de');
+      }
+      
+      setSelectedVoice(null);
+      setSelectedCharacter(null);
+    }
+  };
+
+  const isVoiceMatched = (voiceId) => {
+    return matches.find(match => match.voice.id === voiceId);
+  };
+
+  const isCharacterMatched = (characterId) => {
+    return matches.find(match => match.character.id === characterId);
+  };
+
+  return (
+    <View style={styles.voiceMatchingContainer}>
+      <Text style={styles.voiceMatchingTitle}>Potrivește Vocile cu Personajele! 🎵</Text>
+      
+      {/* Voice Buttons */}
+      <View style={styles.voicesRow}>
+        {voicePairs.map((voice) => (
+          <TouchableOpacity
+            key={voice.id}
+            style={[
+              styles.voiceButton,
+              selectedVoice?.id === voice.id && styles.voiceButtonSelected,
+              isVoiceMatched(voice.id) && styles.voiceButtonMatched
+            ]}
+            onPress={() => !isVoiceMatched(voice.id) && handleVoiceSelect(voice)}
+            disabled={isVoiceMatched(voice.id)}
+          >
+            <Text style={styles.voiceIcon}>🎵</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Character Cards */}
+      <View style={styles.charactersRow}>
+        {characters.map((character) => (
+          <TouchableOpacity
+            key={character.id}
+            style={[
+              styles.characterCard,
+              selectedCharacter?.id === character.id && styles.characterCardSelected,
+              isCharacterMatched(character.id) && styles.characterCardMatched
+            ]}
+            onPress={() => handleCharacterSelect(character)}
+            disabled={isCharacterMatched(character.id)}
+          >
+            <Image 
+              source={ImageService.getImage(character.image)}
+              style={styles.characterImage}
+            />
+            <Text style={styles.characterName}>{character.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {selectedVoice && (
+        <Text style={styles.instructionText}>
+          Acum selectează personajul care are această voce! 👆
+        </Text>
+      )}
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Vocile potrivite!</Text>
+          <Text style={styles.completedSubtext}>Excelent ureche muzicală!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// ===============================
+// LESSON 2 - CHARACTER EMOTION READER GAME
+// ===============================
+export const CharacterEmotionReaderGame = ({ gameData, onComplete }) => {
+  const [currentScene, setCurrentScene] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [selectedEmotion, setSelectedEmotion] = React.useState(null);
+  const [answered, setAnswered] = React.useState(false);
+  const [completed, setCompleted] = React.useState(false);
+
+  const emotionScenes = gameData?.emotionScenes || [
+    {
+      image: 'bjorn_happy',
+      text: 'Björn zâmbește larg și pare foarte fericit să-și prezinte familia.',
+      correctEmotion: 'happy',
+      options: ['happy', 'sad', 'angry', 'surprised']
+    },
+    {
+      image: 'emma_excited',
+      text: 'Emma bate din aripi de bucurie când vede familia frumoasă.',
+      correctEmotion: 'excited',
+      options: ['excited', 'tired', 'confused', 'scared']
+    },
+    {
+      image: 'anna_shy',
+      text: 'Anna se ascunde în spatele mamei când vede vizitatorii.',
+      correctEmotion: 'shy',
+      options: ['shy', 'angry', 'happy', 'sleepy']
+    }
+  ];
+
+  const emotionEmojis = {
+    happy: '😊',
+    sad: '😢',
+    angry: '😠',
+    surprised: '😲',
+    excited: '🤗',
+    tired: '😴',
+    confused: '😕',
+    scared: '😨',
+    shy: '😳',
+    sleepy: '😴'
+  };
+
+  const emotionLabels = {
+    happy: 'Fericit',
+    sad: 'Trist',
+    angry: 'Supărat',
+    surprised: 'Surprins',
+    excited: 'Entuziasmat',
+    tired: 'Obosit',
+    confused: 'Confuz',
+    scared: 'Speriat',
+    shy: 'Timid',
+    sleepy: 'Somnoros'
+  };
+
+  const currentSceneData = emotionScenes[currentScene];
+
+  const handleEmotionSelect = (emotion) => {
+    if (answered) return;
+    
+    setSelectedEmotion(emotion);
+    setAnswered(true);
+    
+    const isCorrect = emotion === currentSceneData.correctEmotion;
+    
+    if (isCorrect) {
+      setScore(prev => prev + Math.round(100 / emotionScenes.length));
+      AudioService.playLesson2Game('emotion_correct', 'de');
+    } else {
+      AudioService.playLesson2Game('emotion_wrong', 'de');
+    }
+    
+    setTimeout(() => {
+      if (currentScene < emotionScenes.length - 1) {
+        setCurrentScene(prev => prev + 1);
+        setSelectedEmotion(null);
+        setAnswered(false);
+      } else {
+        setCompleted(true);
+        onComplete?.(score);
+      }
+    }, 2000);
+  };
+
+  return (
+    <View style={styles.emotionReaderContainer}>
+      <Text style={styles.emotionReaderTitle}>Citește Emoțiile Personajelor! 😊</Text>
+      
+      <View style={styles.storySceneContainer}>
+        <Image 
+          source={ImageService.getImage(currentSceneData.image)}
+          style={styles.sceneImage}
+        />
+        <Text style={styles.sceneText}>{currentSceneData.text}</Text>
+      </View>
+
+      <View style={styles.emotionOptionsContainer}>
+        {currentSceneData.options.map((emotion) => (
+          <TouchableOpacity
+            key={emotion}
+            style={[
+              styles.emotionOption,
+              selectedEmotion === emotion && styles.emotionOptionSelected,
+              answered && emotion === currentSceneData.correctEmotion && styles.emotionOptionCorrect,
+              answered && selectedEmotion === emotion && emotion !== currentSceneData.correctEmotion && styles.emotionOptionWrong
+            ]}
+            onPress={() => handleEmotionSelect(emotion)}
+            disabled={answered}
+          >
+            <Text style={styles.emotionEmoji}>{emotionEmojis[emotion]}</Text>
+            <Text style={styles.emotionLabel}>{emotionLabels[emotion]}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <Text style={styles.progressText}>
+        Scena {currentScene + 1} din {emotionScenes.length}
+      </Text>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Emoții citite perfect!</Text>
+          <Text style={styles.completedSubtext}>Ești un expert în emoții!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   gameContainer: {
     flex: 1,
@@ -2552,5 +2976,259 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#6C757D',
     fontStyle: 'italic',
+  },
+
+  // ===============================
+  // LESSON 2 - FAMILY TREE BUILDER STYLES
+  // ===============================
+  familyTreeContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  familyTreeTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  familyTreeArea: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  familyTreeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 15,
+    alignItems: 'center',
+  },
+  familyMemberSlot: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: '#E9ECEF',
+    borderStyle: 'dashed',
+    backgroundColor: '#F8F9FA',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  familyMemberSlotFilled: {
+    borderColor: '#28A745',
+    borderStyle: 'solid',
+    backgroundColor: '#D4EDDA',
+  },
+  familyMemberImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+  },
+  familyMemberName: {
+    fontSize: 12,
+    color: '#495057',
+    textAlign: 'center',
+    marginTop: 5,
+    fontWeight: '500',
+  },
+  familyMembersPool: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#E9ECEF',
+    borderRadius: 15,
+    padding: 15,
+    marginTop: 20,
+  },
+  familyMemberCard: {
+    width: 70,
+    height: 90,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 5,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  familyMemberCardImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  familyMemberCardName: {
+    fontSize: 10,
+    color: '#495057',
+    textAlign: 'center',
+    marginTop: 5,
+    fontWeight: '500',
+  },
+
+  // ===============================  
+  // LESSON 2 - VOICE MATCHING PAIRS STYLES
+  // ===============================
+  voiceMatchingContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  voiceMatchingTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  voicesRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 30,
+  },
+  voiceButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#007BFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  voiceButtonSelected: {
+    backgroundColor: '#FFC107',
+  },
+  voiceButtonMatched: {
+    backgroundColor: '#28A745',
+  },
+  voiceIcon: {
+    fontSize: 30,
+    color: '#FFFFFF',
+  },
+  charactersRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  characterCard: {
+    width: 80,
+    height: 100,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  characterCardSelected: {
+    backgroundColor: '#FFF3CD',
+    borderColor: '#FFC107',
+    borderWidth: 2,
+  },
+  characterCardMatched: {
+    backgroundColor: '#D4EDDA',
+    borderColor: '#28A745',
+    borderWidth: 2,
+  },
+  characterImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  characterName: {
+    fontSize: 12,
+    color: '#495057',
+    textAlign: 'center',
+    marginTop: 5,
+    fontWeight: '500',
+  },
+
+  // ===============================
+  // LESSON 2 - CHARACTER EMOTION READER STYLES  
+  // ===============================
+  emotionReaderContainer: {
+    flex: 1,
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+  },
+  emotionReaderTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  storySceneContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  sceneImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  sceneText: {
+    fontSize: 16,
+    color: '#495057',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  emotionOptionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  emotionOption: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  emotionOptionSelected: {
+    backgroundColor: '#FFC107',
+  },
+  emotionOptionCorrect: {
+    backgroundColor: '#28A745',
+  },
+  emotionOptionWrong: {
+    backgroundColor: '#DC3545',
+  },
+  emotionEmoji: {
+    fontSize: 30,
+  },
+  emotionLabel: {
+    fontSize: 12,
+    color: '#495057',
+    textAlign: 'center',
+    marginTop: 5,
+    fontWeight: '500',
   },
 });

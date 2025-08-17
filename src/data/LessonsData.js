@@ -202,56 +202,55 @@ export const CASTLE_LESSONS = [
 
     games: [
       {
-        type: "drag_drop",
-        instructor: "max",
-        title: "Conectează membrii familiei:",
-        items: [
-          { 
-            text: "der Vater", 
-            target: "papa_bear",
-            correct: true,
-            feedback: "Sehr gut! Das ist Papa Bär!" 
-          },
-          { 
-            text: "die Mutter", 
-            target: "mama_bear",
-            correct: true,
-            feedback: "Perfect! Das ist Mama Bär!" 
-          },
-          { 
-            text: "die Schwester", 
-            target: "anna_bear",
-            correct: true,
-            feedback: "Wunderbar! Das ist Anna!" 
-          },
-          { 
-            text: "die Familie", 
-            target: "whole_family",
-            correct: true,
-            feedback: "Toll! Familia completă!" 
-          }
+        type: "family_tree_builder",
+        instructor: "björn",
+        title: "Construiește Arborele Familiei!",
+        familyMembers: [
+          { id: 'papa_bear', name: 'Papa Bär', image: 'papa_bear', slot: 'papa' },
+          { id: 'mama_bear', name: 'Mama Bär', image: 'mama_bear', slot: 'mama' },
+          { id: 'bjorn_bear', name: 'Björn', image: 'bjorn_happy', slot: 'bjorn' },
+          { id: 'anna_bear', name: 'Anna', image: 'anna_bear', slot: 'anna' }
         ]
       },
       {
-        type: "memory_game",
+        type: "voice_matching_pairs",
         instructor: "emma",
-        title: "Găsește perechile română-germană:",
-        pairs: [
-          { romanian: "TATA", german: "PAPA", feedback: "Perfekt! Papa înseamnă tata!" },
-          { romanian: "MAMA", german: "MAMA", feedback: "Sehr gut! Mama este la fel!" },
-          { romanian: "SORA", german: "DIE SCHWESTER", feedback: "Toll! Schwester înseamnă sora!" },
-          { romanian: "FAMILIA", german: "DIE FAMILIE", feedback: "Wunderbar! Familie înseamnă familia!" }
+        title: "Potrivește Vocile cu Personajele!",
+        voicePairs: [
+          { id: 'papa_voice', audioFile: 'papa_voice', character: 'papa_bear', feedback: 'Das ist Papa Bärs Stimme!' },
+          { id: 'mama_voice', audioFile: 'mama_voice', character: 'mama_bear', feedback: 'Das ist Mama Bärs Stimme!' },
+          { id: 'bjorn_voice', audioFile: 'bjorn_voice', character: 'bjorn_happy', feedback: 'Das ist Björns Stimme!' },
+          { id: 'anna_voice', audioFile: 'anna_voice', character: 'anna_bear', feedback: 'Das ist Annas Stimme!' }
+        ],
+        characters: [
+          { id: 'papa_bear', name: 'Papa Bär', image: 'papa_bear' },
+          { id: 'mama_bear', name: 'Mama Bär', image: 'mama_bear' },
+          { id: 'bjorn_happy', name: 'Björn', image: 'bjorn_happy' },
+          { id: 'anna_bear', name: 'Anna', image: 'anna_bear' }
         ]
       },
       {
-        type: "quick_choice",
+        type: "character_emotion_reader",
         instructor: "max",
-        questions: [
+        title: "Citește Emoțiile Personajelor!",
+        emotionScenes: [
           {
-            question: "Cum spui 'sora' în germană?",
-            options: ["der Bruder", "die Schwester", "die Mutter"],
-            correct: 1,
-            feedback: "Richtig! Die Schwester înseamnă sora!"
+            image: 'bjorn_happy',
+            text: 'Björn zâmbește larg și pare foarte fericit să-și prezinte familia.',
+            correctEmotion: 'happy',
+            options: ['happy', 'sad', 'angry', 'surprised']
+          },
+          {
+            image: 'emma_excited',
+            text: 'Emma bate din aripi de bucurie când vede familia frumoasă.',
+            correctEmotion: 'excited',
+            options: ['excited', 'tired', 'confused', 'scared']
+          },
+          {
+            image: 'anna_shy',
+            text: 'Anna se ascunde în spatele mamei când vede vizitatorii.',
+            correctEmotion: 'shy',
+            options: ['shy', 'angry', 'happy', 'sleepy']
           }
         ]
       }

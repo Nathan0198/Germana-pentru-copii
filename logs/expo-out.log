@@ -49,3 +49,16 @@ Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
 Web Bundled 1419ms index.js (1 module)
 Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
 Web Bundled 924ms index.js (1 module)
+Starting project at /home/user/webapp
+Starting Metro Bundler
+Waiting on http://localhost:3000
+Logs for your project will appear below.
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 78.1% (516/584)
+Web Bundled 4002ms index.js (644 modules)
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 45ms index.js (1 module)
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 59ms index.js (1 module)
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 66ms index.js (1 module)
