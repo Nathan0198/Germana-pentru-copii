@@ -2147,15 +2147,21 @@ export const RoomSoundMatchGame = ({ gameData, onComplete }) => {
   const currentRoundData = soundRounds[currentRound];
 
   const playRoundSound = () => {
+    console.log('🔊 Playing sound:', currentRoundData.sound);
     AudioService.playLesson3Game(currentRoundData.sound, 'sound');
     setShowHint(true);
     setTimeout(() => setShowHint(false), 2000);
   };
 
   const handleRoomSelect = (roomId) => {
+    console.log('🔊 Room selected:', roomId);
+    console.log('🔊 Correct room:', currentRoundData.correctRoom);
+    console.log('🔊 Is correct?', roomId === currentRoundData.correctRoom);
+    
     setSelectedRoom(roomId);
     
     if (roomId === currentRoundData.correctRoom) {
+      console.log('🔊 Correct! Playing success audio...');
       setScore(prev => prev + 25);
       AudioService.playLesson3Game('correct_room', 'de');
       
@@ -2169,6 +2175,7 @@ export const RoomSoundMatchGame = ({ gameData, onComplete }) => {
         }
       }, 1500);
     } else {
+      console.log('🔊 Wrong room! Playing error audio...');
       AudioService.playLesson3Game('wrong_room', 'de');
       setTimeout(() => setSelectedRoom(null), 1000);
     }
@@ -2206,7 +2213,7 @@ export const RoomSoundMatchGame = ({ gameData, onComplete }) => {
             disabled={selectedRoom !== null}
           >
             <Image 
-              source={ImageService.getImage(`${roomId}_icon`)}
+              source={ImageService.getImage('room_icons')}
               style={styles.roomChoiceImage}
             />
             <Text style={styles.roomChoiceName}>
@@ -2263,13 +2270,19 @@ export const DragObjectsHomeGame = ({ gameData, onComplete }) => {
   ];
 
   const handleObjectSelect = (furnitureItem) => {
+    console.log('🪑 Object selected:', furnitureItem);
     setSelectedObject(furnitureItem);
     // Play object name
     AudioService.playLesson3Game(furnitureItem.id, 'de');
   };
 
   const handleRoomDrop = (roomId) => {
+    console.log('🪑 Room drop attempted:', roomId);
+    console.log('🪑 Selected object:', selectedObject);
+    console.log('🪑 Correct room for object:', selectedObject?.correctRoom);
+    
     if (selectedObject && selectedObject.correctRoom === roomId) {
+      console.log('🪑 Correct placement! Adding object to room...');
       setPlacedObjects(prev => [...prev, selectedObject.id]);
       setScore(prev => prev + Math.round(100 / furniture.length));
       
@@ -2285,9 +2298,12 @@ export const DragObjectsHomeGame = ({ gameData, onComplete }) => {
         }, 1000);
       }
     } else if (selectedObject) {
+      console.log('🪑 Wrong room! Deselecting object...');
       // Wrong room
       AudioService.playLesson3Game('wrong_room_drop', 'de');
       setSelectedObject(null);
+    } else {
+      console.log('🪑 No object selected, cannot drop');
     }
   };
 
@@ -2330,7 +2346,7 @@ export const DragObjectsHomeGame = ({ gameData, onComplete }) => {
             onPress={() => handleObjectSelect(item)}
           >
             <Image 
-              source={ImageService.getImage(item.image)}
+              source={ImageService.getImage('furniture_collection')}
               style={styles.furnitureImage}
             />
             <Text style={styles.furnitureName}>{item.name}</Text>
@@ -3954,5 +3970,40 @@ const styles = StyleSheet.create({
     color: '#495057',
     textAlign: 'center',
     fontWeight: '500',
+  },
+
+  // ===============================
+  // COMMON STYLES
+  // ===============================
+  instructionText: {
+    fontSize: 16,
+    color: '#2C3E50',
+    textAlign: 'center',
+    backgroundColor: '#E3F2FD',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 10,
+    fontWeight: '500',
+  },
+  completedContainer: {
+    backgroundColor: '#D4EDDA',
+    borderRadius: 15,
+    padding: 20,
+    marginTop: 20,
+    alignItems: 'center',
+    borderColor: '#28A745',
+    borderWidth: 2,
+  },
+  completedText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#155724',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  completedSubtext: {
+    fontSize: 16,
+    color: '#155724',
+    textAlign: 'center',
   },
 });
