@@ -31,6 +31,7 @@ export default function DetailedLessonScreen({ route, navigation }) {
   const [isPlayingStory, setIsPlayingStory] = useState(true);
   const [gameResults, setGameResults] = useState({});
   const [currentGameScore, setCurrentGameScore] = useState(0);
+  const [forceUpdate, setForceUpdate] = useState(0); // Trigger for UI updates
   // AudioService este deja o instanță singleton, nu trebuie recreat
 
   useEffect(() => {
@@ -72,6 +73,9 @@ export default function DetailedLessonScreen({ route, navigation }) {
       console.log(`German: "${scene.german}"`);
       console.log(`Romanian: "${scene.romanian}"`);
       
+      // Ensure no overlapping audio by stopping any current playback
+      await AudioService.stopAllSounds();
+      
       // Special handling for Lesson 1 with numbered story files
       if (lessonId === 1) {
         // Find which scene this is in the story array
@@ -85,19 +89,23 @@ export default function DetailedLessonScreen({ route, navigation }) {
         console.log(`🎬 Found scene at index ${sceneIndex}, playing story part ${storyPartNumber}`);
         
         // Play German story part first (with correct character and audio file)
+        console.log(`🇩🇪 Playing German story part ${storyPartNumber}...`);
         await AudioService.playLesson1Story(storyPartNumber, 'de');
         
-        // Small pause between languages
+        // Ensure German audio finished before starting Romanian
+        console.log(`⏳ German finished, waiting before Romanian...`);
         await new Promise(resolve => setTimeout(resolve, 1500));
         
         // Then play Romanian story part (with correct character and audio file)
+        console.log(`🇷🇴 Playing Romanian story part ${storyPartNumber}...`);
         await AudioService.playLesson1Story(storyPartNumber, 'ro');
         
+        console.log(`✅ Completed bilingual scene playback`);
         return;
       }
       
-      // Original logic for other lessons
-      // Play German text first
+      // Original logic for other lessons - ensuring sequential playback
+      console.log(`🇩🇪 Playing German text by ${character.id}: "${scene.german}"`);
       switch (character.id) {
         case 'bjorn':
           await AudioService.playBjornVoice(scene.german, 'de');
@@ -114,10 +122,12 @@ export default function DetailedLessonScreen({ route, navigation }) {
           await AudioService.playEmmaVoice(scene.german, 'de');
       }
       
-      // Small pause between languages
+      // Ensure German finished before starting Romanian
+      console.log(`⏳ German finished, waiting before Romanian...`);
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Then play Romanian translation
+      console.log(`🇷🇴 Playing Romanian text by ${character.id}: "${scene.romanian}"`);
       switch (character.id) {
         case 'bjorn':
           await AudioService.playBjornVoice(scene.romanian, 'ro');
@@ -133,6 +143,8 @@ export default function DetailedLessonScreen({ route, navigation }) {
           await AudioService.playEmmaVoice(scene.romanian, 'ro');
       }
       
+      console.log(`✅ Completed bilingual scene playback for ${character.id}`);
+      
     } catch (error) {
       console.error('Error playing scene audio:', error);
     }
@@ -141,19 +153,25 @@ export default function DetailedLessonScreen({ route, navigation }) {
   const handleGameComplete = (score = 0) => {
     // Salvăm rezultatul jocului
     const gameKey = `game_${currentGameIndex}`;
-    setGameResults(prev => ({
-      ...prev,
-      [gameKey]: {
-        score: score,
-        completed: true,
-        timestamp: new Date().getTime()
-      }
-    }));
+    const newGameResult = {
+      score: score,
+      completed: true,
+      timestamp: new Date().getTime()
+    };
+    
+    // Update game results immediately with callback to ensure state is set
+    setGameResults(prev => {
+      const updated = {
+        ...prev,
+        [gameKey]: newGameResult
+      };
+      console.log(`🎮 Game ${currentGameIndex + 1} completed with score: ${score}`);
+      console.log(`📊 Updated gameResults:`, updated);
+      console.log(`📊 Games completed: ${Object.keys(updated).length}/${lesson.games.length}`);
+      return updated;
+    });
     
     setCurrentGameScore(score);
-    
-    console.log(`🎮 Game ${currentGameIndex + 1} completed with score: ${score}`);
-    console.log(`📊 Games completed: ${Object.keys(gameResults).length + 1}/${lesson.games.length}`);
     
     // Show completion message for this game
     Alert.alert(
@@ -163,8 +181,10 @@ export default function DetailedLessonScreen({ route, navigation }) {
         { 
           text: 'Continuă!', 
           onPress: () => {
-            // Game is marked as completed, button will appear
-            console.log('Game marked as completed, next button should appear');
+            // Force UI update to show next game button
+            setForceUpdate(prev => prev + 1);
+            console.log('✅ Game marked as completed, next game button should now be visible');
+            console.log(`📊 Current game results state:`, gameResults);
           }
         }
       ]
@@ -327,23 +347,40 @@ export default function DetailedLessonScreen({ route, navigation }) {
     try {
       console.log(`📚 Playing vocabulary word: ${word.german} / ${word.romanian}`);
       
+      // Ensure no overlapping audio by stopping any current playback
+      await AudioService.stopAllSounds();
+      
       // Special handling for Lesson 1 vocabulary
       if (lessonId === 1) {
         // Convert German word to filename format (replace spaces with underscores)
         const wordKey = word.german.toLowerCase().replace(/\s+/g, '_');
-        await AudioService.playLesson1VocabularyBilingual(wordKey);
+        
+        console.log(`🇩🇪 Playing German first: ${wordKey}`);
+        await AudioService.playLesson1Vocabulary(wordKey, 'de');
+        
+        // Ensure first audio finished before starting Romanian
+        console.log(`⏳ Waiting before Romanian...`);
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        console.log(`🇷🇴 Playing Romanian second: ${wordKey}`);
+        await AudioService.playLesson1Vocabulary(wordKey, 'ro');
+        
+        console.log(`✅ Completed bilingual playback for: ${wordKey}`);
         return;
       }
       
-      // Original logic for other lessons
-      // Emma vorbește vocabularul (specialista pronunție)
+      // Original logic for other lessons with better sequencing
+      console.log(`🇩🇪 Playing German first: ${word.german}`);
       await AudioService.playEmmaVoice(word.german, 'de');
       
-      // Pauză între limbi
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Ensure first audio finished before starting Romanian
+      console.log(`⏳ Waiting before Romanian...`);
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Apoi pronunția în română
+      console.log(`🇷🇴 Playing Romanian second: ${word.romanian}`);
       await AudioService.playEmmaVoice(word.romanian, 'ro');
+      
+      console.log(`✅ Completed bilingual playback for: ${word.german} / ${word.romanian}`);
       
     } catch (error) {
       console.error('Error playing vocabulary audio:', error);

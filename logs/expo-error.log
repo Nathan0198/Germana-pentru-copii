@@ -41,3 +41,4 @@ The following packages should be updated for best compatibility with the install
   react-native-reanimated@4.0.2 - expected version: ~3.17.4
   react-native-screens@4.14.1 - expected version: ~4.11.1
 Your project may not work correctly until you install the expected versions of the packages.
+[Reanimated] Seems like you are using a Babel plugin `react-native-reanimated/plugin`. It was moved to `react-native-worklets` package. Please use `react-native-worklets/plugin` instead.

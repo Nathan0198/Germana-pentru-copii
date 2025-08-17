@@ -19,10 +19,10 @@ class AudioService {
       await Audio.setAudioModeAsync({
         staysActiveInBackground: false,
         allowsRecordingIOS: false,
-        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DUCK_OTHERS,
+        interruptionModeIOS: Audio.InterruptionModeIOS.DuckOthers,
         playsInSilentModeIOS: true,
         shouldDuckAndroid: true,
-        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+        interruptionModeAndroid: Audio.InterruptionModeAndroid.DuckOthers,
         playThroughEarpieceAndroid: false,
       });
       
@@ -71,6 +71,9 @@ class AudioService {
     try {
       console.log(`🎵 Playing specific audio file: ${fileName}`);
       
+      // Stop any currently playing audio first
+      await this.stopAllSounds();
+      
       const { sound } = await Audio.Sound.createAsync(
         audioUri,
         { 
@@ -84,20 +87,50 @@ class AudioService {
       this.isPlaying = true;
       await sound.playAsync();
       
-      return new Promise((resolve) => {
-        sound.setOnPlaybackStatusUpdate((status) => {
+      return new Promise((resolve, reject) => {
+        let statusUpdateCallback = null;
+        
+        const cleanup = async () => {
+          this.isPlaying = false;
+          if (statusUpdateCallback) {
+            sound.setOnPlaybackStatusUpdate(null);
+            statusUpdateCallback = null;
+          }
+          try {
+            await sound.unloadAsync();
+          } catch (cleanupError) {
+            console.warn(`Cleanup warning for ${fileName}:`, cleanupError);
+          }
+        };
+        
+        statusUpdateCallback = async (status) => {
           if (status.didJustFinish || !status.isPlaying) {
-            this.isPlaying = false;
             console.log(`✅ Finished playing: ${fileName}`);
-            sound.unloadAsync(); // Clean up
+            await cleanup();
+            resolve();
+          } else if (status.error) {
+            console.error(`Audio playback error for ${fileName}:`, status.error);
+            await cleanup();
+            reject(status.error);
+          }
+        };
+        
+        sound.setOnPlaybackStatusUpdate(statusUpdateCallback);
+        
+        // Safety timeout
+        setTimeout(async () => {
+          if (this.isPlaying) {
+            console.warn(`⚠️ Audio playback timeout for ${fileName}, forcing completion`);
+            await cleanup();
             resolve();
           }
-        });
+        }, 8000); // 8 second timeout
       });
       
     } catch (error) {
       console.error(`Error playing specific audio file ${fileName}:`, error);
       this.isPlaying = false;
+      throw error;
     }
   }
 
@@ -246,20 +279,46 @@ class AudioService {
       // Play the audio and wait for completion
       await sound.replayAsync();
       
-      // Wait for audio to complete
-      return new Promise((resolve) => {
-        sound.setOnPlaybackStatusUpdate((status) => {
+      // Wait for audio to complete with proper cleanup
+      return new Promise((resolve, reject) => {
+        let statusUpdateCallback = null;
+        
+        const cleanup = () => {
+          this.isPlaying = false;
+          if (statusUpdateCallback) {
+            sound.setOnPlaybackStatusUpdate(null);
+            statusUpdateCallback = null;
+          }
+        };
+        
+        statusUpdateCallback = (status) => {
           if (status.didJustFinish || !status.isPlaying) {
-            this.isPlaying = false;
             console.log(`✅ Finished playing: ${fileName}`);
+            cleanup();
+            resolve();
+          } else if (status.error) {
+            console.error(`Audio playback error for ${fileName}:`, status.error);
+            cleanup();
+            reject(status.error);
+          }
+        };
+        
+        sound.setOnPlaybackStatusUpdate(statusUpdateCallback);
+        
+        // Safety timeout to prevent hanging
+        setTimeout(() => {
+          if (this.isPlaying) {
+            console.warn(`⚠️ Audio playback timeout for ${fileName}, forcing completion`);
+            cleanup();
             resolve();
           }
-        });
+        }, 10000); // 10 second timeout
       });
       
     } catch (error) {
       console.error(`Error playing audio file ${fileName}:`, error);
       this.isPlaying = false;
+      throw error;
     }
   }
 
@@ -719,18 +778,32 @@ class AudioService {
       this.isPlaying = false;
       
       // Stop and unload all sound objects
+      const stopPromises = [];
       for (const [key, sound] of this.soundObjects.entries()) {
-        try {
-          await sound.stopAsync();
-          await sound.unloadAsync();
-        } catch (error) {
-          console.warn(`Error stopping sound ${key}:`, error);
-        }
+        stopPromises.push(
+          (async () => {
+            try {
+              // Remove any status update callbacks first to prevent recursion
+              sound.setOnPlaybackStatusUpdate(null);
+              await sound.stopAsync();
+              await sound.unloadAsync();
+            } catch (error) {
+              console.warn(`Error stopping sound ${key}:`, error);
+            }
+          })()
+        );
       }
       
+      // Wait for all sounds to stop
+      await Promise.allSettled(stopPromises);
       this.soundObjects.clear();
+      
+      console.log('✅ All sounds stopped successfully');
     } catch (error) {
       console.error('Error stopping all sounds:', error);
+      // Force clear even if there were errors
+      this.soundObjects.clear();
+      this.isPlaying = false;
     }
   }
 
