@@ -540,19 +540,19 @@ export const CASTLE_LESSONS = [
           character: "björn",
           german: "Anna, willst du spielen?",
           romanian: "Anna, vrei să te joci?",
-          image: "bjorn_asking_anna"
+          image: "bjorn_asks_anna_play"
         },
         {
           character: "anna",
           german: "Ja! Was wollen wir spielen?",
           romanian: "Da! Ce vrem să ne jucăm?",
-          image: "anna_excited"
+          image: "anna_excited_to_play"
         },
         {
           character: "björn",
           german: "Wir können mit dem Ball spielen oder lesen.",
           romanian: "Ne putem juca cu mingea sau să citim.",
-          image: "bjorn_suggesting_games"
+          image: "bjorn_suggests_ball_reading"
         },
         {
           character: "emma",
@@ -564,7 +564,7 @@ export const CASTLE_LESSONS = [
           character: "anna",
           german: "Ich auch! Lass uns zusammen lesen!",
           romanian: "Și mie! Hai să citim împreună!",
-          image: "anna_choosing_reading"
+          image: "anna_suggests_reading_together"
         }
       ]
     },
