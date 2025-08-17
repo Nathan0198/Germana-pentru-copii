@@ -26,3 +26,11 @@ Starting project at /home/user/webapp
 Starting Metro Bundler
 Waiting on http://localhost:3000
 Logs for your project will appear below.
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 2460ms index.js (622 modules)
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 49ms index.js (1 module)
+Starting project at /home/user/webapp
+Starting Metro Bundler
+Waiting on http://localhost:3000
+Logs for your project will appear below.

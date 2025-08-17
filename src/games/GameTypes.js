@@ -62,7 +62,7 @@ export const DragDropGame = ({ gameData, onComplete }) => {
           [
             {
               text: 'Continuă',
-              onPress: () => onComplete && onComplete({ score: finalScore, type: 'drag_drop' })
+              onPress: () => onComplete && onComplete(finalScore)
             }
           ]
         );
@@ -258,7 +258,7 @@ export const MemoryGame = ({ gameData, onComplete }) => {
           [
             {
               text: 'Continuă',
-              onPress: () => onComplete && onComplete({ score: finalScore, type: 'memory_game' })
+              onPress: () => onComplete && onComplete(finalScore)
             }
           ]
         );
@@ -413,7 +413,7 @@ export const SpeakingChallenge = ({ gameData, onComplete }) => {
                       [
                         {
                           text: 'Termină',
-                          onPress: () => onComplete && onComplete({ score: finalScore, type: 'speaking_challenge' })
+                          onPress: () => onComplete && onComplete(finalScore)
                         }
                       ]
                     );
@@ -544,7 +544,7 @@ export const QuickChoice = ({ gameData, onComplete }) => {
         [
           {
             text: 'Continuă',
-            onPress: () => onComplete && onComplete({ score: finalScore, type: 'quick_choice' })
+            onPress: () => onComplete && onComplete(finalScore)
           }
         ]
       );
@@ -692,7 +692,7 @@ export const StorySequence = ({ gameData, onComplete }) => {
         [
           {
             text: 'Continuă',
-            onPress: () => onComplete && onComplete({ score: finalScore, type: 'story_sequence' })
+            onPress: () => onComplete && onComplete(finalScore)
           }
         ]
       );
@@ -807,7 +807,7 @@ export const WordBuilder = ({ gameData, onComplete }) => {
         [
           {
             text: 'Continuă',
-            onPress: () => onComplete && onComplete({ score: finalScore, type: 'word_builder' })
+            onPress: () => onComplete && onComplete(finalScore)
           }
         ]
       );
@@ -821,7 +821,7 @@ export const WordBuilder = ({ gameData, onComplete }) => {
           [
             {
               text: 'Continuă',
-              onPress: () => onComplete && onComplete({ score: 30, type: 'word_builder' })
+              onPress: () => onComplete && onComplete(30)
             }
           ]
         );

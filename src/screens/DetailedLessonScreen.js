@@ -152,51 +152,23 @@ export default function DetailedLessonScreen({ route, navigation }) {
     
     setCurrentGameScore(score);
     
-    if (currentGameIndex < lesson.games.length - 1) {
-      setCurrentGameIndex(currentGameIndex + 1);
-    } else {
-      // Toate jocurile completate
-      const totalScore = Object.values(gameResults).reduce((sum, result) => sum + result.score, 0) + score;
-      const averageScore = totalScore / lesson.games.length;
-      
-      let message = 'Ai completat lecția cu succes!';
-      if (averageScore >= 80) {
-        message = 'Excelent! Ai obținut un scor fantastic! 🌟';
-      } else if (averageScore >= 60) {
-        message = 'Foarte bine! Continuă tot așa! 👏';
-      } else {
-        message = 'Bun început! Poți să mai exersezi! 💪';
-      }
-      
-      Alert.alert(
-        'Felicitări! 🎉',
-        message,
-        [
-          { text: 'Înapoi la Lecții', onPress: () => navigation.goBack() },
-          { 
-            text: 'Următoarea Lecție →', 
-            onPress: () => {
-              const nextLessonId = lessonId + 1;
-              // Check if next lesson exists (max 25 lessons in Castle)
-              if (nextLessonId <= 25) {
-                navigation.replace('DetailedLesson', { 
-                  lessonId: nextLessonId,
-                  zoneId: route.params.zoneId 
-                });
-              } else {
-                // Completed all lessons in Castle - go back to zones
-                Alert.alert(
-                  '🏆 Castelul Completat!',
-                  'Ai terminat toate lecțiile din Castelul Familiei! Felicitări!',
-                  [{ text: 'Înapoi la Zonă', onPress: () => navigation.goBack() }]
-                );
-              }
-            },
-            style: 'default'
+    console.log(`🎮 Game ${currentGameIndex + 1} completed with score: ${score}`);
+    console.log(`📊 Games completed: ${Object.keys(gameResults).length + 1}/${lesson.games.length}`);
+    
+    // Show completion message for this game
+    Alert.alert(
+      '🎉 Joc Completat!',
+      `Felicitări! Ai terminat jocul cu scorul: ${score} puncte!`,
+      [
+        { 
+          text: 'Continuă!', 
+          onPress: () => {
+            // Game is marked as completed, button will appear
+            console.log('Game marked as completed, next button should appear');
           }
-        ]
-      );
-    }
+        }
+      ]
+    );
   };
 
   const renderStoryScene = () => {
@@ -291,6 +263,62 @@ export default function DetailedLessonScreen({ route, navigation }) {
         <Text style={styles.progressText}>
           Jocul {currentGameIndex + 1} / {lesson.games.length}
         </Text>
+        
+        {/* Next Game Button - visible after game completion */}
+        {gameResults[`game_${currentGameIndex}`]?.completed && (
+          <TouchableOpacity 
+            style={styles.nextGameButton}
+            onPress={() => {
+              if (currentGameIndex < lesson.games.length - 1) {
+                setCurrentGameIndex(currentGameIndex + 1);
+              } else {
+                // All games completed - show final completion
+                const totalScore = Object.values(gameResults).reduce((sum, result) => sum + result.score, 0);
+                const averageScore = totalScore / lesson.games.length;
+                
+                let message = 'Ai completat lecția cu succes!';
+                if (averageScore >= 80) {
+                  message = 'Excelent! Ai obținut un scor fantastic! 🌟';
+                } else if (averageScore >= 60) {
+                  message = 'Foarte bine! Continuă tot așa! 👏';
+                } else {
+                  message = 'Bun început! Poți să mai exersezi! 💪';
+                }
+                
+                Alert.alert(
+                  'Felicitări! 🎉',
+                  message,
+                  [
+                    { text: 'Înapoi la Lecții', onPress: () => navigation.goBack() },
+                    { 
+                      text: 'Următoarea Lecție →', 
+                      onPress: () => {
+                        const nextLessonId = lessonId + 1;
+                        if (nextLessonId <= 25) {
+                          navigation.replace('DetailedLesson', { 
+                            lessonId: nextLessonId,
+                            zoneId: route.params.zoneId 
+                          });
+                        } else {
+                          Alert.alert(
+                            '🏆 Castelul Completat!',
+                            'Ai terminat toate lecțiile din Castelul Familiei! Felicitări!',
+                            [{ text: 'Înapoi la Zonă', onPress: () => navigation.goBack() }]
+                          );
+                        }
+                      },
+                      style: 'default'
+                    }
+                  ]
+                );
+              }
+            }}
+          >
+            <Text style={styles.nextGameButtonText}>
+              {currentGameIndex < lesson.games.length - 1 ? 'Următorul Joc 🎮' : 'Finalizează Lecția 🎉'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
@@ -544,6 +572,23 @@ const styles = StyleSheet.create({
   },
   gameStartText: {
     fontSize: 18,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  nextGameButton: {
+    backgroundColor: '#FF6B6B',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 15,
+    borderWidth: 2,
+    borderColor: '#FFE66D',
+  },
+  nextGameButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
