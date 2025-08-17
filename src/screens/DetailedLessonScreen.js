@@ -255,6 +255,8 @@ export default function DetailedLessonScreen({ route, navigation }) {
     const instructor = getCharacterById(game.instructor);
 
     const renderGameComponent = () => {
+      console.log(`🎮 Rendering game component for game type: ${game.type}`, game);
+      
       const gameProps = {
         gameData: game,
         onComplete: handleGameComplete,

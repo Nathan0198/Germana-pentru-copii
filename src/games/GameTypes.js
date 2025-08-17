@@ -2065,6 +2065,8 @@ export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
 // LESSON 3 - ROOM SOUND MATCH GAME
 // ===============================
 export const RoomSoundMatchGame = ({ gameData, onComplete }) => {
+  console.log('🔊 RoomSoundMatchGame rendering with data:', gameData);
+  
   const [currentRound, setCurrentRound] = React.useState(0);
   const [score, setScore] = React.useState(0);
   const [selectedRoom, setSelectedRoom] = React.useState(null);
@@ -2191,6 +2193,8 @@ export const RoomSoundMatchGame = ({ gameData, onComplete }) => {
 // LESSON 3 - DRAG OBJECTS HOME GAME
 // ===============================
 export const DragObjectsHomeGame = ({ gameData, onComplete }) => {
+  console.log('🪑 DragObjectsHomeGame rendering with data:', gameData);
+  
   const [placedObjects, setPlacedObjects] = React.useState([]);
   const [score, setScore] = React.useState(0);
   const [completed, setCompleted] = React.useState(false);
