@@ -289,13 +289,7 @@ export default function DetailedLessonScreen({ route, navigation }) {
         case 'character_emotion_reader':
           return <CharacterEmotionReaderGame {...gameProps} />;
         case 'house_tour_adventure':
-          console.log('🏠 About to render HouseTourAdventureGame with props:', gameProps);
-          return (
-            <View style={{padding: 20, backgroundColor: 'red'}}>
-              <Text style={{color: 'white', fontSize: 20}}>TEST - HouseTourAdventureGame Loading...</Text>
-              <HouseTourAdventureGame {...gameProps} />
-            </View>
-          );
+          return <HouseTourAdventureGame {...gameProps} />;
         case 'room_sound_match':
           return <RoomSoundMatchGame {...gameProps} />;
         case 'drag_objects_home':

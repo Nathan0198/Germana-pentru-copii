@@ -1964,7 +1964,12 @@ export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
   const currentRoomData = rooms[currentRoom];
 
   const handleRoomTouch = (roomId) => {
+    console.log('🏠 Room touched:', roomId);
+    console.log('🏠 Current room expected:', currentRoomData.id);
+    console.log('🏠 Match?', roomId === currentRoomData.id);
+    
     if (roomId === currentRoomData.id) {
+      console.log('🏠 Correct room! Playing audio and zooming...');
       setScore(prev => prev + 25);
       setIsZoomed(true);
       setBjornSpeaking(true);
@@ -1983,6 +1988,10 @@ export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
           onComplete?.(100);
         }
       }, 3000);
+    } else {
+      console.log('🏠 Wrong room touched. Try again!');
+      // Give feedback for wrong room
+      Alert.alert('Oops!', `Das ist nicht ${currentRoomData.name}. Versuche es nochmal!`);
     }
   };
 
@@ -1994,6 +2003,10 @@ export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
       
       {!isZoomed ? (
         <View style={styles.houseContainer}>
+          <Text style={styles.gameInstruction}>
+            Selectează: {currentRoomData.name} 
+          </Text>
+          
           <Image 
             source={ImageService.getImage('house_cross_section')}
             style={styles.houseImage}
@@ -2001,29 +2014,57 @@ export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
           
           {/* Interactive room hotspots */}
           <TouchableOpacity 
-            style={[styles.roomHotspot, styles.livingRoomHotspot]}
-            onPress={() => handleRoomTouch('wohnzimmer')}
+            style={[
+              styles.roomHotspot, 
+              styles.livingRoomHotspot,
+              currentRoomData.id === 'wohnzimmer' && styles.roomHotspotActive
+            ]}
+            onPress={() => {
+              console.log('🏠 Living room TouchableOpacity pressed!');
+              handleRoomTouch('wohnzimmer');
+            }}
           >
             <Text style={styles.roomLabel}>Living</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.roomHotspot, styles.kitchenHotspot]}
-            onPress={() => handleRoomTouch('küche')}
+            style={[
+              styles.roomHotspot, 
+              styles.kitchenHotspot,
+              currentRoomData.id === 'küche' && styles.roomHotspotActive
+            ]}
+            onPress={() => {
+              console.log('🏠 Kitchen TouchableOpacity pressed!');
+              handleRoomTouch('küche');
+            }}
           >
             <Text style={styles.roomLabel}>Küche</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.roomHotspot, styles.bedroomHotspot]}
-            onPress={() => handleRoomTouch('schlafzimmer')}
+            style={[
+              styles.roomHotspot, 
+              styles.bedroomHotspot,
+              currentRoomData.id === 'schlafzimmer' && styles.roomHotspotActive
+            ]}
+            onPress={() => {
+              console.log('🏠 Bedroom TouchableOpacity pressed!');
+              handleRoomTouch('schlafzimmer');
+            }}
           >
             <Text style={styles.roomLabel}>Zimmer</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.roomHotspot, styles.bjornRoomHotspot]}
-            onPress={() => handleRoomTouch('bjorn_zimmer')}
+            style={[
+              styles.roomHotspot, 
+              styles.bjornRoomHotspot,
+              currentRoomData.id === 'bjorn_zimmer' && styles.roomHotspotActive
+            ]}
+            onPress={() => {
+              console.log('🏠 Björn room TouchableOpacity pressed!');
+              handleRoomTouch('bjorn_zimmer');
+            }}
           >
             <Text style={styles.roomLabel}>Björn</Text>
           </TouchableOpacity>
@@ -2047,9 +2088,12 @@ export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
         </View>
       )}
 
-      <Text style={styles.progressText}>
-        Camera {currentRoom + 1} din {rooms.length}
-      </Text>
+      <View style={styles.progressContainer}>
+        <Text style={styles.progressText}>
+          Camera {currentRoom + 1} din {rooms.length}
+        </Text>
+        <Text style={styles.scoreText}>Scor: {score}</Text>
+      </View>
 
       {completed && (
         <View style={styles.completedContainer}>
@@ -3665,6 +3709,21 @@ const styles = StyleSheet.create({
     color: '#2C3E50',
     textAlign: 'center',
   },
+  roomHotspotActive: {
+    backgroundColor: 'rgba(40, 167, 69, 0.4)',
+    borderColor: '#28A745',
+    borderWidth: 3,
+  },
+  gameInstruction: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    backgroundColor: '#E3F2FD',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
   bjornGuide: {
     position: 'absolute',
     bottom: 20,
@@ -3702,6 +3761,23 @@ const styles = StyleSheet.create({
     color: '#2C3E50',
     textAlign: 'center',
     fontWeight: '500',
+  },
+  progressContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginVertical: 15,
+  },
+  progressText: {
+    fontSize: 16,
+    color: '#495057',
+    fontWeight: '500',
+  },
+  scoreText: {
+    fontSize: 16,
+    color: '#28A745',
+    fontWeight: 'bold',
   },
 
   // ===============================
