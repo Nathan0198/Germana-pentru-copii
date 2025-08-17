@@ -57,76 +57,78 @@ export const CASTLE_LESSONS = [
 
     games: [
       {
-        type: "drag_drop",
-        instructor: "max",
-        title: "Conectează saluturile cu imaginile!",
+        type: "touch_and_listen",
+        instructor: "björn",
+        title: "Touch & Listen Salutări!",
         items: [
           { 
-            text: "Hallo", 
-            target: "bjorn_waving",
-            correct: true,
-            feedback: "Sehr gut! Björn salută!" 
+            id: 'bjorn', 
+            name: 'Björn', 
+            image: 'bjorn_waving', 
+            audio: 'hallo_ich_bin_bjorn',
+            feedback: "Sehr gut! Das ist Björn der Bär!"
           },
           { 
-            text: "Ich bin Björn", 
-            target: "bjorn_pointing",
-            correct: true,
-            feedback: "Perfect! Björn se prezintă!" 
+            id: 'emma', 
+            name: 'Emma', 
+            image: 'emma_smiling', 
+            audio: 'emma_greeting',
+            feedback: "Wunderbar! Das ist Emma die Ente!"
           },
           { 
-            text: "die Familie", 
-            target: "bear_family",
-            correct: true,
-            feedback: "Wunderbar! Familia de urși!" 
+            id: 'familie', 
+            name: 'Familie', 
+            image: 'bear_family', 
+            audio: 'die_familie',
+            feedback: "Toll! Das ist die Familie!"
           },
           { 
-            text: "danke", 
-            target: "bjorn_thanking",
-            correct: true,
-            feedback: "Toll! Björn mulțumește!" 
+            id: 'kinder', 
+            name: 'Kinder', 
+            image: 'happy_children', 
+            audio: 'die_kinder',
+            feedback: "Perfect! Das sind die Kinder!"
           }
         ]
       },
       {
-        type: "speaking_challenge",
+        type: "drag_match_voices",
         instructor: "emma",
-        title: "Repetă după mine și apasă când ai terminat!",
-        phrases: [
-          {
-            german: "Hallo!",
-            romanian: "Salut!",
-            audio: "emma_hallo",
-            feedback: "Sehr gut! Salutul perfect!"
-          },
-          {
-            german: "Ich bin [nume]",
-            romanian: "Eu sunt [nume]",
-            audio: "emma_ich_bin",
-            feedback: "Wunderbar! Te-ai prezentat!"
-          },
-          {
-            german: "Danke!",
-            romanian: "Mulțumesc!",
-            audio: "emma_danke",
-            feedback: "Toll! Ai fost politicos!"
-          }
+        title: "Drag & Match Voices!",
+        audioButtons: [
+          { id: 'hallo', text: 'Hallo!', audioFile: 'hallo', targetCharacter: 'bjorn' },
+          { id: 'danke', text: 'Danke!', audioFile: 'danke', targetCharacter: 'emma' },
+          { id: 'familie', text: 'Familie!', audioFile: 'familie', targetCharacter: 'family' },
+          { id: 'baer', text: 'Bär!', audioFile: 'baer', targetCharacter: 'bjorn' }
+        ],
+        characters: [
+          { id: 'bjorn', name: 'Björn', image: 'bjorn_happy' },
+          { id: 'emma', name: 'Emma', image: 'emma_happy' },
+          { id: 'family', name: 'Familie', image: 'bear_family' }
         ]
       },
       {
-        type: "quick_choice",
-        instructor: "max",
-        questions: [
-          {
-            question: "Cum spui 'Salut' în germană?",
-            options: ["Guten Tag", "Hallo", "Tschüss"],
-            correct: 1,
-            feedback: "Richtig! Hallo înseamnă salut!"
+        type: "simon_says",
+        instructor: "björn",
+        title: "Simon Says German!",
+        rounds: [
+          { 
+            command: 'Zeig mir... Hallo!', 
+            correctImage: 'hand_waving', 
+            images: ['hand_waving', 'bear_family', 'house'],
+            audio: 'show_hallo'
           },
-          {
-            question: "Cum spui 'Mulțumesc' în germană?",
-            options: ["Bitte", "Danke", "Gut"],
-            correct: 1,
-            feedback: "Perfekt! Danke înseamnă mulțumesc!"
+          { 
+            command: 'Zeig mir... Familie!', 
+            correctImage: 'bear_family', 
+            images: ['hand_waving', 'bear_family', 'children_playing'],
+            audio: 'show_familie'
+          },
+          { 
+            command: 'Zeig mir... Bär!', 
+            correctImage: 'bjorn_standing', 
+            images: ['emma_duck', 'bjorn_standing', 'children_group'],
+            audio: 'show_baer'
           }
         ]
       }

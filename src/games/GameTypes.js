@@ -940,6 +940,581 @@ export const WordBuilder = ({ gameData, onComplete }) => {
   );
 };
 
+// ============= LESSON 1 SPECIFIC GAMES =============
+// Touch & Listen Game - Copiii ating imaginile pentru a auzi saluturile
+export const TouchAndListenGame = ({ gameData, onComplete }) => {
+  const [touchedItems, setTouchedItems] = React.useState([]);
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+  const [hasPlayed, setHasPlayed] = React.useState({});
+
+  // Game data structure for Touch & Listen
+  const items = gameData?.items || [
+    { id: 'bjorn', name: 'Björn', image: 'bjorn_waving', audio: 'hallo_ich_bin_bjorn' },
+    { id: 'emma', name: 'Emma', image: 'emma_smiling', audio: 'emma_greeting' },
+    { id: 'familie', name: 'Familie', image: 'bear_family', audio: 'die_familie' },
+    { id: 'kinder', name: 'Kinder', image: 'happy_children', audio: 'die_kinder' }
+  ];
+
+  const handleImageTouch = (item) => {
+    if (completed) return;
+
+    // Play audio for the touched item
+    playItemAudio(item);
+    
+    // Mark as touched if not already
+    if (!touchedItems.includes(item.id)) {
+      setTouchedItems(prev => [...prev, item.id]);
+      setScore(prev => prev + 25);
+      
+      // Show visual feedback
+      showTouchFeedback(item);
+    }
+  };
+
+  const playItemAudio = (item) => {
+    // Set as played to show animation
+    setHasPlayed(prev => ({ ...prev, [item.id]: true }));
+    
+    // Sequential German -> Romanian audio
+    AudioService.playSequential([
+      { file: `lesson1_${item.audio}_de.mp3`, language: 'de' },
+      { file: `lesson1_${item.audio}_ro.mp3`, language: 'ro' }
+    ]);
+    
+    // Reset animation after 2 seconds
+    setTimeout(() => {
+      setHasPlayed(prev => ({ ...prev, [item.id]: false }));
+    }, 2000);
+  };
+
+  const showTouchFeedback = (item) => {
+    // Visual feedback with stars and sound
+    // This would trigger star animation and celebration sound
+    console.log(`✨ Touched ${item.name}! Playing celebration.`);
+  };
+
+  React.useEffect(() => {
+    if (touchedItems.length === items.length && !completed) {
+      setCompleted(true);
+      setTimeout(() => {
+        Alert.alert(
+          '🎉 Wunderbar!',
+          `Ai atins toate imaginile și ai învățat saluturile!\nScor: ${score}/100`,
+          [
+            {
+              text: 'Continuă',
+              onPress: () => onComplete && onComplete(score)
+            }
+          ]
+        );
+      }, 1000);
+    }
+  }, [touchedItems, items.length, completed, score]);
+
+  return (
+    <View style={styles.gameContainer}>
+      {/* Björn's Header */}
+      <View style={styles.maxImageContainerLarge}>
+        <Image 
+          source={ImageService.getImage('bjorn')} 
+          style={styles.maxHeaderImageLarge}
+          resizeMode="contain"
+        />
+        <Text style={styles.gameTitleOverlay}>Touch & Listen Salutări!</Text>
+      </View>
+      
+      <View style={styles.scoreContainer}>
+        <Text style={styles.scoreText}>Scor: {score}</Text>
+        <Text style={styles.progressText}>{touchedItems.length}/{items.length}</Text>
+      </View>
+
+      <Text style={styles.instructions}>
+        Atinge imaginile pentru a auzi saluturile în germană și română!
+      </Text>
+      
+      <View style={styles.touchListenGrid}>
+        {items.map((item, index) => (
+          <TouchableOpacity 
+            key={item.id}
+            style={[
+              styles.touchListenItem,
+              touchedItems.includes(item.id) && styles.touchedItem,
+              hasPlayed[item.id] && styles.playingItem
+            ]}
+            onPress={() => handleImageTouch(item)}
+          >
+            <View style={styles.touchImageContainer}>
+              <Image 
+                source={ImageService.getImage(item.image)} 
+                style={styles.touchListenImage}
+                resizeMode="cover"
+              />
+              {touchedItems.includes(item.id) && (
+                <View style={styles.touchedOverlay}>
+                  <Text style={styles.touchedCheck}>✅</Text>
+                </View>
+              )}
+              {hasPlayed[item.id] && (
+                <View style={styles.playingOverlay}>
+                  <Text style={styles.soundWaves}>🔊</Text>
+                </View>
+              )}
+            </View>
+            <Text style={[
+              styles.touchItemName,
+              touchedItems.includes(item.id) && styles.touchedItemName
+            ]}>
+              {item.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Alle Bilder berührt!</Text>
+          <Text style={styles.completedSubtext}>Toate imaginile atinse!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// Drag & Match Voices Game - Copiii trag cuvintele audio pe personajele corespunzătoare
+export const DragMatchVoicesGame = ({ gameData, onComplete }) => {
+  const [selectedAudio, setSelectedAudio] = React.useState(null);
+  const [matches, setMatches] = React.useState([]);
+  const [attempts, setAttempts] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [completed, setCompleted] = React.useState(false);
+  const [wrongAttempts, setWrongAttempts] = React.useState(0);
+
+  const audioButtons = gameData?.audioButtons || [
+    { id: 'hallo', text: 'Hallo!', audioFile: 'hallo', targetCharacter: 'bjorn' },
+    { id: 'danke', text: 'Danke!', audioFile: 'danke', targetCharacter: 'emma' },
+    { id: 'familie', text: 'Familie!', audioFile: 'familie', targetCharacter: 'family' },
+    { id: 'baer', text: 'Bär!', audioFile: 'baer', targetCharacter: 'bjorn' }
+  ];
+
+  const characters = gameData?.characters || [
+    { id: 'bjorn', name: 'Björn', image: 'bjorn_happy' },
+    { id: 'emma', name: 'Emma', image: 'emma_happy' },
+    { id: 'family', name: 'Familie', image: 'bear_family' }
+  ];
+
+  const handleAudioButtonPress = (audioButton) => {
+    // Play the audio
+    AudioService.playLesson1Vocabulary(audioButton.audioFile, 'de');
+    
+    // Select this audio button
+    setSelectedAudio(audioButton);
+  };
+
+  const handleCharacterDrop = (character) => {
+    if (!selectedAudio) {
+      Alert.alert('📢 Hint', 'Apasă mai întâi pe un buton audio!');
+      return;
+    }
+
+    if (matches.some(m => m.audioId === selectedAudio.id)) {
+      Alert.alert('✅ Deja făcut', 'Acest cuvânt a fost deja potrivit!');
+      return;
+    }
+
+    setAttempts(prev => prev + 1);
+
+    if (selectedAudio.targetCharacter === character.id) {
+      // Correct match!
+      setMatches(prev => [...prev, { 
+        audioId: selectedAudio.id, 
+        characterId: character.id,
+        correct: true 
+      }]);
+      setScore(prev => prev + 25);
+      
+      // Play success feedback
+      setTimeout(() => {
+        AudioService.playSequential([
+          { file: `lesson1_${selectedAudio.audioFile}_de.mp3`, language: 'de' },
+          { file: `lesson1_${selectedAudio.audioFile}_ro.mp3`, language: 'ro' }
+        ]);
+      }, 300);
+      
+      Alert.alert('🎉 Richtig!', `${selectedAudio.text} gehört zu ${character.name}!`);
+    } else {
+      // Wrong match
+      setWrongAttempts(prev => prev + 1);
+      
+      Alert.alert('❌ Probier nochmal!', 'Das ist nicht die richtige Kombination.');
+      
+      // Show visual guidance after 3 wrong attempts
+      if (wrongAttempts >= 2) {
+        setTimeout(() => {
+          showVisualGuidance();
+        }, 1500);
+      }
+    }
+
+    setSelectedAudio(null);
+  };
+
+  const showVisualGuidance = () => {
+    Alert.alert(
+      '💡 Hilfe',
+      'Schau genau hin! Hallo sagt Björn, Familie ist die ganze Familie zusammen!',
+      [{ text: 'Verstanden!' }]
+    );
+  };
+
+  React.useEffect(() => {
+    if (matches.length === audioButtons.length && !completed) {
+      setCompleted(true);
+      setTimeout(() => {
+        Alert.alert(
+          '🎉 Ausgezeichnet!',
+          `Alle Stimmen richtig zugeordnet!\nScor: ${score}/100`,
+          [
+            {
+              text: 'Weiter',
+              onPress: () => onComplete && onComplete(score)
+            }
+          ]
+        );
+      }, 1000);
+    }
+  }, [matches, audioButtons.length, completed, score]);
+
+  const isAudioMatched = (audioId) => matches.some(m => m.audioId === audioId);
+  const isCharacterMatched = (characterId) => matches.some(m => m.characterId === characterId);
+
+  return (
+    <View style={styles.gameContainer}>
+      {/* Emma's Header */}
+      <View style={styles.maxImageContainerLarge}>
+        <Image 
+          source={ImageService.getImage('emma')} 
+          style={styles.maxHeaderImageLarge}
+          resizeMode="contain"
+        />
+        <Text style={styles.gameTitleOverlay}>Drag & Match Voices!</Text>
+      </View>
+      
+      <View style={styles.scoreContainer}>
+        <Text style={styles.scoreText}>Scor: {score}</Text>
+        <Text style={styles.progressText}>{matches.length}/{audioButtons.length}</Text>
+      </View>
+
+      <Text style={styles.instructions}>
+        Apasă pe butonul audio, apoi pe personajul potrivit!
+      </Text>
+      
+      {/* Audio Buttons Section */}
+      <View style={styles.audioButtonsSection}>
+        <Text style={styles.sectionTitle}>🔊 Audio Buttons:</Text>
+        <View style={styles.audioButtonsRow}>
+          {audioButtons.map((audioButton) => (
+            <TouchableOpacity 
+              key={audioButton.id}
+              style={[
+                styles.audioButton,
+                selectedAudio?.id === audioButton.id && styles.selectedAudioButton,
+                isAudioMatched(audioButton.id) && styles.matchedAudioButton
+              ]}
+              onPress={() => handleAudioButtonPress(audioButton)}
+              disabled={isAudioMatched(audioButton.id)}
+            >
+              <Text style={styles.audioButtonText}>{audioButton.text}</Text>
+              {isAudioMatched(audioButton.id) && (
+                <Text style={styles.audioButtonCheck}>✅</Text>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Characters Drop Zone */}
+      <View style={styles.charactersSection}>
+        <Text style={styles.sectionTitle}>👥 Personaje:</Text>
+        <View style={styles.charactersRow}>
+          {characters.map((character) => (
+            <TouchableOpacity 
+              key={character.id}
+              style={[
+                styles.characterDropZone,
+                isCharacterMatched(character.id) && styles.matchedCharacterZone
+              ]}
+              onPress={() => handleCharacterDrop(character)}
+              disabled={isCharacterMatched(character.id)}
+            >
+              <Image 
+                source={ImageService.getImage(character.image)} 
+                style={styles.characterImage}
+                resizeMode="cover"
+              />
+              <Text style={styles.characterName}>{character.name}</Text>
+              {isCharacterMatched(character.id) && (
+                <View style={styles.characterCheckOverlay}>
+                  <Text style={styles.characterCheck}>✅</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      {/* Selected Audio Indicator */}
+      {selectedAudio && (
+        <View style={styles.selectedAudioIndicator}>
+          <Text style={styles.selectedAudioText}>
+            Selectat: {selectedAudio.text} 🎵
+          </Text>
+        </View>
+      )}
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Alle Stimmen zugeordnet!</Text>
+          <Text style={styles.completedSubtext}>Toate vocile potrivite!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+// Simon Says German Game - Björn dă instrucțiuni audio, copiii ating imaginea corectă
+export const SimonSaysGame = ({ gameData, onComplete }) => {
+  const [currentRound, setCurrentRound] = React.useState(0);
+  const [score, setScore] = React.useState(0);
+  const [timeLeft, setTimeLeft] = React.useState(5);
+  const [isListening, setIsListening] = React.useState(false);
+  const [showImages, setShowImages] = React.useState(false);
+  const [completed, setCompleted] = React.useState(false);
+  const [currentImages, setCurrentImages] = React.useState([]);
+
+  const rounds = gameData?.rounds || [
+    { 
+      command: 'Zeig mir... Hallo!', 
+      correctImage: 'hand_waving', 
+      images: ['hand_waving', 'bear_family', 'house'],
+      audio: 'show_hallo'
+    },
+    { 
+      command: 'Zeig mir... Familie!', 
+      correctImage: 'bear_family', 
+      images: ['hand_waving', 'bear_family', 'children_playing'],
+      audio: 'show_familie'
+    },
+    { 
+      command: 'Zeig mir... Bär!', 
+      correctImage: 'bjorn_standing', 
+      images: ['emma_duck', 'bjorn_standing', 'children_group'],
+      audio: 'show_baer'
+    }
+  ];
+
+  const totalRounds = rounds.length;
+  const currentRoundData = rounds[currentRound];
+
+  // Timer countdown
+  React.useEffect(() => {
+    let interval;
+    if (showImages && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && showImages) {
+      // Time's up!
+      handleTimeout();
+    }
+    return () => clearInterval(interval);
+  }, [showImages, timeLeft]);
+
+  const startRound = () => {
+    if (currentRound >= totalRounds) return;
+    
+    setIsListening(true);
+    setShowImages(false);
+    setTimeLeft(5);
+    
+    // Shuffle images for this round
+    const shuffledImages = [...currentRoundData.images].sort(() => Math.random() - 0.5);
+    setCurrentImages(shuffledImages);
+    
+    // Björn speaks the command
+    setTimeout(() => {
+      AudioService.playLesson1Game(3, currentRoundData.audio, 'de');
+    }, 500);
+    
+    // Show images after 2 seconds
+    setTimeout(() => {
+      setIsListening(false);
+      setShowImages(true);
+    }, 2500);
+  };
+
+  const handleImageSelect = (selectedImage) => {
+    if (!showImages || completed) return;
+    
+    setShowImages(false);
+    
+    if (selectedImage === currentRoundData.correctImage) {
+      // Correct answer!
+      const timeBonus = timeLeft * 2;
+      const roundScore = 20 + timeBonus;
+      setScore(prev => prev + roundScore);
+      
+      Alert.alert(
+        '🎉 Sehr gut!', 
+        `Richtige Antwort!\nZeit-Bonus: +${timeBonus}\nRunden-Punkte: ${roundScore}`,
+        [
+          {
+            text: 'Weiter',
+            onPress: () => nextRound()
+          }
+        ]
+      );
+    } else {
+      // Wrong answer
+      Alert.alert(
+        '❌ Nicht richtig!', 
+        'Das war nicht das richtige Bild. Versuch es nochmal!',
+        [
+          {
+            text: 'OK',
+            onPress: () => nextRound()
+          }
+        ]
+      );
+    }
+  };
+
+  const handleTimeout = () => {
+    Alert.alert(
+      '⏰ Zeit ist um!', 
+      'Du warst zu langsam. Björn wartet auf dich!',
+      [
+        {
+          text: 'Nächste Runde',
+          onPress: () => nextRound()
+        }
+      ]
+    );
+  };
+
+  const nextRound = () => {
+    if (currentRound < totalRounds - 1) {
+      setCurrentRound(prev => prev + 1);
+      // Auto-start next round after 1 second
+      setTimeout(() => {
+        startRound();
+      }, 1000);
+    } else {
+      // Game completed
+      setCompleted(true);
+      const finalScore = Math.max(30, score);
+      setTimeout(() => {
+        Alert.alert(
+          '🎉 Simon Says beendet!',
+          `Alle Runden gespielt!\nFinal-Punkte: ${finalScore}/100`,
+          [
+            {
+              text: 'Fertig',
+              onPress: () => onComplete && onComplete(finalScore)
+            }
+          ]
+        );
+      }, 1000);
+    }
+  };
+
+  // Auto-start first round
+  React.useEffect(() => {
+    if (currentRound === 0 && !isListening && !showImages) {
+      setTimeout(() => {
+        startRound();
+      }, 1000);
+    }
+  }, []);
+
+  return (
+    <View style={styles.gameContainer}>
+      {/* Björn's Header */}
+      <View style={styles.maxImageContainerLarge}>
+        <Image 
+          source={ImageService.getImage('bjorn')} 
+          style={styles.maxHeaderImageLarge}
+          resizeMode="contain"
+        />
+        <Text style={styles.gameTitleOverlay}>Simon Says German!</Text>
+      </View>
+      
+      <View style={styles.scoreContainer}>
+        <Text style={styles.scoreText}>Scor: {score}</Text>
+        <Text style={styles.progressText}>Runda: {currentRound + 1}/{totalRounds}</Text>
+      </View>
+
+      {/* Game Status */}
+      <View style={styles.simonStatusContainer}>
+        {isListening && (
+          <View style={styles.listeningIndicator}>
+            <Text style={styles.listeningText}>🐻 Björn spricht...</Text>
+            <Text style={styles.commandText}>{currentRoundData?.command}</Text>
+          </View>
+        )}
+        
+        {showImages && (
+          <View style={styles.timerContainer}>
+            <Text style={styles.timerText}>⏰ Zeit: {timeLeft}s</Text>
+            <View style={styles.timerBar}>
+              <View style={[
+                styles.timerProgress, 
+                { width: `${(timeLeft / 5) * 100}%` }
+              ]} />
+            </View>
+          </View>
+        )}
+      </View>
+
+      {showImages && (
+        <View style={styles.simonImagesContainer}>
+          <Text style={styles.simonInstructions}>
+            Wähle das richtige Bild schnell aus!
+          </Text>
+          <View style={styles.simonImagesGrid}>
+            {currentImages.map((image, index) => (
+              <TouchableOpacity 
+                key={index}
+                style={styles.simonImageButton}
+                onPress={() => handleImageSelect(image)}
+              >
+                <Image 
+                  source={ImageService.getImage(image)} 
+                  style={styles.simonImage}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
+
+      {!isListening && !showImages && !completed && (
+        <View style={styles.waitingContainer}>
+          <Text style={styles.waitingText}>Bereit für die nächste Runde...</Text>
+        </View>
+      )}
+
+      {completed && (
+        <View style={styles.completedContainer}>
+          <Text style={styles.completedText}>🎉 Simon Says geschafft!</Text>
+          <Text style={styles.completedSubtext}>Ai terminat cu Björn!</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   gameContainer: {
     flex: 1,
@@ -1690,5 +2265,292 @@ const styles = StyleSheet.create({
     fontSize: 8,
     color: '#6C757D',
     textAlign: 'center',
+  },
+
+  // ============= LESSON 1 GAMES STYLES =============
+  // Touch & Listen Game styles
+  touchListenGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  touchListenItem: {
+    width: '48%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 15,
+    marginVertical: 8,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 2,
+    borderColor: '#E9ECEF',
+  },
+  touchedItem: {
+    borderColor: '#28A745',
+    backgroundColor: '#F8FFF9',
+  },
+  playingItem: {
+    borderColor: '#007BFF',
+    backgroundColor: '#F0F8FF',
+    transform: [{ scale: 1.05 }],
+  },
+  touchImageContainer: {
+    position: 'relative',
+    width: 80,
+    height: 80,
+    marginBottom: 10,
+  },
+  touchListenImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  touchedOverlay: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: '#28A745',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  touchedCheck: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  playingOverlay: {
+    position: 'absolute',
+    bottom: -5,
+    left: -5,
+    backgroundColor: '#007BFF',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  soundWaves: {
+    color: '#FFFFFF',
+    fontSize: 16,
+  },
+  touchItemName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
+  touchedItemName: {
+    color: '#28A745',
+  },
+  completedSubtext: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 5,
+    fontStyle: 'italic',
+  },
+
+  // Drag & Match Voices Game styles
+  audioButtonsSection: {
+    marginBottom: 20,
+  },
+  audioButtonsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  audioButton: {
+    backgroundColor: '#17A2B8',
+    borderRadius: 12,
+    padding: 12,
+    marginVertical: 5,
+    width: '48%',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  selectedAudioButton: {
+    backgroundColor: '#FF6B35',
+    transform: [{ scale: 1.05 }],
+  },
+  matchedAudioButton: {
+    backgroundColor: '#28A745',
+    opacity: 0.7,
+  },
+  audioButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  audioButtonCheck: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    fontSize: 18,
+  },
+  charactersSection: {
+    marginBottom: 20,
+  },
+  charactersRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  characterDropZone: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 15,
+    alignItems: 'center',
+    width: 100,
+    borderWidth: 2,
+    borderColor: '#E9ECEF',
+    borderStyle: 'dashed',
+    position: 'relative',
+  },
+  matchedCharacterZone: {
+    borderColor: '#28A745',
+    borderStyle: 'solid',
+    backgroundColor: '#F8FFF9',
+  },
+  characterImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginBottom: 8,
+  },
+  characterName: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+  },
+  characterCheckOverlay: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#28A745',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  characterCheck: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  selectedAudioIndicator: {
+    backgroundColor: '#FF6B35',
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  selectedAudioText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+
+  // Simon Says Game styles
+  simonStatusContainer: {
+    minHeight: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  listeningIndicator: {
+    backgroundColor: '#007BFF',
+    borderRadius: 15,
+    padding: 20,
+    alignItems: 'center',
+    width: '100%',
+  },
+  listeningText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  commandText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  timerContainer: {
+    backgroundColor: '#FFC107',
+    borderRadius: 15,
+    padding: 15,
+    alignItems: 'center',
+    width: '100%',
+  },
+  timerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 8,
+  },
+  timerBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  timerProgress: {
+    height: '100%',
+    backgroundColor: '#28A745',
+    borderRadius: 4,
+  },
+  simonImagesContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  simonInstructions: {
+    fontSize: 16,
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginBottom: 15,
+    fontWeight: '500',
+  },
+  simonImagesGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  simonImageButton: {
+    width: 90,
+    height: 90,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 15,
+    padding: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  simonImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+  },
+  waitingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  waitingText: {
+    fontSize: 18,
+    color: '#6C757D',
+    fontStyle: 'italic',
   },
 });
