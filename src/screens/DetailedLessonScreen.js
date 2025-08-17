@@ -391,7 +391,13 @@ export default function DetailedLessonScreen({ route, navigation }) {
     return (
       <View style={styles.vocabularyContainer}>
         <Text style={styles.vocabularyTitle}>📚 Cuvinte noi ({lesson.vocabulary.length})</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          scrollEnabled={true}
+          bounces={true}
+          contentContainerStyle={{ paddingHorizontal: 5 }}
+        >
           {lesson.vocabulary.map((word, index) => (
             <TouchableOpacity 
               key={index} 
@@ -437,7 +443,14 @@ export default function DetailedLessonScreen({ route, navigation }) {
         {renderVocabulary()}
 
         {/* Main Content */}
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          style={styles.content} 
+          contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }}
+          showsVerticalScrollIndicator={true}
+          scrollEnabled={true}
+          bounces={true}
+          keyboardShouldPersistTaps="handled"
+        >
           {isPlayingStory ? renderStoryScene() : renderGame()}
         </ScrollView>
 

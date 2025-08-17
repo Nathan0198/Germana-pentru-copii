@@ -84,7 +84,13 @@ export default function SettingsScreen({ navigation }) {
           </Text>
         </View>
 
-        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView 
+          style={styles.scrollContainer} 
+          contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }}
+          showsVerticalScrollIndicator={true}
+          scrollEnabled={true}
+          bounces={true}
+        >
           {/* Audio Settings */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>🔊 Setări Audio</Text>
