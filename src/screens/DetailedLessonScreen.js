@@ -205,24 +205,15 @@ export default function DetailedLessonScreen({ route, navigation }) {
     const completedGames = Object.keys(gameResults).length + 1; // Include current game
     const totalGames = lesson.games.length;
     
-    Alert.alert(
-      `${scoreEmoji} Joc Completat!`,
-      `${scoreMessage}\n\n` +
-      `🎮 ${currentGameName}\n` +
-      `📊 Scor: ${score}/100 puncte\n` +
-      `📈 Progres: ${completedGames}/${totalGames} jocuri completate`,
-      [
-        { 
-          text: completedGames < totalGames ? 'Următorul Joc →' : 'Vezi Rezultatul Final →', 
-          onPress: () => {
-            // Force UI update to show next game button
-            setForceUpdate(prev => prev + 1);
-            console.log('✅ Game marked as completed, next game button should now be visible');
-            console.log(`📊 Current game results state:`, gameResults);
-          }
-        }
-      ]
-    );
+    // Show completion message briefly, then automatically show next game button
+    console.log(`✅ ${scoreEmoji} Joc Completat! ${scoreMessage}`);
+    console.log(`🎮 ${currentGameName} - Scor: ${score}/100 puncte`);
+    console.log(`📈 Progres: ${completedGames}/${totalGames} jocuri completate`);
+    
+    // Force UI update to show next game button immediately
+    setForceUpdate(prev => prev + 1);
+    console.log('✅ Game marked as completed, next game button should now be visible');
+    console.log(`📊 Current game results state:`, gameResults);
   };
 
   const renderStoryScene = () => {
@@ -376,35 +367,26 @@ export default function DetailedLessonScreen({ route, navigation }) {
                     emoji = '💪';
                   }
                   
-                  Alert.alert(
-                    `Felicitări! ${emoji}`,
-                    `${message}\n\n` +
-                    `📊 Scor total: ${Math.round(totalScore)}/100\n` +
-                    `📈 Scor mediu: ${Math.round(averageScore)}/100\n` +
-                    `🎮 Jocuri completate: ${lesson.games.length}/${lesson.games.length}`,
-                    [
-                      { text: 'Înapoi la Lecții', onPress: () => navigation.goBack() },
-                      { 
-                        text: 'Următoarea Lecție →', 
-                        onPress: () => {
-                          const nextLessonId = lessonId + 1;
-                          if (nextLessonId <= 25) {
-                            navigation.replace('DetailedLesson', { 
-                              lessonId: nextLessonId,
-                              zoneId: route.params.zoneId 
-                            });
-                          } else {
-                            Alert.alert(
-                              '🏆 Castelul Completat!',
-                              'Ai terminat toate lecțiile din Castelul Familiei! Felicitări!',
-                              [{ text: 'Înapoi la Zonă', onPress: () => navigation.goBack() }]
-                            );
-                          }
-                        },
-                        style: 'default'
-                      }
-                    ]
-                  );
+                  // Log completion and automatically navigate to next lesson
+                  console.log(`🎉 Felicitări! ${emoji} - ${message}`);
+                  console.log(`📊 Scor total: ${Math.round(totalScore)}/100`);
+                  console.log(`📈 Scor mediu: ${Math.round(averageScore)}/100`);
+                  console.log(`🎮 Jocuri completate: ${lesson.games.length}/${lesson.games.length}`);
+                  
+                  // Automatically navigate to next lesson after a short delay
+                  setTimeout(() => {
+                    const nextLessonId = lessonId + 1;
+                    if (nextLessonId <= 25) {
+                      console.log(`🚀 Auto-navigating to Lesson ${nextLessonId}`);
+                      navigation.replace('DetailedLesson', { 
+                        lessonId: nextLessonId,
+                        zoneId: route.params.zoneId 
+                      });
+                    } else {
+                      console.log('🏆 All lessons completed! Returning to main screen.');
+                      navigation.goBack();
+                    }
+                  }, 2000);
                 }
               }}
             >

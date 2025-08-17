@@ -56,16 +56,12 @@ export const DragDropGame = ({ gameData, onComplete }) => {
       const finalScore = Math.max(30, 100 - (attempts - totalItems) * 10);
       
       setTimeout(() => {
-        Alert.alert(
-          '🎉 Felicitări!',
-          `Ai completat jocul!\nScor: ${finalScore}/100`,
-          [
-            {
-              text: 'Continuă',
-              onPress: () => onComplete && onComplete(finalScore)
-            }
-          ]
-        );
+        console.log('🎮 DragDropGame: Game completed with score:', finalScore);
+        if (onComplete) {
+          onComplete(finalScore);
+        } else {
+          console.error('🎮 DragDropGame: onComplete is not defined!');
+        }
       }, 500);
     }
   }, [matches, totalItems, attempts]);
@@ -996,21 +992,18 @@ export const TouchAndListenGame = ({ gameData, onComplete }) => {
 
   React.useEffect(() => {
     if (touchedItems.length === items.length && !completed) {
+      console.log('🎮 TouchAndListenGame: All items touched, completing game!');
       setCompleted(true);
       setTimeout(() => {
-        Alert.alert(
-          '🎉 Wunderbar!',
-          `Ai atins toate imaginile și ai învățat saluturile!\nScor: ${score}/100`,
-          [
-            {
-              text: 'Continuă',
-              onPress: () => onComplete && onComplete(score)
-            }
-          ]
-        );
+        console.log('🎮 TouchAndListenGame: Calling onComplete with score:', score);
+        if (onComplete) {
+          onComplete(score);
+        } else {
+          console.error('🎮 TouchAndListenGame: onComplete is not defined!');
+        }
       }, 1000);
     }
-  }, [touchedItems, items.length, completed, score]);
+  }, [touchedItems, items.length, completed, score, onComplete]);
 
   return (
     <View style={styles.gameContainer}>
@@ -1171,16 +1164,12 @@ export const DragMatchVoicesGame = ({ gameData, onComplete }) => {
     if (matches.length === audioButtons.length && !completed) {
       setCompleted(true);
       setTimeout(() => {
-        Alert.alert(
-          '🎉 Ausgezeichnet!',
-          `Alle Stimmen richtig zugeordnet!\nScor: ${score}/100`,
-          [
-            {
-              text: 'Weiter',
-              onPress: () => onComplete && onComplete(score)
-            }
-          ]
-        );
+        console.log('🎮 DragMatchVoicesGame: All matches completed, calling onComplete with score:', score);
+        if (onComplete) {
+          onComplete(score);
+        } else {
+          console.error('🎮 DragMatchVoicesGame: onComplete is not defined!');
+        }
       }, 1000);
     }
   }, [matches, audioButtons.length, completed, score]);
@@ -1414,16 +1403,12 @@ export const SimonSaysGame = ({ gameData, onComplete }) => {
       setCompleted(true);
       const finalScore = Math.max(30, score);
       setTimeout(() => {
-        Alert.alert(
-          '🎉 Simon Says beendet!',
-          `Alle Runden gespielt!\nFinal-Punkte: ${finalScore}/100`,
-          [
-            {
-              text: 'Fertig',
-              onPress: () => onComplete && onComplete(finalScore)
-            }
-          ]
-        );
+        console.log('🎮 SimonSaysGame: All rounds completed, calling onComplete with score:', finalScore);
+        if (onComplete) {
+          onComplete(finalScore);
+        } else {
+          console.error('🎮 SimonSaysGame: onComplete is not defined!');
+        }
       }, 1000);
     }
   };
@@ -1990,8 +1975,8 @@ export const HouseTourAdventureGame = ({ gameData, onComplete }) => {
       }, 3000);
     } else {
       console.log('🏠 Wrong room touched. Try again!');
-      // Give feedback for wrong room
-      Alert.alert('Oops!', `Das ist nicht ${currentRoomData.name}. Versuche es nochmal!`);
+      // Visual feedback for wrong room (no blocking alert)
+      console.log(`❌ Das ist nicht ${currentRoomData.name}. Versuche es nochmal!`);
     }
   };
 
