@@ -58,6 +58,20 @@ class ImageService {
       'emma_excited': require('../../assets/images/characters/emma_happy.png'), // Use existing emma_happy for excited
 
       // ================================
+      // LESSON 2 - Familia lui Björn - Story Images (with castle backgrounds)
+      // ================================
+      'bjorn_with_papa': require('../../assets/images/lessons/lesson2/story/bjorn_with_papa.png'),
+      'emma_curious': require('../../assets/images/lessons/lesson2/story/emma_curious.png'),
+      'bjorn_with_mama': require('../../assets/images/lessons/lesson2/story/bjorn_with_mama.png'),
+      'bjorn_with_anna': require('../../assets/images/lessons/lesson2/story/bjorn_with_anna.png'),
+      'whole_bear_family': require('../../assets/images/lessons/lesson2/story/whole_bear_family.png'),
+
+      // ================================
+      // LESSON 2 - Game Images
+      // ================================
+      'anna_shy': require('../../assets/images/lessons/lesson2/games/anna_shy.png'),
+
+      // ================================
       // LESSON 3 - Casa noastră - Story Images (with castle backgrounds)
       // ================================
       'bjorn_shows_house': require('../../assets/images/lessons/lesson3/story/bjorn_shows_house.png'),
@@ -105,13 +119,8 @@ class ImageService {
 
   // Obține imaginea pentru o scenă din poveste
   getStoryImage(lessonId, imageName) {
-    if (lessonId === 1) {
-      return this.getImage(imageName);
-    }
-    
-    // Pentru alte lecții, construiește numele imaginii
-    const fullImageName = `lesson_${lessonId}_${imageName}`;
-    return this.getImage(fullImageName);
+    // Toate imaginile sunt mapate direct cu numele lor, fără prefixul lesson_
+    return this.getImage(imageName);
   }
 
   // Obține imaginea pentru vocabular
