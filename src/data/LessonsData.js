@@ -282,31 +282,31 @@ export const CASTLE_LESSONS = [
           character: "björn",
           german: "Willkommen in unserem Haus! Das ist unser Wohnzimmer.",
           romanian: "Bun veniți în casa noastră! Aceasta este camera noastră de zi.",
-          image: "living_room_tour"
+          image: "bjorn_shows_house"
         },
         {
           character: "emma",
           german: "Sehr gemütlich! Und wo ist die Küche?",
           romanian: "Foarte confortabil! Și unde este bucătăria?",
-          image: "emma_impressed"
+          image: "emma_curious_house"
         },
         {
           character: "björn",
           german: "Die Küche ist hier. Mama kocht hier das Essen.",
           romanian: "Bucătăria este aici. Mama gătește aici mâncarea.",
-          image: "kitchen_with_mama"
+          image: "kitchen_scene"
         },
         {
           character: "björn",
           german: "Oben sind die Schlafzimmer. Das ist mein Zimmer!",
           romanian: "Sus sunt dormitoarele. Aceasta este camera mea!",
-          image: "bjorn_bedroom"
+          image: "bedroom_scene"
         },
         {
           character: "emma",
           german: "Dein Zimmer ist sehr ordentlich!",
           romanian: "Camera ta este foarte ordonată!",
-          image: "emma_admiring"
+          image: "living_room_scene"
         }
       ]
     },
@@ -328,10 +328,10 @@ export const CASTLE_LESSONS = [
         instructor: "björn",
         title: "Tur prin Casa lui Björn!",
         rooms: [
-          { id: 'wohnzimmer', name: 'das Wohnzimmer', german: 'Hier ist das Wohnzimmer!', romanian: 'Aici este camera de zi!', image: 'living_room_detailed' },
-          { id: 'küche', name: 'die Küche', german: 'Das ist die Küche!', romanian: 'Aceasta este bucătăria!', image: 'kitchen_detailed' },
-          { id: 'schlafzimmer', name: 'das Schlafzimmer', german: 'Hier sind die Schlafzimmer!', romanian: 'Aici sunt dormitoarele!', image: 'bedroom_detailed' },
-          { id: 'bjorn_zimmer', name: 'mein Zimmer', german: 'Das ist mein Zimmer!', romanian: 'Aceasta este camera mea!', image: 'bjorn_room_detailed' }
+          { id: 'wohnzimmer', name: 'das Wohnzimmer', german: 'Hier ist das Wohnzimmer!', romanian: 'Aici este camera de zi!', image: 'living_room_scene' },
+          { id: 'küche', name: 'die Küche', german: 'Das ist die Küche!', romanian: 'Aceasta este bucătăria!', image: 'kitchen_scene' },
+          { id: 'schlafzimmer', name: 'das Schlafzimmer', german: 'Hier sind die Schlafzimmer!', romanian: 'Aici sunt dormitoarele!', image: 'bedroom_scene' },
+          { id: 'bjorn_zimmer', name: 'mein Zimmer', german: 'Das ist mein Zimmer!', romanian: 'Aceasta este camera mea!', image: 'castle_scenes_combined' }
         ]
       },
       {

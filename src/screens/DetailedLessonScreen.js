@@ -19,7 +19,16 @@ import {
   SpeakingChallenge, 
   QuickChoice, 
   WordBuilder, 
-  StorySequence 
+  StorySequence,
+  TouchAndListenGame,
+  DragMatchVoicesGame,
+  SimonSaysGame,
+  FamilyTreeBuilderGame,
+  VoiceMatchingPairsGame,
+  CharacterEmotionReaderGame,
+  HouseTourAdventureGame,
+  RoomSoundMatchGame,
+  DragObjectsHomeGame
 } from '../games/GameTypes';
 import AudioService from '../services/AudioService';
 
@@ -265,6 +274,24 @@ export default function DetailedLessonScreen({ route, navigation }) {
           return <WordBuilder {...gameProps} />;
         case 'story_sequence':
           return <StorySequence {...gameProps} />;
+        case 'touch_and_listen':
+          return <TouchAndListenGame {...gameProps} />;
+        case 'drag_match_voices':
+          return <DragMatchVoicesGame {...gameProps} />;
+        case 'simon_says':
+          return <SimonSaysGame {...gameProps} />;
+        case 'family_tree_builder':
+          return <FamilyTreeBuilderGame {...gameProps} />;
+        case 'voice_matching_pairs':
+          return <VoiceMatchingPairsGame {...gameProps} />;
+        case 'character_emotion_reader':
+          return <CharacterEmotionReaderGame {...gameProps} />;
+        case 'house_tour_adventure':
+          return <HouseTourAdventureGame {...gameProps} />;
+        case 'room_sound_match':
+          return <RoomSoundMatchGame {...gameProps} />;
+        case 'drag_objects_home':
+          return <DragObjectsHomeGame {...gameProps} />;
         default:
           return (
             <View style={styles.gamePlaceholder}>
