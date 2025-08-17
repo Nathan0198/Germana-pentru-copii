@@ -29,6 +29,11 @@ export default function ZoneLessonsScreen({ route, navigation }) {
     const zoneData = getZoneById(zoneId);
     const zoneLessons = getLessonsByZone(zoneId);
     
+    console.log(`🏰 Loading zone: ${zoneId}`);
+    console.log(`📚 Zone data:`, zoneData);
+    console.log(`📖 Found ${zoneLessons.length} lessons in zone`);
+    console.log(`📋 Lessons IDs:`, zoneLessons.map(l => l.id));
+    
     setZone(zoneData);
     setLessons(zoneLessons);
     

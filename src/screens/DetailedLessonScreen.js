@@ -32,6 +32,7 @@ export default function DetailedLessonScreen({ route, navigation }) {
   const [gameResults, setGameResults] = useState({});
   const [currentGameScore, setCurrentGameScore] = useState(0);
   const [forceUpdate, setForceUpdate] = useState(0); // Trigger for UI updates
+  const [currentGameCompleted, setCurrentGameCompleted] = useState(false); // Direct game completion state
   // AudioService este deja o instanță singleton, nu trebuie recreat
 
   useEffect(() => {
@@ -172,6 +173,7 @@ export default function DetailedLessonScreen({ route, navigation }) {
     });
     
     setCurrentGameScore(score);
+    setCurrentGameCompleted(true); // Mark current game as completed
     
     // Show completion message for this game
     Alert.alert(
@@ -285,12 +287,13 @@ export default function DetailedLessonScreen({ route, navigation }) {
         </Text>
         
         {/* Next Game Button - visible after game completion */}
-        {gameResults[`game_${currentGameIndex}`]?.completed && (
+        {currentGameCompleted && (
           <TouchableOpacity 
             style={styles.nextGameButton}
             onPress={() => {
               if (currentGameIndex < lesson.games.length - 1) {
                 setCurrentGameIndex(currentGameIndex + 1);
+                setCurrentGameCompleted(false); // Reset for next game
               } else {
                 // All games completed - show final completion
                 const totalScore = Object.values(gameResults).reduce((sum, result) => sum + result.score, 0);

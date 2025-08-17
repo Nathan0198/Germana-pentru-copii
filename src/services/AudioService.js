@@ -348,10 +348,20 @@ class AudioService {
   async playBjornVoice(textKey, language = 'de') {
     console.log(`🐻 Björn voice: ${textKey} (${language})`);
     
-    // Use placeholder audio files that exist in assets
-    if (language === 'de') {
+    // Try to use real audio files from lesson structure first
+    try {
+      // For lesson 1, use real files
+      if (textKey.includes('Hallo') || textKey.includes('Ich bin') || textKey.includes('gut')) {
+        const lessonId = '1';
+        const fileName = 'story_1.mp3'; // Default story file
+        await this.playAudioFile(fileName, lessonId, 'bjorn', language);
+        return;
+      }
+      
+      // Fallback to placeholder for other cases
       await this.playAudioFile('characters/bjorn_placeholder.mp3');
-    } else {
+    } catch (error) {
+      console.warn('Bjorn voice fallback to placeholder:', error);
       await this.playAudioFile('characters/bjorn_placeholder.mp3');
     }
   }
@@ -359,15 +369,38 @@ class AudioService {
   async playEmmaVoice(textKey, language = 'de') {
     console.log(`🦆 Emma voice: ${textKey} (${language})`);
     
-    // Use placeholder audio files that exist in assets
-    await this.playAudioFile('characters/emma_placeholder.mp3');
+    // Try to use real audio files from lesson structure first
+    try {
+      // For lesson 1, use real files
+      if (textKey.includes('Hallo') || textKey.includes('Wie geht')) {
+        const lessonId = '1';
+        const fileName = 'story_1.mp3'; // Default story file
+        await this.playAudioFile(fileName, lessonId, 'emma', language);
+        return;
+      }
+      
+      // Fallback to placeholder for other cases
+      await this.playAudioFile('characters/emma_placeholder.mp3');
+    } catch (error) {
+      console.warn('Emma voice fallback to placeholder:', error);
+      await this.playAudioFile('characters/emma_placeholder.mp3');
+    }
   }
 
   async playMaxVoice(textKey, language = 'de') {
     console.log(`🐰 Max voice: ${textKey} (${language})`);
     
-    // Use placeholder audio files that exist in assets
-    await this.playAudioFile('characters/max_placeholder.mp3');
+    // Try to use real audio files from lesson structure first
+    try {
+      // For lesson 1 games, use real files
+      const lessonId = '1';
+      const fileName = 'game_1_instruction.mp3'; // Default game file
+      await this.playAudioFile(fileName, lessonId, 'max', language);
+      return;
+    } catch (error) {
+      console.warn('Max voice fallback to placeholder:', error);
+      await this.playAudioFile('characters/max_placeholder.mp3');
+    }
   }
 
   // Character voice methods with bilingual support
@@ -858,12 +891,19 @@ class AudioService {
     
     // Create require map for lesson 1 files
     const lesson1Files = {
+      // Björn story files
       'lessons/lesson_1/bjorn/de/story_1.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/de/story_1.mp3'),
       'lessons/lesson_1/bjorn/de/story_2.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/de/story_2.mp3'),
       'lessons/lesson_1/bjorn/de/story_3.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/de/story_3.mp3'),
       'lessons/lesson_1/bjorn/ro/story_1.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/ro/story_1.mp3'),
       'lessons/lesson_1/bjorn/ro/story_2.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/ro/story_2.mp3'),
       'lessons/lesson_1/bjorn/ro/story_3.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/ro/story_3.mp3'),
+      
+      // Emma story files
+      'lessons/lesson_1/emma/de/story_1.mp3': require('../../assets/audio/lessons/lesson_1/emma/de/story_1.mp3'),
+      'lessons/lesson_1/emma/de/story_2.mp3': require('../../assets/audio/lessons/lesson_1/emma/de/story_2.mp3'),
+      'lessons/lesson_1/emma/ro/story_1.mp3': require('../../assets/audio/lessons/lesson_1/emma/ro/story_1.mp3'),
+      'lessons/lesson_1/emma/ro/story_2.mp3': require('../../assets/audio/lessons/lesson_1/emma/ro/story_2.mp3'),
     };
     
     const audioUri = lesson1Files[audioPath];
