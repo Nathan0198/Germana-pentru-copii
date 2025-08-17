@@ -818,13 +818,13 @@ export const CASTLE_LESSONS = [
           character: "björn",
           german: "Und ich trinke gern Milch dazu!",
           romanian: "Și îmi place să beau lapte cu ele!",
-          image: "bjorn_drinking_milk"
+          image: "bjorn_milk"
         },
         {
           character: "anna",
           german: "Nach dem Essen können wir Kuchen haben!",
           romanian: "După mâncare putem să avem prăjitură!",
-          image: "anna_cake_suggestion"
+          image: "anna_cake"
         }
       ]
     },
