@@ -1,0 +1,372 @@
+{
+  "project_name": "MiniDeutsch - German Learning App",
+  "description": "Complete audio mapping for ElevenLabs voice generation across all 25 lessons",
+  "character_voices": {
+    "bjorn": {
+      "voice_name": "Björn der Bär",
+      "description": "Friendly brown bear character - warm, encouraging male voice",
+      "language": "de",
+      "age_group": "child_friendly",
+      "tone": "warm, encouraging, playful"
+    },
+    "emma": {
+      "voice_name": "Emma die Ente", 
+      "description": "Cheerful yellow duck character - bright, enthusiastic female voice",
+      "language": "de",
+      "age_group": "child_friendly", 
+      "tone": "bright, cheerful, enthusiastic"
+    },
+    "narrator": {
+      "voice_name": "German Narrator",
+      "description": "Clear, educational narrator voice for instructions",
+      "language": "de",
+      "age_group": "adult",
+      "tone": "clear, educational, patient"
+    },
+    "romanian_narrator": {
+      "voice_name": "Romanian Narrator",
+      "description": "Romanian translation voice",
+      "language": "ro", 
+      "age_group": "adult",
+      "tone": "clear, educational, patient"
+    }
+  },
+  "file_naming_convention": "lesson{N}_{type}_{index}_{language}.mp3",
+  "audio_categories": {
+    "story": "Story narration audio files",
+    "vocabulary": "Individual vocabulary word audio", 
+    "game_instructions": "Game instruction audio",
+    "game_feedback": "Game feedback and encouragement",
+    "sound_effects": "Environmental and action sound effects"
+  },
+  "lessons": {
+    "lesson_1": {
+      "title": "Salutul lui Björn",
+      "story_audio": {
+        "lesson1_story_1_de.mp3": {
+          "character": "björn",
+          "german": "Hallo! Ich bin Björn der Bär! Ich wohne hier im Schloss mit meiner Familie.",
+          "romanian": "Salut! Eu sunt Björn ursulețul! Locuiesc aici în castel cu familia mea.",
+          "context": "Björn introduces himself"
+        },
+        "lesson1_story_2_de.mp3": {
+          "character": "emma", 
+          "german": "Hallo Björn! Ich bin Emma die Ente. Wie geht es dir?",
+          "romanian": "Salut Björn! Eu sunt Emma rățușca. Ce mai faci?",
+          "context": "Emma greets Björn"
+        },
+        "lesson1_story_3_de.mp3": {
+          "character": "björn",
+          "german": "Mir geht es gut, danke! Und dir?", 
+          "romanian": "Îmi merge bine, mulțumesc! Și ție?",
+          "context": "Björn responds politely"
+        },
+        "lesson1_story_4_de.mp3": {
+          "character": "emma",
+          "german": "Auch gut! Lass uns die Kinder begrüßen!",
+          "romanian": "Și mie bine! Hai să salutăm copiii!",
+          "context": "Emma suggests greeting children"
+        },
+        "lesson1_story_5_de.mp3": {
+          "character": "björn",
+          "german": "Hallo Kinder! Willkommen in unserem Schloss!",
+          "romanian": "Salut copii! Bun veniți în castelul nostru!",
+          "context": "Björn welcomes children"
+        }
+      },
+      "vocabulary_audio": {
+        "lesson1_vocab_hallo_de.mp3": {
+          "word": "Hallo",
+          "translation": "Salut", 
+          "category": "greetings",
+          "phonetic": "HAH-loh"
+        },
+        "lesson1_vocab_ich_bin_de.mp3": {
+          "word": "Ich bin",
+          "translation": "Eu sunt",
+          "category": "introduction", 
+          "phonetic": "ikh bin"
+        },
+        "lesson1_vocab_der_baer_de.mp3": {
+          "word": "der Bär",
+          "translation": "ursul",
+          "category": "animals",
+          "phonetic": "der BAYR" 
+        },
+        "lesson1_vocab_die_ente_de.mp3": {
+          "word": "die Ente",
+          "translation": "rața",
+          "category": "animals",
+          "phonetic": "dee EN-teh"
+        },
+        "lesson1_vocab_die_familie_de.mp3": {
+          "word": "die Familie", 
+          "translation": "familia",
+          "category": "family",
+          "phonetic": "dee fah-MEE-lee-eh"
+        },
+        "lesson1_vocab_gut_de.mp3": {
+          "word": "gut",
+          "translation": "bine", 
+          "category": "emotions",
+          "phonetic": "goot"
+        },
+        "lesson1_vocab_danke_de.mp3": {
+          "word": "danke",
+          "translation": "mulțumesc",
+          "category": "politeness",
+          "phonetic": "DAHN-keh"
+        },
+        "lesson1_vocab_die_kinder_de.mp3": {
+          "word": "die Kinder",
+          "translation": "copiii",
+          "category": "family", 
+          "phonetic": "dee KIN-der"
+        }
+      },
+      "game_audio": {
+        "lesson1_game_instruction_1_de.mp3": {
+          "text": "Berühre die Charaktere und höre ihre Begrüßungen!",
+          "translation": "Atinge personajele și ascultă salutările lor!",
+          "game_type": "touch_and_listen"
+        },
+        "lesson1_game_instruction_2_de.mp3": {
+          "text": "Ziehe die Wörter zu den richtigen Charakteren!",
+          "translation": "Trage cuvintele către personajele potrivite!",
+          "game_type": "drag_match_voices"  
+        },
+        "lesson1_game_instruction_3_de.mp3": {
+          "text": "Höre aufmerksam zu und zeige das richtige Bild!",
+          "translation": "Ascultă cu atenție și arată imaginea corectă!",
+          "game_type": "simon_says"
+        },
+        "lesson1_game_feedback_correct_de.mp3": {
+          "text": "Sehr gut! Das ist richtig!",
+          "translation": "Foarte bine! Asta e corect!",
+          "emotion": "encouraging"
+        },
+        "lesson1_game_feedback_wrong_de.mp3": {
+          "text": "Versuche es noch einmal!",
+          "translation": "Încearcă din nou!",
+          "emotion": "supportive"
+        },
+        "lesson1_game_completion_de.mp3": {
+          "text": "Fantastisch! Du hast alle Spiele geschafft!",
+          "translation": "Fantastic! Ai terminat toate jocurile!",
+          "emotion": "celebratory"
+        }
+      }
+    },
+    "lesson_2": {
+      "title": "Familia lui Björn",
+      "story_audio": {
+        "lesson2_story_1_de.mp3": {
+          "character": "björn",
+          "german": "Das ist mein Papa. Er heißt Bruno.",
+          "romanian": "Acesta e tatăl meu. Îl cheamă Bruno.",
+          "context": "Björn introduces his father"
+        },
+        "lesson2_story_2_de.mp3": {
+          "character": "emma",
+          "german": "Und wer ist das?",
+          "romanian": "Și cine e aceea?", 
+          "context": "Emma asks about family member"
+        },
+        "lesson2_story_3_de.mp3": {
+          "character": "björn", 
+          "german": "Das ist meine Mama. Sie heißt Berta.",
+          "romanian": "Aceasta e mama mea. O cheamă Berta.",
+          "context": "Björn introduces his mother"
+        },
+        "lesson2_story_4_de.mp3": {
+          "character": "björn",
+          "german": "Und das ist meine kleine Schwester Anna.",
+          "romanian": "Și aceasta e sora mea mică Anna.",
+          "context": "Björn introduces his sister"
+        },
+        "lesson2_story_5_de.mp3": {
+          "character": "emma",
+          "german": "Was für eine schöne Familie!",
+          "romanian": "Ce familie frumoasă!",
+          "context": "Emma compliments the family"
+        }
+      },
+      "vocabulary_audio": {
+        "lesson2_vocab_papa_de.mp3": {
+          "word": "der Papa",
+          "translation": "tatăl/tata",
+          "category": "family",
+          "phonetic": "der PAH-pah"
+        },
+        "lesson2_vocab_mama_de.mp3": {
+          "word": "die Mama",
+          "translation": "mama",
+          "category": "family", 
+          "phonetic": "dee MAH-mah"
+        },
+        "lesson2_vocab_schwester_de.mp3": {
+          "word": "die Schwester",
+          "translation": "sora",
+          "category": "family",
+          "phonetic": "dee SHVES-ter"
+        },
+        "lesson2_vocab_bruder_de.mp3": {
+          "word": "der Bruder", 
+          "translation": "fratele",
+          "category": "family",
+          "phonetic": "der BROO-der"
+        },
+        "lesson2_vocab_gross_de.mp3": {
+          "word": "groß",
+          "translation": "mare",
+          "category": "adjectives",
+          "phonetic": "grohs" 
+        },
+        "lesson2_vocab_klein_de.mp3": {
+          "word": "klein",
+          "translation": "mic/mică",
+          "category": "adjectives",
+          "phonetic": "kline"
+        }
+      }
+    },
+    "lesson_3": {
+      "title": "Casa noastră",
+      "story_audio": {
+        "lesson3_story_1_de.mp3": {
+          "character": "björn",
+          "german": "Willkommen in unserem Haus! Das ist unser Wohnzimmer.",
+          "romanian": "Bun veniți în casa noastră! Aceasta e camera de zi.",
+          "context": "Björn shows the living room"
+        },
+        "lesson3_story_2_de.mp3": {
+          "character": "emma", 
+          "german": "Wie gemütlich! Was ist das dort?",
+          "romanian": "Ce confortabil! Ce e acolo?",
+          "context": "Emma asks about other rooms"
+        },
+        "lesson3_story_3_de.mp3": {
+          "character": "björn",
+          "german": "Das ist die Küche. Hier kocht meine Mama.",
+          "romanian": "Aceasta e bucătăria. Aici gătește mama.",
+          "context": "Björn explains the kitchen"
+        },
+        "lesson3_story_4_de.mp3": {
+          "character": "björn",
+          "german": "Und das sind die Schlafzimmer oben.",
+          "romanian": "Și acestea sunt dormitoarele de sus.", 
+          "context": "Björn shows bedrooms"
+        },
+        "lesson3_story_5_de.mp3": {
+          "character": "björn",
+          "german": "Das ist mein Zimmer! Hier spiele ich gern.",
+          "romanian": "Aceasta e camera mea! Aici îmi place să mă joc.",
+          "context": "Björn shows his room"
+        }
+      },
+      "vocabulary_audio": {
+        "lesson3_vocab_haus_de.mp3": {
+          "word": "das Haus",
+          "translation": "casa",
+          "category": "house",
+          "phonetic": "das hows"
+        },
+        "lesson3_vocab_wohnzimmer_de.mp3": {
+          "word": "das Wohnzimmer",
+          "translation": "camera de zi",
+          "category": "rooms",
+          "phonetic": "das VOHN-tsim-mer"
+        },
+        "lesson3_vocab_kueche_de.mp3": {
+          "word": "die Küche",
+          "translation": "bucătăria", 
+          "category": "rooms",
+          "phonetic": "dee KÜ-kheh"
+        },
+        "lesson3_vocab_schlafzimmer_de.mp3": {
+          "word": "das Schlafzimmer",
+          "translation": "dormitorul",
+          "category": "rooms",
+          "phonetic": "das SHLAHF-tsim-mer"
+        },
+        "lesson3_vocab_zimmer_de.mp3": {
+          "word": "das Zimmer",
+          "translation": "camera",
+          "category": "rooms", 
+          "phonetic": "das TSIM-mer"
+        },
+        "lesson3_vocab_bett_de.mp3": {
+          "word": "das Bett",
+          "translation": "patul",
+          "category": "furniture",
+          "phonetic": "das bet"
+        },
+        "lesson3_vocab_tisch_de.mp3": {
+          "word": "der Tisch",
+          "translation": "masa",
+          "category": "furniture",
+          "phonetic": "der tish"
+        },
+        "lesson3_vocab_stuhl_de.mp3": {
+          "word": "der Stuhl",
+          "translation": "scaunul", 
+          "category": "furniture",
+          "phonetic": "der shtool"
+        }
+      },
+      "game_audio": {
+        "lesson3_game_room_sounds_kitchen_de.mp3": {
+          "text": "kitchen_cooking_sounds",
+          "description": "Sizzling pan, chopping, cooking sounds",
+          "room": "küche"
+        },
+        "lesson3_game_room_sounds_living_de.mp3": {
+          "text": "tv_and_conversation_sounds",
+          "description": "TV sounds, family conversation",
+          "room": "wohnzimmer"
+        },
+        "lesson3_game_room_sounds_bedroom_de.mp3": {
+          "text": "bed_creaking_sleep_sounds", 
+          "description": "Bed sounds, quiet sleeping ambiance",
+          "room": "schlafzimmer"
+        },
+        "lesson3_game_room_sounds_bjorn_de.mp3": {
+          "text": "toys_and_play_sounds",
+          "description": "Toy sounds, playful activities",
+          "room": "bjorn_zimmer"
+        }
+      }
+    },
+    "lesson_4": {
+      "title": "Culorile lui Björn",
+      "placeholder": "Lesson 4 content - Colors theme",
+      "vocabulary_preview": ["rot", "blau", "grün", "gelb", "schwarz", "weiß"]
+    },
+    "lesson_5": {
+      "title": "Numerele magice",
+      "placeholder": "Lesson 5 content - Numbers theme",
+      "vocabulary_preview": ["eins", "zwei", "drei", "vier", "fünf", "sechs"]
+    }
+  },
+  "production_notes": {
+    "voice_consistency": "Maintain character voice consistency across all lessons",
+    "audio_quality": "Generate high-quality MP3 files at 44.1kHz, 16-bit",
+    "file_size": "Optimize for mobile app delivery (typically 30-120 seconds per file)",
+    "emotional_tone": "Match emotional context - encouraging for games, clear for vocabulary",
+    "pronunciation": "Emphasize clear German pronunciation for educational value",
+    "background_music": "Consider subtle background music for story scenes",
+    "sound_effects": "Add appropriate sound effects for game interactions"
+  },
+  "implementation_timeline": {
+    "phase_1": "Lessons 1-3 (Complete character voices and main vocabulary)",
+    "phase_2": "Lessons 4-10 (Expand vocabulary themes)", 
+    "phase_3": "Lessons 11-18 (Advanced grammar and phrases)",
+    "phase_4": "Lessons 19-25 (Complex conversations and review)"
+  },
+  "estimated_audio_files": {
+    "total_files": "~500-700 audio files",
+    "story_files": "~125 files (5 per lesson x 25 lessons)",
+    "vocabulary_files": "~200 files (8 per lesson average)",
+    "game_files": "~175-375 files (variable per lesson complexity)"
+  }
+}
