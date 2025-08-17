@@ -13,20 +13,31 @@ class ImageService {
       // CHARACTERS - Personajele principale
       // ================================
       'bjorn_default': require('../../assets/images/characters/bjorn_default.png'),
+      'bjorn_waving': require('../../assets/images/characters/bjorn_waving.png'),
+      'bjorn_happy': require('../../assets/images/characters/bjorn_happy.png'),
+      'bjorn_standing': require('../../assets/images/characters/bjorn_standing.png'),
+      'emma_smiling': require('../../assets/images/characters/emma_smiling.png'),
+      'emma_happy': require('../../assets/images/characters/emma_happy.png'),
+      'emma_duck': require('../../assets/images/characters/emma_duck.png'),
       'max': require('../../assets/images/characters/max.png'),
-      // 'emma_default': require('../../assets/images/characters/emma_default.png'),
 
       // ================================
       // LESSON 1 - Salutul lui Björn - Story Images
       // ================================
-      'bjorn_familie': require('../../assets/images/lessons/lesson_1/story/bjorn_familie.png'),
-      'bjorn_und_emma': require('../../assets/images/lessons/lesson_1/story/bjorn_und_emma.png'),
-      'emma_excited': require('../../assets/images/lessons/lesson_1/story/emma_excited.png'),
-      'bjorn_und_emma_gruessen': require('../../assets/images/lessons/lesson_1/story/bjorn_und_emma_gruessen.png'),
-      'bjorn_thanking': require('../../assets/images/lessons/lesson_1/story/bjorn_thanking.png'),
-      'bjorn_pointing': require('../../assets/images/lessons/lesson_1/story/bjorn_pointing.png'),
-      'bjorn_waving': require('../../assets/images/lessons/lesson_1/story/bjorn_und_emma_gruessen.png'), // Folosim bjorn_und_emma_gruessen pentru waving
-      'bear_family': require('../../assets/images/lessons/lesson_1/story/bjorn_familie.png'), // Pentru familia de urși
+      'bjorn_familie': require('../../assets/images/lessons/lesson1/story/bear_family.png'),
+      'bjorn_und_emma': require('../../assets/images/characters/bjorn_waving.png'), // Folosim bjorn_waving pentru scenele împreună
+      'emma_excited': require('../../assets/images/characters/emma_happy.png'), // Folosim emma_happy pentru emma entuziasmată
+      'bjorn_und_emma_gruessen': require('../../assets/images/lessons/lesson1/story/bear_family.png'), // Pentru salutul final
+      'bear_family': require('../../assets/images/lessons/lesson1/story/bear_family.png'),
+      
+      // ================================
+      // LESSON 1 - Game Images
+      // ================================
+      'happy_children': require('../../assets/images/lessons/lesson1/games/happy_children.png'),
+      'hand_waving': require('../../assets/images/lessons/lesson1/games/hand_waving.png'),
+      'house': require('../../assets/images/lessons/lesson1/games/house.png'),
+      'children_playing': require('../../assets/images/lessons/lesson1/games/children_playing.png'),
+      'children_group': require('../../assets/images/lessons/lesson1/games/children_group.png'),
 
       // ================================
       // BACKGROUNDS - Fundaluri (pentru viitor)
