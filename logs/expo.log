@@ -23,3 +23,41 @@ Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
 Web Bundled 176ms index.js (1 module)
 Starting project at /home/user/webapp
 Starting Metro Bundler
+The following packages should be updated for best compatibility with the installed expo version:
+  @react-native-async-storage/async-storage@2.2.0 - expected version: 2.1.2
+  lottie-react-native@7.3.2 - expected version: 7.2.2
+  react-native-gesture-handler@2.28.0 - expected version: ~2.24.0
+  react-native-reanimated@4.0.2 - expected version: ~3.17.4
+  react-native-screens@4.14.1 - expected version: ~4.11.1
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:3000
+Logs for your project will appear below.
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+[Reanimated] Seems like you are using a Babel plugin `react-native-reanimated/plugin`. It was moved to `react-native-worklets` package. Please use `react-native-worklets/plugin` instead.
+Web ./index.js ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 76.8% (488/557)
+Web Bundled 3802ms index.js (616 modules)
+Web ./index.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 53ms index.js (1 module)
+Error: ENOENT: no such file or directory, scandir '/home/user/webapp/audio'
+    at Object.readdir (node:internal/fs/promises:952:18)
+    at getAbsoluteAssetRecord (/home/user/webapp/node_modules/metro/src/Assets.js:77:17)
+    at getAsset (/home/user/webapp/node_modules/metro/src/Assets.js:191:18)
+    at Server._processSingleAssetRequest (/home/user/webapp/node_modules/metro/src/Server.js:372:20)
+    at Server._processRequest (/home/user/webapp/node_modules/metro/src/Server.js:458:7)
+Error: ENOENT: no such file or directory, scandir '/home/user/webapp/audio'
+    at Object.readdir (node:internal/fs/promises:952:18)
+    at getAbsoluteAssetRecord (/home/user/webapp/node_modules/metro/src/Assets.js:77:17)
+    at getAsset (/home/user/webapp/node_modules/metro/src/Assets.js:191:18)
+    at Server._processSingleAssetRequest (/home/user/webapp/node_modules/metro/src/Server.js:372:20)
+    at Server._processRequest (/home/user/webapp/node_modules/metro/src/Server.js:458:7)
+Starting project at /home/user/webapp
+Starting Metro Bundler
+The following packages should be updated for best compatibility with the installed expo version:
+  @react-native-async-storage/async-storage@2.2.0 - expected version: 2.1.2
+  lottie-react-native@7.3.2 - expected version: 7.2.2
+  react-native-gesture-handler@2.28.0 - expected version: ~2.24.0
+  react-native-reanimated@4.0.2 - expected version: ~3.17.4
+  react-native-screens@4.14.1 - expected version: ~4.11.1
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:3000
+Logs for your project will appear below.

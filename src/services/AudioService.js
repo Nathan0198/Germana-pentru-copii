@@ -67,6 +67,40 @@ class AudioService {
   }
 
   // Core audio file loading and playing
+  async playSpecificAudioFile(audioUri, fileName) {
+    try {
+      console.log(`🎵 Playing specific audio file: ${fileName}`);
+      
+      const { sound } = await Audio.Sound.createAsync(
+        audioUri,
+        { 
+          shouldPlay: false, 
+          volume: 1.0,
+          rate: this.settings.voiceSpeed,
+          shouldCorrectPitch: true,
+        }
+      );
+
+      this.isPlaying = true;
+      await sound.playAsync();
+      
+      return new Promise((resolve) => {
+        sound.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish || !status.isPlaying) {
+            this.isPlaying = false;
+            console.log(`✅ Finished playing: ${fileName}`);
+            sound.unloadAsync(); // Clean up
+            resolve();
+          }
+        });
+      });
+      
+    } catch (error) {
+      console.error(`Error playing specific audio file ${fileName}:`, error);
+      this.isPlaying = false;
+    }
+  }
+
   async loadAudioFile(fileName, lessonId = null, character = null, language = null) {
     try {
       const fullKey = lessonId && character && language 
@@ -91,8 +125,26 @@ class AudioService {
           return null;
         }
       } else {
-        // Fallback for other audio files
-        audioUri = { uri: `../../assets/audio/${fileName}` };
+        // Fallback for other audio files - use require for React Native
+        const audioFiles = {
+          'characters/bjorn_placeholder.mp3': require('../../assets/audio/characters/bjorn_placeholder.mp3'),
+          'characters/emma_placeholder.mp3': require('../../assets/audio/characters/emma_placeholder.mp3'),
+          'characters/max_placeholder.mp3': require('../../assets/audio/characters/max_placeholder.mp3'),
+          'effects/button_click.mp3': require('../../assets/audio/effects/button_click.mp3'),
+          'effects/success.mp3': require('../../assets/audio/effects/success.mp3'),
+          'effects/error.mp3': require('../../assets/audio/effects/error.mp3'),
+          'sounds/click.mp3': require('../../assets/audio/effects/button_click.mp3'),
+          'sounds/success.mp3': require('../../assets/audio/effects/success.mp3'),
+          'sounds/error.mp3': require('../../assets/audio/effects/error.mp3'),
+        };
+        
+        audioUri = audioFiles[fileName];
+        
+        if (!audioUri) {
+          console.warn(`⚠️ Audio file not found: ${fileName}`);
+          // Use a fallback placeholder
+          audioUri = audioFiles['characters/bjorn_placeholder.mp3'];
+        }
       }
       
       console.log(`🎵 Loading audio file: ${fileName} (${fullKey})`);
@@ -236,20 +288,27 @@ class AudioService {
   // Character voice methods with pre-recorded audio
   async playBjornVoice(textKey, language = 'de') {
     console.log(`🐻 Björn voice: ${textKey} (${language})`);
-    const fileName = `${textKey}_bjorn_${language}.mp3`;
-    await this.playAudioFile(fileName);
+    
+    // Use placeholder audio files that exist in assets
+    if (language === 'de') {
+      await this.playAudioFile('characters/bjorn_placeholder.mp3');
+    } else {
+      await this.playAudioFile('characters/bjorn_placeholder.mp3');
+    }
   }
 
   async playEmmaVoice(textKey, language = 'de') {
     console.log(`🦆 Emma voice: ${textKey} (${language})`);
-    const fileName = `${textKey}_emma_${language}.mp3`;
-    await this.playAudioFile(fileName);
+    
+    // Use placeholder audio files that exist in assets
+    await this.playAudioFile('characters/emma_placeholder.mp3');
   }
 
   async playMaxVoice(textKey, language = 'de') {
     console.log(`🐰 Max voice: ${textKey} (${language})`);
-    const fileName = `${textKey}_max_${language}.mp3`;
-    await this.playAudioFile(fileName);
+    
+    // Use placeholder audio files that exist in assets
+    await this.playAudioFile('characters/max_placeholder.mp3');
   }
 
   // Character voice methods with bilingual support
@@ -271,22 +330,22 @@ class AudioService {
   // UI Sound effects with audio files
   async playButtonSound() {
     if (!this.settings.soundEnabled) return;
-    await this.playAudioFile('sounds/click.mp3');
+    await this.playAudioFile('effects/button_click.mp3');
   }
 
   async playSuccessSound() {
     if (!this.settings.soundEnabled) return;
-    await this.playAudioFile('sounds/success.mp3');
+    await this.playAudioFile('effects/success.mp3');
   }
 
   async playErrorSound() {
     if (!this.settings.soundEnabled) return;
-    await this.playAudioFile('sounds/error.mp3');
+    await this.playAudioFile('effects/error.mp3');
   }
 
   async playRewardSound() {
     if (!this.settings.soundEnabled) return;
-    await this.playAudioFile('sounds/reward.mp3');
+    await this.playAudioFile('effects/success.mp3');
   }
 
   // Vocabulary pronunciation
@@ -720,9 +779,28 @@ class AudioService {
       return;
     }
     
-    const fileName = `story_${audioFileNumber}.mp3`;
-    console.log(`📖 Playing Lesson 1 story part ${partNumber} -> ${character}/${language}/story_${audioFileNumber}.mp3`);
-    await this.playAudioFile(fileName, '1', character, language);
+    // Use the correct file path that exists in assets
+    const audioPath = `lessons/lesson_1/${character}/${language}/story_${audioFileNumber}.mp3`;
+    console.log(`📖 Playing Lesson 1 story part ${partNumber} -> ${audioPath}`);
+    
+    // Create require map for lesson 1 files
+    const lesson1Files = {
+      'lessons/lesson_1/bjorn/de/story_1.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/de/story_1.mp3'),
+      'lessons/lesson_1/bjorn/de/story_2.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/de/story_2.mp3'),
+      'lessons/lesson_1/bjorn/de/story_3.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/de/story_3.mp3'),
+      'lessons/lesson_1/bjorn/ro/story_1.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/ro/story_1.mp3'),
+      'lessons/lesson_1/bjorn/ro/story_2.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/ro/story_2.mp3'),
+      'lessons/lesson_1/bjorn/ro/story_3.mp3': require('../../assets/audio/lessons/lesson_1/bjorn/ro/story_3.mp3'),
+    };
+    
+    const audioUri = lesson1Files[audioPath];
+    if (audioUri) {
+      await this.playSpecificAudioFile(audioUri, audioPath);
+    } else {
+      console.warn(`Audio file not found: ${audioPath}`);
+      // Fallback to placeholder
+      await this.playAudioFile('characters/bjorn_placeholder.mp3');
+    }
   }
 
   async playLesson1StoryBilingual(partNumber) {

@@ -14,6 +14,11 @@ import { GERMAN_ZONES } from '../data/AppData';
 
 const { width } = Dimensions.get('window');
 
+// Function to calculate progress percentage
+const calculateProgress = (completed, total) => {
+  return total > 0 ? (completed / total) * 100 : 0;
+};
+
 export default function GermanMapScreen({ navigation }) {
   const handleZonePress = (zone) => {
     // Castle Family is always unlocked - first zone
