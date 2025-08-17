@@ -939,25 +939,25 @@ export const CASTLE_LESSONS = [
           character: "emma",
           german: "Wie schön! Ich freue mich darauf!",
           romanian: "Ce frumos! Mă bucur de asta!",
-          image: "emma_happy"
+          image: "emma_happy_visit"
         },
         {
           character: "opa_bear",
           german: "Hallo, meine lieben Enkelkinder!",
           romanian: "Salut, dragi nepoței ai mei!",
-          image: "grandpa_greeting"
+          image: "opa_greeting_grandchildren"
         },
         {
           character: "oma_bear",
           german: "Wir haben Geschenke für euch mitgebracht!",
           romanian: "Am adus cadouri pentru voi!",
-          image: "grandma_with_gifts"
+          image: "oma_gifts"
         },
         {
           character: "björn",
           german: "Danke, Oma! Wir lieben euch sehr!",
           romanian: "Mulțumesc, bunico! Vă iubim foarte mult!",
-          image: "bjorn_hugging_grandma"
+          image: "bjorn_loving_grandparents"
         }
       ]
     },
